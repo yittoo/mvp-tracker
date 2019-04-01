@@ -1,11 +1,18 @@
 import React, { Component } from "react";
 import classes from "./Tracker.css";
 import { connect } from "react-redux";
+import MvpEntry from "./MvpEntry/MvpEntry";
 
 class Tracker extends Component {
   state = {};
   render() {
-    return <h1 className={classes.Tracker}>something recieved from redux { this.props.something }</h1>;
+    return (
+      <div className={classes.Tracker}>
+        <MvpEntry />
+        <MvpEntry />
+        <MvpEntry />
+      </div>
+    );
   }
 }
 

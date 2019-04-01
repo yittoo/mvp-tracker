@@ -1,0 +1,23 @@
+.Red {
+  color: #e84118;
+}
+
+.Green {
+  color: #2ecc71;
+}
+
+.Purple {
+  color: #8e44ad;
+}
+
+.Blue {
+    color: #2980b9;
+}
+
+.BlueWhiteBackground {
+    background: rgb(173,173,173); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(173,173,173,1) 0%, rgba(198,205,219,1) 4%, rgba(168,184,215,1) 28%, rgba(195,215,245,1) 70%, rgba(227,235,251,1) 96%, rgba(107,107,107,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(173,173,173,1) 0%,rgba(198,205,219,1) 4%,rgba(168,184,215,1) 28%,rgba(195,215,245,1) 70%,rgba(227,235,251,1) 96%,rgba(107,107,107,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(173,173,173,1) 0%,rgba(198,205,219,1) 4%,rgba(168,184,215,1) 28%,rgba(195,215,245,1) 70%,rgba(227,235,251,1) 96%,rgba(107,107,107,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#adadad', endColorstr='#6b6b6b',GradientType=0 ); /* IE6-9 */
+}

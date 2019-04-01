@@ -1,0 +1,23 @@
+.Layout {
+    
+}
+
+.Content {
+    position: relative;
+    display: inline-block;
+    width: 60%;
+    left: 20%;
+    right: 20%;
+    margin-top: 72px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 500px){
+    .Content{
+        width: 100%;
+        left: 0%;
+        right: 0%;
+        margin-top: 25%;
+        padding: 0;
+    }
+}

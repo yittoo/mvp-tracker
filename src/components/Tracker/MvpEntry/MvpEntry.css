@@ -1,0 +1,85 @@
+.MvpEntry {
+  display: grid;
+  grid-template-columns: 30% 40% 30%;
+  grid-template-rows: auto;
+  grid-template-areas:
+    ". . deathTimer"
+    "name untilSpawn deathTimer"
+    "fixedTimer untilSpawn ."
+    "map . justKilled";
+  border: 1px solid;
+  border-radius: 2px;
+  padding: 10px 5px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.MvpEntry div {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.MvpEntry div span {
+  font-size: 1rem;
+}
+
+.Name {
+  grid-area: name;
+  font-style: italic;
+  font-size: 1.6rem;
+  padding-bottom: 10px;
+}
+
+.FixedTimer {
+  grid-area: fixedTimer;
+}
+
+.Map {
+  grid-area: map;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.UntilSpawn {
+  grid-area: untilSpawn;
+  font-size: 1rem;
+}
+
+.DeathTimer {
+  grid-area: deathTimer;
+}
+
+.JustKilled {
+  grid-area: justKilled;
+}
+
+@media (max-width: 800px) {
+  .MvpEntry {
+    grid-template-columns: 40% 60%;
+    grid-template-areas:
+      "name untilSpawn"
+      "map justKilled";
+  }
+  .Name {
+    padding-bottom: 0;
+  }
+  .FixedTimer,
+  .DeathTimer {
+    display: none;
+  }
+  .UntilSpawn {
+    font-size: 2rem;
+  }
+  .Map {
+    font-size: 1rem;
+  }
+  .MvpEntry div span {
+    display: none;
+  }
+  .JustKilled button {
+    width: 100%;
+    height: 100%;
+  }
+}

@@ -5,7 +5,8 @@ import MvpTracker from "./containers/MvpTracker/MvpTracker";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Redirect } from "react-router";
-import classes from './App.css';
+import './App.css';
+import Layout from './hoc/Layout/Layout';
 
 class App extends Component {
   render() {
@@ -15,7 +16,7 @@ class App extends Component {
         <Redirect path="/" to="/tracker" />
       </Switch>
     );
-    return <div className={classes.App}>{routes}</div>;
+    return <Layout>{routes}</Layout>;
   }
 }
 
