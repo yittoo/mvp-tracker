@@ -1,0 +1,1 @@
+export const GET_MVP_LIST = "GET_MVP_LIST";
