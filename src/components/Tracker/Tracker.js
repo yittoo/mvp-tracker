@@ -18,7 +18,7 @@ class Tracker extends Component {
 
 const mapStateToProps = state => {
   return {
-    something: state.something
+    somethingg: null
   };
 };
 
@@ -29,6 +29,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   null
 )(Tracker);

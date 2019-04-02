@@ -12,6 +12,7 @@
   padding: 10px 5px;
   box-sizing: border-box;
   margin-bottom: 5px;
+  justify-items: center;
 }
 
 .MvpEntry div {
@@ -44,7 +45,8 @@
 
 .UntilSpawn {
   grid-area: untilSpawn;
-  font-size: 1rem;
+  font-size: 1.6rem;
+  margin: auto auto;
 }
 
 .DeathTimer {
@@ -55,7 +57,14 @@
   grid-area: justKilled;
 }
 
-@media (max-width: 800px) {
+.JustKilled input{
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 2px 5px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1000px) {
   .MvpEntry {
     grid-template-columns: 40% 60%;
     grid-template-areas:
@@ -69,6 +78,9 @@
   .DeathTimer {
     display: none;
   }
+  .HideOnSmall {
+    display: none;
+  }
   .UntilSpawn {
     font-size: 2rem;
   }
@@ -77,6 +89,10 @@
   }
   .MvpEntry div span {
     display: none;
+  }
+  .JustKilled input {
+    width: 100%;
+    margin: 5px 0;
   }
   .JustKilled button {
     width: 100%;

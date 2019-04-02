@@ -8,6 +8,7 @@ import { Redirect } from "react-router";
 import './App.css';
 import Layout from './hoc/Layout/Layout';
 
+
 class App extends Component {
   render() {
     let routes = (
