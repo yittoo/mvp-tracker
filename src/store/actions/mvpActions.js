@@ -1,5 +1,4 @@
 import * as actionTypes from "./actionTypes";
-import { resolve } from "upath";
 
 export const fetchMvpsSuccess = mvps => {
   return {
@@ -46,7 +45,8 @@ export const fetchMvpsFromLocal = () => {
     if (!mvps) {
       dispatch(fetchMvpsFailed("No mvps in local storage"));
     } else {
-      dispatch(fetchMvpsSuccess(mvps));
+      const mvpsToParse = JSON.parse(localStorage.getItem("mvps"));
+      dispatch(fetchMvpsSuccess(mvpsToParse));
     }
   };
 };
@@ -97,18 +97,6 @@ export const mvpKilled = (minuteAgo, mvpId, minSpawn, maxSpawn) => {
     }
   };
 };
-
-// export const fetchMvpsFromLocal = () => {
-//   return dispatch => {
-//     dispatch(fetchMvpsStart());
-//     const mvps = localStorage.getItem("mvps");
-//     if(!mvps){
-//       dispatch(fetchMvpsFailed("No mvps in local storage"))
-//     } else {
-//       dispatch(fetchMvpsSuccess(mvps));
-//     }
-//   };
-// };
 
 // export const auth = (email, password, isSignup) => {
 //   return dispatch => {

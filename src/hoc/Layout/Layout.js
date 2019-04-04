@@ -3,7 +3,6 @@ import classes from "./Layout.css";
 import Ad from "../../components/Ad/Ad";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
-import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
 
 
 class Layout extends Component {
@@ -50,7 +49,6 @@ class Layout extends Component {
       <React.Fragment>
         <Ad type="horizontal" alignment="top" />
         <Ad type="vertical" alignment="left" />
-        <HeaderBar>Wololo</HeaderBar>
         {this.props.children}
         <Ad type="vertical" alignment="right" />
         <Ad type="horizontal" alignment="bottom" />
@@ -58,7 +56,6 @@ class Layout extends Component {
     ) : (
       <React.Fragment>
         <Ad type="horizontal" alignment="top" />
-        <HeaderBar>Wololo</HeaderBar>
         {this.props.children}
         <Ad type="horizontal" alignment="bottom" />
       </React.Fragment>

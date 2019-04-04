@@ -2,28 +2,7 @@ import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../../utility/utility";
 
 const initialState = {
-  mvps: {
-    dsajhgfdsjh8as: {
-      id: 1150,
-      name: "Moonlight Flower",
-      map: "pay_dun04",
-      minSpawn: 60,
-      maxSpawn: 70,
-      minTillSpawn: null,
-      maxTillSpawn: null,
-      timeKilled: null
-    },
-    dsajhdsafdsjh8as: {
-      id: 1252,
-      name: "Garm",
-      map: "xmas_fild01",
-      minSpawn: 120,
-      maxSpawn: 130,
-      minTillSpawn: null,
-      maxTillSpawn: null,
-      timeKilled: null
-    }
-  },
+  mvps: null,
   loading: false,
   error: null,
   currentTime: new Date()
@@ -61,7 +40,7 @@ const calculateTimeTillSpawn = (state, action) => {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_MVPS_START:
-      return updateObject(state, { mvps: action.payload.mvps, loading: true });
+      return updateObject(state, { loading: true });
     case actionTypes.FETCH_MVPS_SUCCESS:
       return updateObject(state, { mvps: action.payload.mvps, loading: false });
     case actionTypes.FETCH_MVPS_FAIL:

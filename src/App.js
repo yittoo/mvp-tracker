@@ -1,27 +1,74 @@
 import React, { Component } from "react";
 import "./App.css";
 
-import MvpTracker from "./containers/MvpTracker/MvpTracker";
 import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import { Redirect } from "react-router";
-import './App.css';
-import Layout from './hoc/Layout/Layout';
+import "./App.css";
+import Layout from "./hoc/Layout/Layout";
+import asyncComponent from "./hoc/asyncComponent/asyncComponent";
+import * as actions from "./store/actions";
+import IndexPage from "./containers/Index/Index";
 
+const asyncTracker = asyncComponent(() => {
+  return import("./containers/MvpTracker/MvpTracker");
+});
+
+const asyncAuth = asyncComponent(() => {
+  return import("./containers/Auth/Auth");
+});
+
+const asyncLogout = asyncComponent(() => {
+  return import("./containers/Auth/Logout/Logout");
+});
 
 class App extends Component {
+  componentWillMount() {
+    this.interval = setInterval(this.props.updateCurrentTime, 1000);
+  }
+
+  componentDidMount() {
+    this.props.onTryAutoSignup();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   render() {
-    let routes = (
+    let routes = this.props.isAuthenticated ? (
       <Switch>
-        <Route path="/tracker" component={MvpTracker} />
+        <Redirect path="/auth" to="/" />
+        <Route path="/tracker" component={asyncTracker} />
+        <Route path="/logout" component={asyncLogout} />
         <Redirect path="/" to="/tracker" />
+      </Switch>
+    ) : (
+      <Switch>
+        <Route path="/auth" component={asyncAuth} />
+        <Route path="/" component={IndexPage} />
       </Switch>
     );
     return <Layout>{routes}</Layout>;
   }
 }
 
-export default connect(
-  null,
-  null
-)(App);
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState()),
+    updateCurrentTime: () => dispatch(actions.updateCurrentTime())
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);

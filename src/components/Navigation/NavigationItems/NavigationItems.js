@@ -2,6 +2,7 @@ import React from "react";
 
 import NavigationItem from "./NavigationItem/NavigationItem";
 import classes from "./NavigationItems.css";
+import { connect } from "react-redux";
 
 const navigationItems = props => {
   let varNavItems = props.isAuthenticated ? (
@@ -20,4 +21,10 @@ const navigationItems = props => {
   );
 };
 
-export default navigationItems;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null,
+  }
+}
+
+export default connect(mapStateToProps)(navigationItems);

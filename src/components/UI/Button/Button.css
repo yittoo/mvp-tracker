@@ -34,6 +34,22 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#adadad', endColorstr='#6b6b6b',GradientType=0 ); /* IE6-9 */
 }
 
+.ButtonAuth {
+  width: 80%;
+  max-width: 200px;
+  margin: 10px 0;
+}
+
+.ButtonDefaultMvpTool {
+  width: 20%;
+  margin-left: 10%;
+}
+
+.ButtonDefaultOrCustom {
+  width: 20%;
+  margin-left: 20%;
+}
+
 .Button:hover {
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#adadad+0,c6cddb+4,a8b8d7+28,c3d7f5+70,e3ebfb+96,6b6b6b+100 */
   background: rgb(173, 173, 173); /* Old browsers */

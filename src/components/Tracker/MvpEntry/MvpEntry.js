@@ -11,24 +11,26 @@ class MvpEntry extends Component {
   };
 
   componentDidMount() {
-    this.props.calculateTimeTillSpawn(
-      this.props.mvp.timeKilled,
-      this.props.mvp.minSpawn,
-      this.props.mvp.maxSpawn,
-      this.props.currentTime,
-      this.props.id
-    );
-    this.interval = setInterval(
-      () =>
-        this.props.calculateTimeTillSpawn(
-          this.props.mvp.timeKilled,
-          this.props.mvp.minSpawn,
-          this.props.mvp.maxSpawn,
-          this.props.currentTime,
-          this.props.id
-        ),
-      60000
-    );
+    if(this.props.mvps){
+      this.props.calculateTimeTillSpawn(
+        this.props.mvp.timeKilled,
+        this.props.mvp.minSpawn,
+        this.props.mvp.maxSpawn,
+        this.props.currentTime,
+        this.props.id
+      );
+      this.interval = setInterval(
+        () =>
+          this.props.calculateTimeTillSpawn(
+            this.props.mvp.timeKilled,
+            this.props.mvp.minSpawn,
+            this.props.mvp.maxSpawn,
+            this.props.currentTime,
+            this.props.id
+          ),
+        60000
+      );
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -66,8 +68,12 @@ class MvpEntry extends Component {
     });
   };
 
+  onMvpKilledBtn = (minAgo, mvpId) => {
+    this.props.mvpKilledHandler(minAgo, mvpId);
+    this.setState({ ...this.state, minAgoValue: 0 });
+  };
+
   render() {
-    
     const nameClasses = [classes.Name, colors.Blue];
 
     let untilSpawnColor =
@@ -75,12 +81,16 @@ class MvpEntry extends Component {
     untilSpawnColor =
       Number(this.props.mvp.maxTillSpawn) <= 0 ? "Red" : untilSpawnColor;
     untilSpawnColor =
-      this.props.mvp.maxTillSpawn === "Unknown" ? "LightGray" : untilSpawnColor;
+      this.props.mvp.maxTillSpawn === "Unknown" || this.props.mvp.maxTillSpawn === null ? "LightGray" : untilSpawnColor;
 
     const agoOrMore = untilSpawnColor === "Red" ? "ago" : "more";
     const untilSpawnClasses = [classes.UntilSpawn, colors[untilSpawnColor]];
 
-    const timeKilled = new Date(this.props.mvp.timeKilled).getFullYear() !== 1970 ? new Date(this.props.mvp.timeKilled) : "Unavailable" ;
+    const untilSpawnValue =
+      this.props.mvp.minTillSpawn === "Unknown" ||
+      this.props.mvp.minTillSpawn === null
+        ? "Unknown"
+        : this.props.mvp.minTillSpawn + " - " + this.props.mvp.maxTillSpawn;
 
     return (
       <div className={classes.MvpEntry}>
@@ -90,20 +100,14 @@ class MvpEntry extends Component {
         </div>
         <div className={classes.Map}>{this.props.mvp.map}</div>
         <div className={untilSpawnClasses.join(" ")}>
-          {this.props.mvp.minTillSpawn} - {this.props.mvp.maxTillSpawn}
+          {untilSpawnValue}
           <span>
             <br />
             minutes {agoOrMore}
           </span>
         </div>
-        {/* <div className={classes.DeathTimer}>
-          <p>
-            Killed at: <br />
-            {/* {this.props.mvp.timeKilled ? this.props.mvp.timeKilled.getHour() : "No last entry"} }
-            {timeKilled.getDate ? timeKilled.getDate() : timeKilled}
-          </p>
-        </div> */}
-        <div className={classes.JustKilled}>
+        <div className={classes.Killed}>
+          <span>Killed</span>
           <input
             className={classes.HideOnSmall}
             type="number"
@@ -112,10 +116,11 @@ class MvpEntry extends Component {
             placeholder="Killed ... minutes ago"
             onChange={this.inputChangedHandler}
           />
+          <span className={classes.MarginRight5px}>minutes ago</span>
           <Button
             classes="HideOnSmall"
             clicked={() =>
-              this.props.mvpKilledHandler(this.state.minAgoValue, this.props.id)
+              this.onMvpKilledBtn(this.state.minAgoValue, this.props.id)
             }
           >
             Submit
@@ -123,7 +128,7 @@ class MvpEntry extends Component {
           <Button
             classes="HideOnLarge"
             clicked={() => {
-              this.props.mvpKilledHandler(0, this.props.id);
+              this.onMvpKilledBtn(0, this.props.id);
             }}
           >
             Killed Now
@@ -136,7 +141,7 @@ class MvpEntry extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentTime: state.currentTime
+    currentTime: state.mvp.currentTime
   };
 };
 
