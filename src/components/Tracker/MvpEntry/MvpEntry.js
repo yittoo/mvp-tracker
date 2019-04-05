@@ -11,26 +11,24 @@ class MvpEntry extends Component {
   };
 
   componentDidMount() {
-    if(this.props.mvps){
-      this.props.calculateTimeTillSpawn(
-        this.props.mvp.timeKilled,
-        this.props.mvp.minSpawn,
-        this.props.mvp.maxSpawn,
-        this.props.currentTime,
-        this.props.id
-      );
-      this.interval = setInterval(
-        () =>
-          this.props.calculateTimeTillSpawn(
-            this.props.mvp.timeKilled,
-            this.props.mvp.minSpawn,
-            this.props.mvp.maxSpawn,
-            this.props.currentTime,
-            this.props.id
-          ),
-        60000
-      );
-    }
+    this.props.calculateTimeTillSpawn(
+      this.props.mvp.timeKilled,
+      this.props.mvp.minSpawn,
+      this.props.mvp.maxSpawn,
+      this.props.currentTime,
+      this.props.id
+    );
+    this.interval = setInterval(
+      () =>
+        this.props.calculateTimeTillSpawn(
+          this.props.mvp.timeKilled,
+          this.props.mvp.minSpawn,
+          this.props.mvp.maxSpawn,
+          this.props.currentTime,
+          this.props.id
+        ),
+      3000
+    );
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -71,6 +69,9 @@ class MvpEntry extends Component {
   onMvpKilledBtn = (minAgo, mvpId) => {
     this.props.mvpKilledHandler(minAgo, mvpId);
     this.setState({ ...this.state, minAgoValue: 0 });
+    setTimeout(() => {
+      this.props.saveMvps();
+    }, 100);
   };
 
   render() {
@@ -81,7 +82,10 @@ class MvpEntry extends Component {
     untilSpawnColor =
       Number(this.props.mvp.maxTillSpawn) <= 0 ? "Red" : untilSpawnColor;
     untilSpawnColor =
-      this.props.mvp.maxTillSpawn === "Unknown" || this.props.mvp.maxTillSpawn === null ? "LightGray" : untilSpawnColor;
+      this.props.mvp.maxTillSpawn === "Unknown" ||
+      this.props.mvp.maxTillSpawn === null
+        ? "LightGray"
+        : untilSpawnColor;
 
     const agoOrMore = untilSpawnColor === "Red" ? "ago" : "more";
     const untilSpawnClasses = [classes.UntilSpawn, colors[untilSpawnColor]];

@@ -50,6 +50,17 @@
   margin-left: 20%;
 }
 
+.NewMvpButton{
+  margin: 20px 20%;
+  width: 60%;
+}
+
+@media (max-width: 500px){
+  .NewMvpButton{
+    margin-bottom: 12%;
+  }
+}
+
 .Button:hover {
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#adadad+0,c6cddb+4,a8b8d7+28,c3d7f5+70,e3ebfb+96,6b6b6b+100 */
   background: rgb(173, 173, 173); /* Old browsers */
@@ -94,4 +105,9 @@
   .HideOnLarge {
     display: unset;
   }
+}
+
+.Button:disabled{
+  opacity: 0.4;
+  cursor: unset;
 }

@@ -1,8 +1,8 @@
 {
   "dsajhgfdsjh8as": {
-    "id": 1150,
-    "name": "Moonlight Flower",
-    "map": "pay_dun04",
+    "id": 1511,
+    "name": "Amon Ra",
+    "map": "moc_pryd06",
     "minSpawn": 60,
     "maxSpawn": 70,
     "minTillSpawn": null,
@@ -10,77 +10,277 @@
     "timeKilled": null
   },
   "dsajhdsafdsjh8as": {
-    "id": 1150,
-    "name": "Garm",
-    "map": "xmas_fild01",
-    "minSpawn": 120,
-    "maxSpawn": 130,
+    "id": 1785,
+    "name": "Atroce",
+    "map": "ra_fild02",
+    "minSpawn": 240,
+    "maxSpawn": 250,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null
   },
   "dsaasdsafdsjh8as": {
-    "id": 1150,
-    "name": "Stormy Knight",
-    "map": "xmas_dun02",
-    "minSpawn": 60,
-    "maxSpawn": 70,
+    "id": 1785,
+    "name": "Atroce",
+    "map": "ra_fild03",
+    "minSpawn": 180,
+    "maxSpawn": 190,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null
   },
   "dsajshgfdsjh8as": {
-    "id": 1150,
-    "name": "Moonlight Flower",
-    "map": "pay_dun04",
-    "minSpawn": 60,
-    "maxSpawn": 70,
+    "id": 1785,
+    "name": "Atroce",
+    "map": "ra_fild04",
+    "minSpawn": 300,
+    "maxSpawn": 310,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null
   },
   "dsajhdsafaddsjh8as": {
-    "id": 1150,
-    "name": "Garm",
-    "map": "xmas_fild01",
+    "id": 1785,
+    "name": "Atroce",
+    "map": "ve_fild01",
+    "minSpawn": 180,
+    "maxSpawn": 190,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsaasdsasdafdsjh8as": {
+    "id": 1785,
+    "name": "Atroce",
+    "map": "ve_fild02",
+    "minSpawn": 360,
+    "maxSpawn": 370,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsaagsasdafdsjh8as": {
+    "id": 1630,
+    "name": "Bacsojin",
+    "map": "lou_dun03",
+    "minSpawn": 117,
+    "maxSpawn": 127,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsajhgdsafdsjh8as": {
+    "id": 1630,
+    "name": "Baphomet",
+    "map": "prt_maze03",
     "minSpawn": 120,
     "maxSpawn": 130,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null
   },
-  "dsaasdsasdafdsjh8as": {
-    "id": 1150,
-    "name": "Stormy Knight",
-    "map": "xmas_dun02",
-    "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
-  },
-  "dsajhgdsafdsjh8as": {
-    "id": 1150,
-    "name": "Moonlight Flower",
-    "map": "pay_dun04",
-    "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
-  },
   "dsajhdsdsaafdsjh8as": {
-    "id": 1150,
-    "name": "Garm",
-    "map": "xmas_fild01",
-    "minSpawn": 120,
+    "id": null,
+    "name": "Bio 3",
+    "map": "lhz_dun03",
+    "minSpawn": 100,
     "maxSpawn": 130,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null
   },
   "dsaasdqqsafdsjh8as": {
-    "id": 1150,
+    "id": 2068,
+    "name": "Boitata",
+    "map": "bra_dun02",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsaqqjshgfdsjh8as": {
+    "id": 1272,
+    "name": "Dark Lord",
+    "map": "gld_dun04",
+    "minSpawn": 480,
+    "maxSpawn": 490,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsajhdsafaqqddsjh8as": {
+    "id": 1272,
+    "name": "Dark Lord",
+    "map": "gl_chyard",
+    "minSpawn": 60,
+    "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsaasdsasdqqafdeqw8as": {
+    "id": 1719,
+    "name": "Detale",
+    "map": "abyss_03",
+    "minSpawn": 180,
+    "maxSpawn": 190,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsaasdsrewqqafdsjh8as": {
+    "id": 1046,
+    "name": "Doppelganger",
+    "map": "gef_dun02",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "dsaagfsdqqafdsjh8as": {
+    "id": 1046,
+    "name": "Doppelganger",
+    "map": "gld_dun02",
+    "minSpawn": 480,
+    "maxSpawn": 490,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfkhdqkjwjhjk": {
+    "id": 1389,
+    "name": "Dracula",
+    "map": "gef_dun01",
+    "minSpawn": 60,
+    "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfdajhqqkjwjhjk": {
+    "id": 1112,
+    "name": "Drake",
+    "map": "treasure02",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfqajhdqkjwjhjk": {
+    "id": 1115,
+    "name": "Eddga",
+    "map": "gld_dun01",
+    "minSpawn": 480,
+    "maxSpawn": 490,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfqajhsskjwjhjk": {
+    "id": 1115,
+    "name": "Eddga",
+    "map": "pay_fild11",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfdqweqkjwjhjk": {
+    "id": 1418,
+    "name": "Evil Snake Lord",
+    "map": "gon_dun03",
+    "minSpawn": 94,
+    "maxSpawn": 104,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfdgjhgfkjwjhjk": {
+    "id": 1871,
+    "name": "Fallen Bishop Hibram",
+    "map": "abbey02",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfdewqfghjwjhjk": {
+    "id": 1252,
+    "name": "Garm",
+    "map": "xmas_fild01",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfdavcxkjwjhjk": {
+    "id": 1768,
+    "name": "Gloom Under Night",
+    "map": "ra_san05",
+    "minSpawn": 300,
+    "maxSpawn": 310,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfkjqhdqkjwjhjk": {
+    "id": 1086,
+    "name": "Golden Thief Bug",
+    "map": "prt_sewb4",
+    "minSpawn": 60,
+    "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfdamwkjwjhjk": {
+    "id": 1885,
+    "name": "Gopinich",
+    "map": "mosk_dun03",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jkllqdhdqkjwjhjk": {
+    "id": 1832,
+    "name": "Ifrit",
+    "map": "thor_v03",
+    "minSpawn": 660,
+    "maxSpawn": 670,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "jklfddsaqkjwjhjk": {
+    "id": 1492,
+    "name": "Incantation Samurai",
+    "map": "ama_dun03",
+    "minSpawn": 91,
+    "maxSpawn": 101,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsdfhkadgkkldw": {
+    "id": 1734,
+    "name": "Kiel D-01",
+    "map": "kh_dun02",
+    "minSpawn": 120,
+    "maxSpawn": 180,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsddqwwfgkkldw": {
+    "id": 1251,
     "name": "Stormy Knight",
     "map": "xmas_dun02",
     "minSpawn": 60,
@@ -89,7 +289,57 @@
     "maxTillSpawn": null,
     "timeKilled": null
   },
-  "dsaqqjshgfdsjh8as": {
+  "fsdfhkhdfgkkldw": {
+    "id": 1688,
+    "name": "Lady Tanee",
+    "map": "ayo_dun02",
+    "minSpawn": 420,
+    "maxSpawn": 430,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsdfhkhdgkkldw": {
+    "id": 1373,
+    "name": "Lord of Death",
+    "map": "niflheim",
+    "minSpawn": 133,
+    "maxSpawn": 133,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsewqkwfgkkldw": {
+    "id": 1147,
+    "name": "Maya",
+    "map": "anthell02",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsdfhkwfgrewkkldw": {
+    "id": 1147,
+    "name": "Maya",
+    "map": "gld_dun03",
+    "minSpawn": 480,
+    "maxSpawn": 490,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsdfhkeqwfkkldw": {
+    "id": 1059,
+    "name": "Mistress",
+    "map": "mjolnir_04",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsdfhkwfewqerldw": {
     "id": 1150,
     "name": "Moonlight Flower",
     "map": "pay_dun04",
@@ -99,22 +349,142 @@
     "maxTillSpawn": null,
     "timeKilled": null
   },
-  "dsajhdsafaqqddsjh8as": {
-    "id": 1150,
-    "name": "Garm",
-    "map": "xmas_fild01",
+  "fsdfhkwfrewgkkldw": {
+    "id": 1087,
+    "name": "Orc Hero",
+    "map": "gef_fild02",
+    "minSpawn": 1440,
+    "maxSpawn": 1450,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fsdfhkeqweqwfkldw": {
+    "id": 1087,
+    "name": "Orc Hero",
+    "map": "gef_fild14",
+    "minSpawn": 60,
+    "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "eqwfdshher": {
+    "id": 1190,
+    "name": "Orc Lord",
+    "map": "gef_fild10",
     "minSpawn": 120,
     "maxSpawn": 130,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null
   },
-  "dsaasdsasdqqafdsjh8as": {
-    "id": 1150,
-    "name": "Stormy Knight",
-    "map": "xmas_dun02",
+  "fxfklfdssdmkle": {
+    "id": 1038,
+    "name": "Osiris",
+    "map": "moc_pryd04",
     "minSpawn": 60,
     "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfklfsdwdmkle": {
+    "id": 1157,
+    "name": "Pharaoh",
+    "map": "in_sphinx5",
+    "minSpawn": 60,
+    "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfklfdsfsdmkle": {
+    "id": 1159,
+    "name": "Phreeoni",
+    "map": "moc_fild17",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfdaklerdmkle": {
+    "id": 1623,
+    "name": "RSX 0806",
+    "map": "ein_dun02",
+    "minSpawn": 125,
+    "maxSpawn": 135,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxftyusdmkle": {
+    "id": 1583,
+    "name": "Tao Gunka",
+    "map": "beach_dun",
+    "minSpawn": 300,
+    "maxSpawn": 310,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfkljtfsdmkle": {
+    "id": 1708,
+    "name": "Thanatos",
+    "map": "thana_boss",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfklfjkfsdmkle": {
+    "id": 1312,
+    "name": "Turtle General",
+    "map": "tur_dun04",
+    "minSpawn": 60,
+    "maxSpawn": 70,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxjjyrfsdmkle": {
+    "id": 1751,
+    "name": "Valkyrie Randgris",
+    "map": "odin_tem03",
+    "minSpawn": 480,
+    "maxSpawn": 490,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfhjkysdmkle": {
+    "id": 1685,
+    "name": "Vesper",
+    "map": "jupe_core",
+    "minSpawn": 120,
+    "maxSpawn": 130,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfklfgsdkjkle": {
+    "id": 1917,
+    "name": "Wounded Morroc",
+    "map": "moc_fild22",
+    "minSpawn": 720,
+    "maxSpawn": 730,
+    "minTillSpawn": null,
+    "maxTillSpawn": null,
+    "timeKilled": null
+  },
+  "fxfklfsdmkle": {
+    "id": 1658,
+    "name": "Ygnizem",
+    "map": "lhz_dun03",
+    "minSpawn": 120,
+    "maxSpawn": 130,
     "minTillSpawn": null,
     "maxTillSpawn": null,
     "timeKilled": null

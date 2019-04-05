@@ -8,6 +8,8 @@ import * as actions from "../../store/actions";
 import { Link } from "react-router-dom";
 import Button from "../UI/Button/Button";
 import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
+import Modal from "../UI/Modal/Modal";
+import NewMvpForm from "../NewMvpForm/NewMvpForm";
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("./DefaultMvpListTool/DefaultMvpListTool");
@@ -16,7 +18,8 @@ const AsyncDefaultMvps = asyncComponent(() => {
 class Tracker extends Component {
   state = {
     defaultMvpListChosen: 0,
-    shouldRedirect: false
+    showNewMvpForm: false,
+    newMvpAdded: false
   };
 
   componentWillMount() {
@@ -24,17 +27,33 @@ class Tracker extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.defaultMvpListChosen !== this.state.defaultMvpListChosen) {
+    if (
+      prevState.defaultMvpListChosen !== this.state.defaultMvpListChosen ||
+      this.state.newMvpAdded
+    ) {
       this.fetchMvps();
     }
   }
 
   fetchMvps = () => {
     if (this.props.isAuthenticated) {
+      this.setState({ ...this.state, newMvpAdded: false });
       if (this.props.isPremium) {
         // if premium fetch mvps from db by search index query
       } else {
         this.props.inItNoPremium();
+      }
+    }
+  };
+
+  saveMvps = () => {
+    if (this.props.isAuthenticated) {
+      if (this.props.isPremium) {
+        // if premium put mvps from redux to DB using search index query
+      } else {
+        // console.log(this.props.mvps)
+        // console.log(JSON.stringify(this.props.mvps))
+        localStorage.setItem("mvps", JSON.stringify(this.props.mvps));
       }
     }
   };
@@ -50,10 +69,32 @@ class Tracker extends Component {
     this.props.history.replace("/tracker/defaultSetup");
   };
 
+  toggleNewMvpFormHandler = () => {
+    this.setState({
+      ...this.state,
+      showNewMvpForm: !this.state.showNewMvpForm
+    });
+  };
+
+  newMvpAddedHandler = () => {
+    this.setState({
+      ...this.state,
+      newMvpAdded: true,
+      showNewMvpForm: false
+    });
+  };
+
   render() {
     const mvpsArray = this.props.mvps
       ? Object.keys(this.props.mvps).map(mvp => {
-          return <MvpEntry key={mvp} id={mvp} mvp={this.props.mvps[mvp]} />;
+          return (
+            <MvpEntry
+              key={mvp}
+              id={mvp}
+              mvp={this.props.mvps[mvp]}
+              saveMvps={this.saveMvps}
+            />
+          );
         })
       : null;
     const noMvpsPlaceholder = mvpsArray ? null : (
@@ -68,30 +109,47 @@ class Tracker extends Component {
             Choose one of the defaults
           </Button>
         </Link>
-        <Link to={this.props.match.path + "/default"}>
-          <Button classes="ButtonDefaultOrCustom">
-            TODO Make my own (will pop modal for mvp registration form)
-          </Button>
-        </Link>
+        <Button
+          classes="ButtonDefaultOrCustom"
+          clicked={this.toggleNewMvpFormHandler}
+        >
+          Make my own
+        </Button>
       </div>
     );
-    const routes = mvpsArray ? null : (
-      <Route
-        path={this.props.match.path + "/default"}
-        render={() => (
-          <AsyncDefaultMvps
-            parentUpdated={this.state.defaultMvpListChosen}
-            refreshed={this.onRefreshHandler}
-          />
-        )}
-      />
+    const routeToDefault =
+      mvpsArray !== null && mvpsArray.length !== 0 ? null : (
+        <Route
+          path={this.props.match.path + "/default"}
+          render={() => (
+            <AsyncDefaultMvps
+              parentUpdated={this.state.defaultMvpListChosen}
+              refreshed={this.onRefreshHandler}
+            />
+          )}
+        />
+      );
+    const newMvpForm = (
+      <Modal
+        show={this.state.showNewMvpForm}
+        modalClosed={this.toggleNewMvpFormHandler}
+      >
+        <NewMvpForm
+          onNewMvpAdded={this.newMvpAddedHandler}
+        />
+      </Modal>
     );
+
+    const newMvpButton = mvpsArray ? <Button classes="NewMvpButton" clicked={this.toggleNewMvpFormHandler}>New MvP</Button> : null
+    
     return (
       <div className={classes.Tracker}>
         <HeaderBar>MvP Tracker</HeaderBar>
         {mvpsArray}
         {noMvpsPlaceholder}
-        {routes}
+        {newMvpForm}
+        {routeToDefault}
+        {newMvpButton}
       </div>
     );
   }

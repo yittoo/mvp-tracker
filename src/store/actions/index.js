@@ -1,6 +1,5 @@
 export {
   fetchMvpsFromLocal,
-  saveMvpsLocal,
   updateCurrentTime,
   mvpKilled,
   calculateTimeToSpawn

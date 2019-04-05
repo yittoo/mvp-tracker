@@ -27,7 +27,7 @@
 .Name {
   grid-area: name;
   font-style: italic;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   padding-bottom: 10px;
 }
 
@@ -71,7 +71,6 @@
 @media (max-width: 1000px) {
   .MvpEntry {
     grid-template-columns: 40% 60%;
-    margin-bottom: 8%;
     grid-template-areas:
       "name untilSpawn"
       "map killed";

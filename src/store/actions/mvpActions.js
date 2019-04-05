@@ -46,13 +46,14 @@ export const fetchMvpsFromLocal = () => {
       dispatch(fetchMvpsFailed("No mvps in local storage"));
     } else {
       const mvpsToParse = JSON.parse(localStorage.getItem("mvps"));
-      dispatch(fetchMvpsSuccess(mvpsToParse));
+      const dateFixedMvps = mvpsToParse ? Object.keys(mvpsToParse).map(mvp => {
+        let objToCast = {...mvpsToParse[mvp]};
+        objToCast.timeKilled = objToCast.timeKilled ? new Date(JSON.parse(JSON.stringify( objToCast.timeKilled ))) : null
+        return objToCast;
+      }) : null;
+      dispatch(fetchMvpsSuccess(dateFixedMvps));
     }
   };
-};
-
-export const saveMvpsLocal = mvps => {
-  return localStorage.setItem("mvps", mvps);
 };
 
 export const updateCurrentTime = () => {

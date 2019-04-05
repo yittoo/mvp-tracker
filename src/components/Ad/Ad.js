@@ -3,7 +3,7 @@ import classes from "./Ad.css";
 
 const Ad = props => {
   let adClasses = [classes.Ad];
-
+  
   switch (props.type) {
     case "vertical":
       adClasses.push(classes.Vertical);
@@ -17,7 +17,7 @@ const Ad = props => {
       break;
   }
 
-  return <div className={adClasses.join(" ")}>Ad image</div>;
+  return <div style={props.style} className={adClasses.join(" ")}>Ad image</div>;
 };
 
 export default Ad;

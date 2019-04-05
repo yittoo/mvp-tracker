@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import preMvps from "../../../assets/default/preMvps.json";
+import renewalMvps from "../../../assets/default/renewalMvps.json";
 import Button from "../../UI/Button/Button";
 import classes from "./DefaultMvpListTool.css";
+import { withRouter } from "react-router-dom";
+
 
 class DefaultMvpListTool extends Component {
   updateParent = () => {
@@ -11,6 +14,13 @@ class DefaultMvpListTool extends Component {
   setPreReHandler = () => {
     localStorage.setItem("mvps", JSON.stringify(preMvps));
     this.updateParent();
+    this.props.history.replace("/tracker");
+  };
+
+  setRenewalHandler = () => {
+    localStorage.setItem("mvps", JSON.stringify(renewalMvps));
+    this.updateParent();
+    this.props.history.replace("/tracker");
   };
 
   render() {
@@ -21,11 +31,9 @@ class DefaultMvpListTool extends Component {
         </Button>
         <Button
           classes="ButtonDefaultOrCustom"
-          clicked={() => {
-            console.log("clicked");
-          }}
+          clicked={this.setRenewalHandler}
         >
-          TODO Renewal
+          Renewal
         </Button>
       </React.Fragment>
     ) : null;
@@ -34,4 +42,4 @@ class DefaultMvpListTool extends Component {
   }
 }
 
-export default DefaultMvpListTool;
+export default withRouter(DefaultMvpListTool);

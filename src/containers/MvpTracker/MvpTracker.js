@@ -4,7 +4,11 @@ import Tracker from "../../components/Tracker/Tracker";
 class MvPTracker extends Component {
   state = {};
   render() {
-    return <Tracker />;
+    return (
+      <div>
+        <Tracker />
+      </div>
+    );
   }
 }
 
