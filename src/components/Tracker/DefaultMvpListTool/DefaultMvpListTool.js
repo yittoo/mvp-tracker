@@ -4,6 +4,7 @@ import renewalMvps from "../../../assets/default/renewalMvps.json";
 import Button from "../../UI/Button/Button";
 import classes from "./DefaultMvpListTool.css";
 import { withRouter } from "react-router-dom";
+import { storeMvps } from '../../../utility/utility';
 
 
 class DefaultMvpListTool extends Component {
@@ -12,13 +13,13 @@ class DefaultMvpListTool extends Component {
   };
 
   setPreReHandler = () => {
-    localStorage.setItem("mvps", JSON.stringify(preMvps));
+    storeMvps(preMvps, this.props.isPremium);
     this.updateParent();
     this.props.history.replace("/tracker");
   };
 
   setRenewalHandler = () => {
-    localStorage.setItem("mvps", JSON.stringify(renewalMvps));
+    storeMvps(renewalMvps, this.props.isPremium);
     this.updateParent();
     this.props.history.replace("/tracker");
   };

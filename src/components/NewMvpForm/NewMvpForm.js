@@ -5,6 +5,7 @@ import Spinner from "../UI/Spinner/Spinner";
 import { connect } from "react-redux";
 import Button from '../UI/Button/Button';
 import classes from './NewMvpForm.css';
+import { storeMvps } from '../../utility/utility';
 
 
 class Form extends Component {
@@ -135,7 +136,7 @@ class Form extends Component {
   addMvpToLocalHandler = (formData, hash) => {
     let currentMvps = this.props.currentMvps ? this.props.currentMvps : {};
     currentMvps[hash] = formData;
-    localStorage.setItem("mvps", JSON.stringify(currentMvps));
+    storeMvps(currentMvps, this.props.isPremium);
     this.props.onNewMvpAdded();
     this.setInitialStates();
   }
@@ -181,7 +182,8 @@ class Form extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentMvps: state.mvp.mvps
+    currentMvps: state.mvp.mvps,
+    isPremium: state.auth.premium
   }
 }
 

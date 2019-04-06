@@ -32,8 +32,6 @@ class Layout extends Component {
 
   updateDimentions = () => {
     const sideAdsState = window.innerWidth <= 500 ? false : true;
-    console.log(window.innerHeight)
-    console.log(document.getElementsByTagName("body")[0].clientHeight)
     // const fixedBottomAdState =
     //   window.innerHeight - 100 <
     //   document.getElementsByTagName("body")[0].clientHeight

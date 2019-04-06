@@ -27,7 +27,7 @@ class MvpEntry extends Component {
           this.props.currentTime,
           this.props.id
         ),
-      3000
+      30000
     );
   }
 

@@ -10,6 +10,7 @@ import Button from "../UI/Button/Button";
 import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
 import Modal from "../UI/Modal/Modal";
 import NewMvpForm from "../NewMvpForm/NewMvpForm";
+import { storeMvps } from '../../utility/utility';
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("./DefaultMvpListTool/DefaultMvpListTool");
@@ -42,18 +43,6 @@ class Tracker extends Component {
         // if premium fetch mvps from db by search index query
       } else {
         this.props.inItNoPremium();
-      }
-    }
-  };
-
-  saveMvps = () => {
-    if (this.props.isAuthenticated) {
-      if (this.props.isPremium) {
-        // if premium put mvps from redux to DB using search index query
-      } else {
-        // console.log(this.props.mvps)
-        // console.log(JSON.stringify(this.props.mvps))
-        localStorage.setItem("mvps", JSON.stringify(this.props.mvps));
       }
     }
   };
@@ -92,7 +81,7 @@ class Tracker extends Component {
               key={mvp}
               id={mvp}
               mvp={this.props.mvps[mvp]}
-              saveMvps={this.saveMvps}
+              saveMvps={() => storeMvps(this.props.mvps, this.props.isPremium)}
             />
           );
         })
@@ -123,6 +112,7 @@ class Tracker extends Component {
           path={this.props.match.path + "/default"}
           render={() => (
             <AsyncDefaultMvps
+              isPremium={this.props.isPremium}
               parentUpdated={this.state.defaultMvpListChosen}
               refreshed={this.onRefreshHandler}
             />
