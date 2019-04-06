@@ -69,9 +69,9 @@ class MvpEntry extends Component {
   onMvpKilledBtn = (minAgo, mvpId) => {
     this.props.mvpKilledHandler(minAgo, mvpId);
     this.setState({ ...this.state, minAgoValue: 0 });
-    setTimeout(() => {
-      this.props.saveMvps();
-    }, 100);
+    // setTimeout(() => {
+    //   this.props.saveMvps();
+    // }, 100);
   };
 
   render() {
@@ -83,7 +83,7 @@ class MvpEntry extends Component {
       Number(this.props.mvp.maxTillSpawn) <= 0 ? "Red" : untilSpawnColor;
     untilSpawnColor =
       this.props.mvp.maxTillSpawn === "Unknown" ||
-      this.props.mvp.maxTillSpawn === null
+      !this.props.mvp.maxTillSpawn
         ? "LightGray"
         : untilSpawnColor;
 
@@ -92,7 +92,7 @@ class MvpEntry extends Component {
 
     const untilSpawnValue =
       this.props.mvp.minTillSpawn === "Unknown" ||
-      this.props.mvp.minTillSpawn === null
+      !this.props.mvp.minTillSpawn
         ? "Unknown"
         : this.props.mvp.minTillSpawn + " - " + this.props.mvp.maxTillSpawn;
 

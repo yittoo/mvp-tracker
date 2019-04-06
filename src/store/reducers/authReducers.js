@@ -6,7 +6,7 @@ const initialState = {
   userId: null,
   error: null,
   loading: false,
-  premium: false,
+  premium: false
 };
 
 const authSuccess = (state, action) => {
@@ -15,7 +15,7 @@ const authSuccess = (state, action) => {
     userId: action.payload.userId,
     error: null,
     loading: false,
-    premium: action.payload.premium
+    premium: action.payload.isPremium
   });
 };
 
@@ -26,7 +26,10 @@ const reducer = (state = initialState, action) => {
     case actionTypes.AUTH_SUCCESS:
       return authSuccess(state, action);
     case actionTypes.AUTH_FAIL:
-      return updateObject(state, { error: action.payload.error, loading: false });
+      return updateObject(state, {
+        error: action.payload.error,
+        loading: false
+      });
     case actionTypes.AUTH_LOGOUT:
       return updateObject(state, { token: null, userId: null });
     default:

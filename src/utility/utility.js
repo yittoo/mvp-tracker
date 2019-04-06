@@ -1,4 +1,3 @@
-import axios from '../axios-mvps';
 
 export const updateObject = (oldObject, updatedProperties) => {
   return {
@@ -16,10 +15,12 @@ export const makeId = length => {
   return text;
 };
 
-export const storeMvps = (mvps, isPremium) => {
-  if (isPremium) {
-    //store at db
-  } else {
-    localStorage.setItem("mvps", JSON.stringify(mvps));
-  }
-};
+// export const storeMvps = (mvps, token, userId) => {
+
+//   // if (isPremium) {
+//   //   // 
+//   //   // store at db
+//   // } else {
+//     localStorage.setItem("mvps", JSON.stringify(mvps));
+//   // }
+// };

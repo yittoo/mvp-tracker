@@ -1,7 +1,6 @@
 import * as actionTypes from "./actionTypes";
 import vanillaAxios from "axios";
-import mvpAxios from "../../axios-mvps";
-import Cookies from 'js-cookie';
+import mainAxios from "../../axios-mvps";
 
 export const authStart = () => {
   return {
@@ -9,13 +8,12 @@ export const authStart = () => {
   };
 };
 
-export const authSuccess = (token, userId, isPremium) => {
+export const authSuccess = (token, userId) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     payload: {
       idToken: token,
-      userId: userId,
-      isPremium: isPremium
+      userId: userId
     }
   };
 };
@@ -46,6 +44,21 @@ export const checkAuthTimeout = expirationTime => {
   };
 };
 
+export const createNewUserEntry = (userId, token) => {
+  const objToCast = {
+    userId: userId,
+    premium: false
+  };
+  mainAxios
+    .post("/users.json?auth=" + token, objToCast)
+    .then(response => {
+      console.log("successfully initiated user entry", response);
+    })
+    .catch(error => {
+      console.log("failed to initiate user entry", error);
+    });
+};
+
 export const checkPremium = userId => {};
 
 export const auth = (email, password, isSignup) => {
@@ -71,39 +84,16 @@ export const auth = (email, password, isSignup) => {
         localStorage.setItem("token", response.data.idToken);
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
-        const queryParams =
-          "?auth=" +
-          response.data.idToken +
-          '&orderBy="userId"&equalTo="' +
-          response.data.localId +
-          '"';
-        mvpAxios
-          .get("accountData.json" + queryParams)
-          .then(secondRes => {
-            // console.log(secondRes.data[0]);
-            Object.keys(secondRes.data).length === 0
-              ? dispatch(
-                  authSuccess(
-                    response.data.idToken,
-                    response.data.localId,
-                    false
-                  )
-                )
-              : Object.keys(secondRes.data).map(key => {
-                  dispatch(
-                    authSuccess(
-                      response.data.idToken,
-                      response.data.localId,
-                      secondRes.data[key].premium
-                    )
-                  );
-                });
-          })
-          .catch(error => {
-            dispatch(
-              authSuccess(response.data.idToken, response.data.localId, false)
-            );
-          });
+        // const queryParams =
+        //   "?auth=" +
+        //   response.data.idToken +
+        //   '&orderBy="userId"&equalTo="' +
+        //   response.data.localId +
+        //   '"';
+        if (isSignup) {
+          createNewUserEntry(response.data.localId, response.data.idToken);
+        }
+        dispatch(authSuccess(response.data.idToken, response.data.localId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
       })
       .catch(err => {
