@@ -24,7 +24,7 @@ const asyncLogout = asyncComponent(() => {
 
 class App extends Component {
   componentWillMount() {
-    this.interval = setInterval(this.props.updateCurrentTime, 1000);
+    this.interval = setInterval(this.props.updateCurrentTime, 10000);
   }
 
   componentDidMount() {

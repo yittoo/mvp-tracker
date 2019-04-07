@@ -11,6 +11,8 @@ import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
 import Modal from "../UI/Modal/Modal";
 import NewMvpForm from "../NewMvpForm/NewMvpForm";
 import Spinner from "../UI/Spinner/Spinner";
+import { clearInterval } from "timers";
+import LastUpdated from "./LastUpdated/LastUpdated";
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("./DefaultMvpListTool/DefaultMvpListTool");
@@ -24,24 +26,24 @@ class Tracker extends Component {
   };
 
   componentWillMount() {
-    this.fetchMvps();
+    this.fetchMvps(true);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.defaultMvpListChosen !== this.state.defaultMvpListChosen ||
-      this.state.newMvpAdded
-    ) {
-      this.fetchMvps();
-    }
+  componentDidMount() {
+    let fetchInterval = setInterval(() => this.fetchMvps(false), 60000);
   }
 
-  fetchMvps = () => {
+  componentWillUnmount() {
+    clearInterval(this.fetchInterval);
+  }
+
+  fetchMvps = shouldSpinner => {
     if (this.props.isAuthenticated) {
-      this.props.inIt(
+      this.props.fetchMvpsFromDb(
         this.props.token,
         this.props.userId,
-        this.props.trackerName
+        this.props.trackerName,
+        shouldSpinner
       );
     }
   };
@@ -64,12 +66,30 @@ class Tracker extends Component {
     });
   };
 
-  newMvpAddedHandler = () => {
+  newMvpAddedHandler = updatedMvps => {
     this.setState({
       ...this.state,
       newMvpAdded: true,
       showNewMvpForm: false
     });
+    if (this.props.trackerName && this.props.trackerKey) {
+      this.props.saveMvpsToDbAndFetch(
+        this.props.userId,
+        this.props.userKey,
+        this.props.token,
+        this.props.trackerKey,
+        updatedMvps,
+        this.props.trackerName
+      );
+    } else {
+      this.props.createNewTracker(
+        this.props.userId,
+        this.props.token,
+        "My Tracker",
+        this.props.userKey,
+        updatedMvps
+      );
+    }
   };
 
   render() {
@@ -79,22 +99,22 @@ class Tracker extends Component {
         })
       : null;
 
-    const saveMvpsToDbBtn = (
-      <Button
-        clicked={() =>
-          this.props.saveMvpsToDb(
-            this.props.userId,
-            this.props.userKey,
-            this.props.token,
-            this.props.trackerKey,
-            this.props.mvps,
-            this.props.trackerName
-          )
-        }
-      >
-        Save MvPs
-      </Button>
-    );
+    // const saveMvpsToDbBtn = (
+    //   <Button
+    //     clicked={() =>
+    //       this.props.saveAllMvpsHandler(
+    //         this.props.userKey,
+    //         this.props.token,
+    //         this.props.trackerKey,
+    //         this.props.mvps,
+    //         this.props.trackerName
+    //       )
+    //     }
+    //   >
+    //     Save MvPs
+    //   </Button>
+    // );
+    // THERE IS AUTO SAVE ON MVP KILLED SO IT IS NEEDLESS ATM
 
     let noMvpsPlaceholder = mvpsArray ? null : (
       <div className={classes.DefaultPlaceholder}>
@@ -116,15 +136,15 @@ class Tracker extends Component {
         </Button>
       </div>
     );
-    noMvpsPlaceholder = this.props.loading ? <Spinner /> : noMvpsPlaceholder;
+
     const routeToDefault =
       mvpsArray !== null && mvpsArray.length !== 0 ? null : (
         <Route
           path={this.props.match.path + "/default"}
           render={() => (
             <AsyncDefaultMvps
-              createNewMvpTracker={mvps =>
-                this.props.createNewMvpTracker(
+              createNewTracker={mvps =>
+                this.props.createNewTracker(
                   this.props.userId,
                   this.props.token,
                   "My Tracker",
@@ -134,17 +154,27 @@ class Tracker extends Component {
               }
               isPremium={this.props.isPremium}
               parentUpdated={this.state.defaultMvpListChosen}
-              refreshed={this.onRefreshHandler}
+              onRefreshed={this.onRefreshHandler}
             />
           )}
         />
       );
+    const mainContentToRender = mvpsArray ? (
+      <React.Fragment>
+        <LastUpdated lastTime={this.props.lastUpdated} />
+        {mvpsArray}
+      </React.Fragment>
+    ) : null;
+
     const newMvpForm = (
       <Modal
         show={this.state.showNewMvpForm}
         modalClosed={this.toggleNewMvpFormHandler}
       >
-        <NewMvpForm onNewMvpAdded={this.newMvpAddedHandler} />
+        <NewMvpForm
+          onNewMvpAdded={updatedMvps => this.newMvpAddedHandler(updatedMvps)}
+          onRefreshed={this.onRefreshHandler}
+        />
       </Modal>
     );
 
@@ -156,13 +186,18 @@ class Tracker extends Component {
 
     return (
       <div className={classes.Tracker}>
-        {saveMvpsToDbBtn}
-        <HeaderBar>MvP Tracker</HeaderBar>
-        {mvpsArray}
-        {noMvpsPlaceholder}
-        {newMvpForm}
-        {routeToDefault}
-        {newMvpButton}
+        <HeaderBar>{this.props.trackerName}</HeaderBar>
+        {this.props.loading ? (
+          <Spinner />
+        ) : (
+          <React.Fragment>
+            {mainContentToRender}
+            {noMvpsPlaceholder}
+            {newMvpForm}
+            {routeToDefault}
+            {newMvpButton}
+          </React.Fragment>
+        )}
       </div>
     );
   }
@@ -178,22 +213,40 @@ const mapStateToProps = state => {
     loading: state.mvp.loading,
     trackerName: state.mvp.activeTrackerName,
     trackerKey: state.mvp.activeTrackerKey,
-    userKey: state.mvp.userKey
+    userKey: state.mvp.userKey,
+    lastUpdated: state.mvp.lastUpdated
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    inIt: (token, userId, trackerName) =>
-      dispatch(actions.fetchMvpsFromDb(token, userId, trackerName)),
-    createNewMvpTracker: (userId, token, trackerName, userKey, mvps) =>
+    fetchMvpsFromDb: (token, userId, trackerName, isLoader) =>
+      dispatch(actions.fetchMvpsFromDb(token, userId, trackerName, isLoader)),
+    createNewTracker: (userId, token, trackerName, userKey, mvps) =>
       dispatch(
         actions.createNewMvpTracker(userId, token, trackerName, userKey, mvps)
       ),
-    saveMvpsToDb: (userId, userKey, token, trackerKey, mvps, trackerName) =>
+    saveMvpsToDbAndFetch: (
+      userId,
+      userKey,
+      token,
+      trackerKey,
+      mvps,
+      trackerName
+    ) =>
       dispatch(
-        actions.saveMvpsToDb(
+        actions.saveMvpsToDbAndFetch(
           userId,
+          userKey,
+          token,
+          trackerKey,
+          mvps,
+          trackerName
+        )
+      ),
+    saveAllMvpsHandler: (userKey, token, trackerKey, mvps, trackerName) =>
+      dispatch(
+        actions.saveAllMvpsHandler(
           userKey,
           token,
           trackerKey,

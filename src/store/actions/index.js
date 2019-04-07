@@ -1,10 +1,11 @@
 export {
   updateCurrentTime,
-  mvpKilled,
   calculateTimeToSpawn,
   fetchMvpsFromDb,
   createNewMvpTracker,
-  saveMvpsToDb
+  saveMvpsToDbAndFetch,
+  saveAllMvpsHandler,
+  saveSingleMvpToDb
 } from "./mvpActions";
 
 export { auth, logout, authCheckState } from "./authActions";

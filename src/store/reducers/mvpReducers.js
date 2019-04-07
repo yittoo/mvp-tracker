@@ -9,22 +9,8 @@ const initialState = {
   userKey: null,
   activeTrackerName: null,
   activeTrackerKey: null,
-  allTrackers: null // TODO
-};
-
-const mvpKilled = (state, action) => {
-  return {
-    ...state,
-    mvps: {
-      ...state.mvps,
-      [action.payload.mvpId]: {
-        ...state.mvps[action.payload.mvpId],
-        timeKilled: action.payload.timeKilled,
-        maxTillSpawn: action.payload.maxTillSpawn,
-        minTillSpawn: action.payload.minTillSpawn
-      }
-    }
-  }
+  allTrackers: null, // TODO
+  lastUpdated: new Date()
 };
 
 const calculateTimeTillSpawn = (state, action) => {
@@ -35,10 +21,10 @@ const calculateTimeTillSpawn = (state, action) => {
       [action.payload.mvpId]: {
         ...state.mvps[action.payload.mvpId],
         minTillSpawn: action.payload.minTillSpawn,
-        maxTillSpawn: action.payload.maxTillSpawn,
+        maxTillSpawn: action.payload.maxTillSpawn
       }
     }
-  }
+  };
 };
 
 const fetchMvpsSuccess = (state, action) => {
@@ -47,9 +33,33 @@ const fetchMvpsSuccess = (state, action) => {
     activeTrackerKey: action.payload.trackerKey,
     activeTrackerName: action.payload.trackerName,
     mvps: action.payload.mvps,
+    loading: false,
+    lastUpdated: action.payload.lastUpdated
+  });
+};
+
+const saveMvpsSuccess = (state, action) => {
+  return updateObject(state, {
     loading: false
-  })
-}
+  });
+};
+
+const saveSingleMvpSuccess = (state, action) => {
+  return {
+    ...state,
+    loading: false,
+    lastUpdated: new Date(),
+    mvps: {
+      ...state.mvps,
+      [action.payload.mvpId]: {
+        ...state.mvps[action.payload.mvpId],
+        timeKilled: action.payload.timeKilled,
+        maxTillSpawn: action.payload.maxTillSpawn,
+        minTillSpawn: action.payload.minTillSpawn
+      }
+    }
+  };
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -59,20 +69,34 @@ const reducer = (state = initialState, action) => {
       return fetchMvpsSuccess(state, action);
     case actionTypes.FETCH_MVPS_FAIL:
       return updateObject(state, { loading: false });
+    case actionTypes.CREATE_MVPS_START:
+      return updateObject(state, { loading: true, mvps: action.payload.mvps });
+    case actionTypes.CREATE_MVPS_SUCCESS:
+      return saveMvpsSuccess(state, action);
+    case actionTypes.CREATE_MVPS_FAIL:
+      return updateObject(state, {
+        error: action.payload.error,
+        loading: false
+      });
+    case actionTypes.SAVE_MVPS_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.SAVE_MVPS_SUCCESS:
+      return updateObject(state, { loading: false });
+    case actionTypes.SAVE_MVPS_FAIL:
+      return updateObject(state, {
+        error: action.payload.error,
+        loading: false
+      });
+    case actionTypes.SAVE_SINGLE_MVP_START:
+      return updateObject(state, {});
+    case actionTypes.SAVE_SINGLE_MVP_SUCCESS:
+      return saveSingleMvpSuccess(state, action);
+    case actionTypes.SAVE_SINGLE_MVP_FAIL:
+      return updateObject(state, { error: action.payload.error });
     case actionTypes.UPDATE_CURRENT_TIME:
       return updateObject(state, { currentTime: action.payload.currentTime });
-    case actionTypes.MVP_KILLED:
-      return mvpKilled(state, action);
     case actionTypes.CALCULATE_TIME_TILL_SPAWN:
       return calculateTimeTillSpawn(state, action);
-    case actionTypes.CREATE_MVPS_START:
-      return updateObject(state, { loading: true });
-    case actionTypes.CREATE_MVPS_FAIL:
-      return updateObject(state, { loading: true });
-    case actionTypes.CREATE_MVPS_SUCCESS:
-      return updateObject(state, { loading: false });
-    // case actionTypes.SET_TRACKER_NAMES:
-    //   return updateObject(state, {allTrackers: action.payload.allTrackers});
     default:
       return initialState;
   }

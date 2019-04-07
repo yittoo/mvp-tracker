@@ -66,8 +66,8 @@ class MvpEntry extends Component {
     });
   };
 
-  onMvpKilledBtn = (minAgo, mvpId) => {
-    this.props.mvpKilledHandler(minAgo, mvpId);
+  onMvpKilledBtn = (minAgo, mvpKey) => {
+    this.props.mvpKilledHandler(minAgo, mvpKey, this.props.userKey, this.props.token, this.props.trackerKey, this.props.mvp);
     this.setState({ ...this.state, minAgoValue: 0 });
     // setTimeout(() => {
     //   this.props.saveMvps();
@@ -145,9 +145,14 @@ class MvpEntry extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentTime: state.mvp.currentTime
+    currentTime: state.mvp.currentTime,
+    userKey: state.mvp.userKey,
+    token: state.auth.token,
+    trackerKey: state.mvp.activeTrackerKey,
   };
 };
+
+// mvp key = this.props.id
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -167,8 +172,8 @@ const mapDispatchToProps = dispatch => {
           mvpId
         )
       ),
-    mvpKilledHandler: (minuteAgo, mvpId) => {
-      return dispatch(actions.mvpKilled(minuteAgo, mvpId));
+    mvpKilledHandler: (minuteAgo, mvpKey, userKey, token, trackerKey, mvp) => {
+      return dispatch(actions.saveSingleMvpToDb(minuteAgo, mvpKey, userKey, token, trackerKey, mvp));
     }
   };
 };

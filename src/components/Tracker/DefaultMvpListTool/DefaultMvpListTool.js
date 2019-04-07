@@ -5,21 +5,20 @@ import Button from "../../UI/Button/Button";
 import classes from "./DefaultMvpListTool.css";
 import { withRouter } from "react-router-dom";
 
-
 class DefaultMvpListTool extends Component {
-  updateParent = () => {
-    this.props.refreshed();
-  };
+  refreshed() {
+    this.props.onRefreshed()
+  }
 
   setPreReHandler = () => {
-    this.props.createNewMvpTracker(preMvps)
-    this.updateParent();
+    this.props.createNewTracker(preMvps);
+    this.refreshed();
     this.props.history.replace("/tracker");
   };
 
   setRenewalHandler = () => {
-    this.props.createNewMvpTracker(renewalMvps)
-    this.updateParent();
+    this.props.createNewTracker(renewalMvps);
+    this.refreshed();
     this.props.history.replace("/tracker");
   };
 

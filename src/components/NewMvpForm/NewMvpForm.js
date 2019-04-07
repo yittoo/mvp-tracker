@@ -98,7 +98,7 @@ class Form extends Component {
     formData.minTillSpawn = null;
     formData.maxTillSpawn = null;
     formData.timeKilled = null;
-    this.addMvpToLocalHandler(formData, makeId(16))
+    this.addMvpToDbHandler(formData, formData.name + " " + makeId(8))
   };
 
   checkValidity(value, rules) {
@@ -132,10 +132,10 @@ class Form extends Component {
     this.setState({ mvpForm: mvpForm, formIsValid: formIsValid });
   };
 
-  addMvpToLocalHandler = (formData, hash) => {
-    let currentMvps = this.props.currentMvps ? this.props.currentMvps : {};
+  addMvpToDbHandler = (formData, hash) => {
+    let currentMvps = this.props.currentMvps ? {...this.props.currentMvps} : {};
     currentMvps[hash] = formData;
-    this.props.onNewMvpAdded();
+    this.props.onNewMvpAdded(currentMvps);
     this.setInitialStates();
   }
 
