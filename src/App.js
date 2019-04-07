@@ -22,6 +22,10 @@ const asyncLogout = asyncComponent(() => {
   return import("./containers/Auth/Logout/Logout");
 });
 
+const asyncProfile = asyncComponent(() => {
+  return import("./containers/Profile/Profile")
+})
+
 class App extends Component {
   componentWillMount() {
     this.interval = setInterval(this.props.updateCurrentTime, 10000);
@@ -40,8 +44,9 @@ class App extends Component {
       <Switch>
         <Redirect path="/auth" to="/" />
         <Route path="/tracker" component={asyncTracker} />
+        <Route path="/profile" component={asyncProfile} />
         <Route path="/logout" component={asyncLogout} />
-        <Redirect path="/" to="/tracker" />
+        <Route path="/" component={IndexPage} />
       </Switch>
     ) : (
       <Switch>

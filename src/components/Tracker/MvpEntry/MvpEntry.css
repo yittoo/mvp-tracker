@@ -70,7 +70,7 @@
 
 @media (max-width: 1000px) {
   .MvpEntry {
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 45% 55%;
     grid-template-areas:
       "name untilSpawn"
       "map killed";

@@ -6,7 +6,8 @@ const initialState = {
   userId: null,
   error: null,
   loading: false,
-  premium: false
+  premium: false,
+  message: null
 };
 
 const authSuccess = (state, action) => {
@@ -32,6 +33,12 @@ const reducer = (state = initialState, action) => {
       });
     case actionTypes.AUTH_LOGOUT:
       return updateObject(state, { token: null, userId: null });
+    case actionTypes.SEND_PASSWORD_RESET_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.SEND_PASSWORD_RESET_SUCCESS:
+      return updateObject(state, { loading: false });
+    case actionTypes.SEND_PASSWORD_RESET_FAIL:
+      return updateObject(state, { loading: false, error: action.payload.error });
     default:
       return state;
   }

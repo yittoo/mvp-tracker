@@ -186,7 +186,7 @@ class Tracker extends Component {
 
     return (
       <div className={classes.Tracker}>
-        <HeaderBar>{this.props.trackerName}</HeaderBar>
+        <HeaderBar>{this.props.trackerName ? this.props.trackerName : "MvP Tracker"}</HeaderBar>
         {this.props.loading ? (
           <Spinner />
         ) : (

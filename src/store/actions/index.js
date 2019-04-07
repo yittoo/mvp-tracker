@@ -8,4 +8,4 @@ export {
   saveSingleMvpToDb
 } from "./mvpActions";
 
-export { auth, logout, authCheckState } from "./authActions";
+export { auth, logout, authCheckState, sendPasswordReset } from "./authActions";

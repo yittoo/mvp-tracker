@@ -124,7 +124,9 @@ class Form extends Component {
     );
     mvpFormChild.touched = true;
     mvpForm[key] = mvpFormChild;
-
+    if(key === "name"){
+      mvpForm[key].value = mvpForm[key].value.charAt(0).toUpperCase() + mvpForm[key].value.slice(1)
+    }
     let formIsValid = true;
     for (let inputIdentifier in mvpForm) {
       formIsValid = mvpForm[inputIdentifier].valid && formIsValid;

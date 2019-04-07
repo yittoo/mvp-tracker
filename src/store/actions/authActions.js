@@ -31,6 +31,7 @@ export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("expirationDate");
   localStorage.removeItem("userId");
+  localStorage.removeItem("loggedEmail");
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -44,19 +45,13 @@ export const checkAuthTimeout = expirationTime => {
   };
 };
 
-export const createNewUserEntry = (userId, token) => {
+export const createNewUserEntry = (userId, token, username) => {
   const objToCast = {
     userId: userId,
-    premium: false
+    premium: false,
+    username: username
   };
-  mainAxios
-    .post("/users.json?auth=" + token, objToCast)
-    .then(response => {
-      console.log("successfully initiated user entry", response);
-    })
-    .catch(error => {
-      console.log("failed to initiate user entry", error);
-    });
+  mainAxios.post("/users.json?auth=" + token, objToCast);
 };
 
 export const checkPremium = userId => {};
@@ -84,14 +79,13 @@ export const auth = (email, password, isSignup) => {
         localStorage.setItem("token", response.data.idToken);
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
-        // const queryParams =
-        //   "?auth=" +
-        //   response.data.idToken +
-        //   '&orderBy="userId"&equalTo="' +
-        //   response.data.localId +
-        //   '"';
+        localStorage.setItem("loggedEmail", email);
         if (isSignup) {
-          createNewUserEntry(response.data.localId, response.data.idToken);
+          createNewUserEntry(
+            response.data.localId,
+            response.data.idToken,
+            email
+          );
         }
         dispatch(authSuccess(response.data.idToken, response.data.localId));
         dispatch(checkAuthTimeout(response.data.expiresIn));
@@ -121,5 +115,46 @@ export const authCheckState = () => {
         );
       }
     }
+  };
+};
+
+export const sendPasswordReset = email => {
+  return dispatch => {
+    dispatch(sendPasswordResetStart());
+    const url =
+      "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key=AIzaSyD0Zeimu-WY9hXaPj5A93eo6naiB8OAnGw";
+
+    vanillaAxios
+      .post(url, {
+        requestType: "PASSWORD_RESET",
+        email: email
+      })
+      .then(res => {
+        dispatch(sendPasswordResetSuccess("Password reset e-mail has been sent. Please check both inbox and junk."));
+      })
+      .catch(err => {
+        dispatch(sendPasswordResetFail(err));
+      });
+  };
+};
+
+export const sendPasswordResetStart = () => {
+  return {
+    type: actionTypes.SEND_PASSWORD_RESET_START
+  };
+};
+
+export const sendPasswordResetFail = error => {
+  return {
+    type: actionTypes.SEND_PASSWORD_RESET_FAIL,
+    payload: {
+      error: error
+    }
+  };
+};
+export const sendPasswordResetSuccess = () => {
+  return {
+    type: actionTypes.SEND_PASSWORD_RESET_FAIL,
+    payload: {}
   };
 };

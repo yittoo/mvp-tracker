@@ -279,6 +279,7 @@ export const calculateTimeToSpawn = (
   currentTime,
   mvpId
 ) => {
+  // TODO combine this to a single action for entirity of mvps
   const fixedKilledAt = killedAt
     ? new Date(JSON.parse(JSON.stringify(killedAt)))
     : null;

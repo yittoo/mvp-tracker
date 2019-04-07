@@ -1,4 +1,4 @@
-.Index {
+.Profile {
   padding: 20px;
   width: 100%;
   box-sizing: border-box;
@@ -8,18 +8,7 @@
 }
 
 .Header {
-    margin: 0px 30px;
-}
-
-.Paragraph {
-  width: 30%;
-  padding: 10px;
-  margin-left: 2.5%;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  display: inline-block;
-  align-self: center;
-  box-sizing: border-box;
+  margin: 0px 30px;
 }
 
 @media (max-width: 500px) {
@@ -30,9 +19,5 @@
   .Header {
     text-align: center;
     font-size: 1.8rem;
-  }
-  .Paragraph {
-    width: 80%;
-    margin: 10px auto;
   }
 }
