@@ -8,12 +8,14 @@ export const authStart = () => {
   };
 };
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token, userId, userKey, isPremium) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     payload: {
       idToken: token,
-      userId: userId
+      userId: userId,
+      userKey: userKey,
+      isPremium: isPremium
     }
   };
 };
@@ -32,6 +34,7 @@ export const logout = () => {
   localStorage.removeItem("expirationDate");
   localStorage.removeItem("userId");
   localStorage.removeItem("loggedEmail");
+  localStorage.removeItem("userKey");
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -107,7 +110,8 @@ export const authCheckState = () => {
         dispatch(logout());
       } else {
         const userId = localStorage.getItem("userId");
-        dispatch(authSuccess(token, userId));
+        const userKey = localStorage.getItem("userKey");
+        dispatch(authSuccess(token, userId, userKey));
         dispatch(
           checkAuthTimeout(
             (expirationDate.getTime() - new Date().getTime()) / 1000
@@ -123,14 +127,17 @@ export const sendPasswordReset = email => {
     dispatch(sendPasswordResetStart());
     const url =
       "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key=AIzaSyD0Zeimu-WY9hXaPj5A93eo6naiB8OAnGw";
-
     vanillaAxios
       .post(url, {
         requestType: "PASSWORD_RESET",
         email: email
       })
       .then(res => {
-        dispatch(sendPasswordResetSuccess("Password reset e-mail has been sent. Please check both inbox and junk."));
+        dispatch(
+          sendPasswordResetSuccess(
+            "Password reset e-mail has been sent. Please check both inbox and junk."
+          )
+        );
       })
       .catch(err => {
         dispatch(sendPasswordResetFail(err));
@@ -152,9 +159,19 @@ export const sendPasswordResetFail = error => {
     }
   };
 };
-export const sendPasswordResetSuccess = () => {
+export const sendPasswordResetSuccess = message => {
   return {
-    type: actionTypes.SEND_PASSWORD_RESET_FAIL,
-    payload: {}
+    type: actionTypes.SEND_PASSWORD_RESET_SUCCESS,
+    payload: {
+      message: message
+    }
   };
 };
+
+export const clearAuthMessage = () => {
+  return {
+    type: actionTypes.CLEAR_AUTH_MESSAGE
+  };
+};
+
+

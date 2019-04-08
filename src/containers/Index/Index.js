@@ -1,9 +1,13 @@
 import React from "react";
 import classes from "./Index.css";
+import { connect } from "react-redux";
 import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 const Index = props => {
-  return (
+  const dataToRender = props.authLoading ? (
+    <Spinner />
+  ) : (
     <React.Fragment>
       <HeaderBar>Welcome</HeaderBar>
       <div className={classes.Index}>
@@ -31,6 +35,17 @@ const Index = props => {
       </div>
     </React.Fragment>
   );
+  return (
+    <React.Fragment>
+      {dataToRender}
+    </React.Fragment>
+  );
 };
 
-export default Index;
+const mapStateToProps = state => {
+  return {
+    authLoading: state.auth.loading
+  };
+};
+
+export default connect(mapStateToProps)(Index);

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Button from "../../components/UI/Button/Button";
-import { Redirect } from "react-router-dom";
+import { Redirect , withRouter } from "react-router-dom";
 import Input from "../../components/UI/Input/Input";
 import classes from "./Auth.css";
 import * as actions from "../../store/actions/index";
@@ -88,6 +88,7 @@ class Auth extends Component {
       this.state.controls.password.value,
       this.state.isSignup
     );
+    this.props.history.replace("/tracker");
   };
 
   switchAuthModeHandler = () => {
@@ -166,7 +167,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Auth);
+)(Auth));

@@ -42,7 +42,7 @@ class Tracker extends Component {
       this.props.fetchMvpsFromDb(
         this.props.token,
         this.props.userId,
-        this.props.trackerName,
+        localStorage.getItem("activeTrackerName"),
         shouldSpinner
       );
     }
@@ -53,10 +53,6 @@ class Tracker extends Component {
       ...this.state,
       defaultMvpListChosen: this.state.defaultMvpListChosen + 1
     });
-  };
-
-  onGoToDefaultList = () => {
-    this.props.history.replace("/tracker/defaultSetup");
   };
 
   toggleNewMvpFormHandler = () => {

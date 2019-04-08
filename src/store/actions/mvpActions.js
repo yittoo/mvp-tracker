@@ -7,6 +7,7 @@ export const fetchMvpsFromDb = (token, userId, trackerName, isLoader) => {
     if (isLoader) {
       dispatch(fetchMvpsStart());
     }
+    console.log(trackerName)
     const queryParams =
       "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
     mainAxios
@@ -17,7 +18,12 @@ export const fetchMvpsFromDb = (token, userId, trackerName, isLoader) => {
           if (!trackerObj) {
             return dispatch(fetchMvpsSuccess(null, userKey, null, null));
           } else {
+            const allTrackerIdentifiers = [];
             Object.keys(trackerObj).map(trackerKey => {
+              allTrackerIdentifiers.push({
+                trackerName: trackerObj[trackerKey].trackerName,
+                trackerKey: trackerKey
+              });
               if (
                 !trackerName ||
                 trackerName === trackerObj[trackerKey].trackerName
@@ -25,7 +31,8 @@ export const fetchMvpsFromDb = (token, userId, trackerName, isLoader) => {
                 trackerName = trackerObj[trackerKey].trackerName;
                 localStorage.setItem("activeTrackerName", trackerName);
                 localStorage.setItem("activeTrackerKey", trackerKey);
-                return dispatch(
+                localStorage.setItem("userKey", userKey);
+                dispatch(
                   fetchMvpsSuccess(
                     trackerObj[trackerKey].mvps,
                     userKey,
@@ -35,6 +42,7 @@ export const fetchMvpsFromDb = (token, userId, trackerName, isLoader) => {
                 );
               }
             });
+            dispatch(storeAllTrackers(allTrackerIdentifiers));
           }
         });
       })
@@ -85,13 +93,9 @@ export const createNewMvpTracker = (
     dispatch(createMvpsStart(mvps));
     const objToCast = { mvps: mvps, trackerName: trackerName };
     const queryParams = "?auth=" + token;
-    console.log(objToCast);
-    console.log(queryParams);
     mainAxios
       .post("/users/" + userKey + "/trackers.json" + queryParams, objToCast)
       .then(res => {
-        console.log("asd success");
-        console.log(res.data);
         dispatch(createMvpsSuccess());
         dispatch(fetchMvpsFromDb(token, userId, trackerName));
       })
@@ -164,7 +168,7 @@ export const saveMvpsToDbAndFetch = (
       .put(url + queryParams, { mvps: mvps, trackerName: trackerName })
       .then(res => {
         dispatch(saveMvpsSuccess(null));
-        dispatch(fetchMvpsFromDb(token, userId, trackerName));
+        dispatch(fetchMvpsFromDb(token, userId, trackerName, false));
       })
       .catch(err => {
         dispatch(saveMvpsFail(err));
@@ -261,6 +265,110 @@ export const saveSingleMvpSuccess = (timeKilled, mvpKey) => {
   };
 };
 
+//----- DELETE TRACKER
+
+export const deleteTracker = (userKey, trackerKey, token, userId) => {
+  return dispatch => {
+    dispatch(deleteTrackerStart);
+    // console.log(userKey)
+    // console.log(trackerKey)
+    // console.log(token)
+    // console.log(userId)
+    const url = "/users/" + userKey + "/trackers/" + trackerKey + ".json";
+    const queryParams = "?auth=" + token;
+    mainAxios
+      .put(url + queryParams, { mvps: null, trackerName: null })
+      .then(res => {
+        dispatch(deleteTrackerSuccess("Tracker has been successfully deleted"));
+        localStorage.removeItem("activeTrackerKey");
+        localStorage.removeItem("activeTrackerName");
+        dispatch(fetchMvpsFromDb(token, userId, null, false));
+      })
+      .catch(err => {
+        dispatch(saveMvpsFail(err));
+      });
+  };
+};
+
+export const deleteTrackerStart = () => {
+  return {
+    type: actionTypes.DELETE_TRACKER_START
+  };
+};
+export const deleteTrackerSuccess = message => {
+  return {
+    type: actionTypes.DELETE_TRACKER_SUCCESS,
+    payload: {
+      message: message,
+      mvps: null,
+      activeTrackerKey: null,
+      activeTrackerName: null,
+      allTrackers: null
+    }
+  };
+};
+export const deleteTrackerFail = error => {
+  return {
+    type: actionTypes.DELETE_TRACKER_FAIL,
+    payload: {
+      error: error
+    }
+  };
+};
+
+//----- FETCH USER KEY
+
+export const fetchUserKey = (userId, token) => {
+  return dispatch => {
+    dispatch(fetchUserKeyStart());
+    const queryParams =
+      "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
+    mainAxios
+      .get("users.json" + queryParams)
+      .then(res => {
+        let allTrackerIdentifiers = [];
+        Object.keys(res.data).map(userKey => {
+          const trackerObj = res.data[userKey].trackers;
+          Object.keys(trackerObj).map(trackerKey => {
+            allTrackerIdentifiers.push({
+              trackerName: trackerObj[trackerKey].trackerName,
+              trackerKey: trackerKey
+            });
+            dispatch(fetchUserKeySuccess(userKey));
+          });
+          dispatch(storeAllTrackers(allTrackerIdentifiers));
+        });
+      })
+      .catch(error => {
+        return dispatch(fetchUserKeyFail(error));
+      });
+  };
+};
+
+export const fetchUserKeyStart = () => {
+  return {
+    type: actionTypes.FETCH_USER_KEY_START
+  };
+};
+
+export const fetchUserKeySuccess = userKey => {
+  return {
+    type: actionTypes.FETCH_USER_KEY_SUCCESS,
+    payload: {
+      userKey: userKey
+    }
+  };
+};
+
+export const fetchUserKeyFail = error => {
+  return {
+    type: actionTypes.FETCH_USER_KEY_FAIL,
+    payload: {
+      error: error
+    }
+  };
+};
+
 //----- MISC
 
 export const updateCurrentTime = () => {
@@ -268,6 +376,15 @@ export const updateCurrentTime = () => {
     type: actionTypes.UPDATE_CURRENT_TIME,
     payload: {
       currentTime: new Date()
+    }
+  };
+};
+
+export const storeAllTrackers = trackerArr => {
+  return {
+    type: actionTypes.STORE_ALL_TRACKERS,
+    payload: {
+      trackers: trackerArr
     }
   };
 };
@@ -300,56 +417,8 @@ export const calculateTimeToSpawn = (
   };
 };
 
-// export const fetchMvpsFromLocal = () => {
-//   return dispatch => {
-//     dispatch(fetchMvpsStart());
-//     const mvps = localStorage.getItem("mvps");
-//     if (!mvps) {
-//       dispatch(fetchMvpsFailed("No mvps in local storage"));
-//     } else {
-//       const mvpsToParse = JSON.parse(localStorage.getItem("mvps"));
-//       const dateFixedMvps = mvpsToParse
-//         ? Object.keys(mvpsToParse).map(mvp => {
-//             let objToCast = { ...mvpsToParse[mvp] };
-//             objToCast.timeKilled = objToCast.timeKilled
-//               ? new Date(JSON.parse(JSON.stringify(objToCast.timeKilled)))
-//               : null;
-//             return objToCast;
-//           })
-//         : null;
-//       dispatch(fetchMvpsSuccess(dateFixedMvps));
-//     }
-//   };
-// };
-
-// export const auth = (email, password, isSignup) => {
-//   return dispatch => {
-//     dispatch(authStart());
-//     const authData = {
-//       email: email,
-//       password: password,
-//       returnSecureToken: true
-//     };
-//     let url =
-//       "https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyBtRfSHQ3rXlV_tHJyyBdzBaEALHeS8Xdg";
-//     if (!isSignup) {
-//       url =
-//         "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBtRfSHQ3rXlV_tHJyyBdzBaEALHeS8Xdg";
-//     }
-//     axios
-//       .post(url, authData)
-//       .then(response => {
-//         const expirationDate = new Date(
-//           new Date().getTime() + response.data.expiresIn * 1000
-//         );
-//         localStorage.setItem("token", response.data.idToken);
-//         localStorage.setItem("userId", response.data.localId);
-//         localStorage.setItem("expirationDate", expirationDate);
-//         dispatch(authSuccess(response.data.idToken, response.data.localId));
-//         dispatch(checkAuthTimeout(response.data.expiresIn));
-//       })
-//       .catch(err => {
-//         dispatch(authFail(err.response.data.error));
-//       });
-//   };
-// };
+export const clearMvpMessage = () => {
+  return {
+    type: actionTypes.CLEAR_MVP_MESSAGE
+  };
+};

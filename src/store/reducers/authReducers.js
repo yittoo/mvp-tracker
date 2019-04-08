@@ -16,7 +16,8 @@ const authSuccess = (state, action) => {
     userId: action.payload.userId,
     error: null,
     loading: false,
-    premium: action.payload.isPremium
+    premium: action.payload.isPremium,
+    userKey: action.payload.userKey
   });
 };
 
@@ -36,9 +37,17 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SEND_PASSWORD_RESET_START:
       return updateObject(state, { loading: true });
     case actionTypes.SEND_PASSWORD_RESET_SUCCESS:
-      return updateObject(state, { loading: false });
+      return updateObject(state, {
+        loading: false,
+        message: action.payload.message
+      });
     case actionTypes.SEND_PASSWORD_RESET_FAIL:
-      return updateObject(state, { loading: false, error: action.payload.error });
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
+    case actionTypes.CLEAR_AUTH_MESSAGE:
+      return updateObject(state, { message: null });
     default:
       return state;
   }

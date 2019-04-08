@@ -7,17 +7,52 @@
   border-radius: 0 0 20px 20px;
 }
 
+.Section{
+  padding: 10px;
+  margin: 12px 0px;
+}
+
+.Container {
+  width: 100%;
+}
+
 .Header {
   margin: 0px 30px;
 }
 
+.Message {
+  text-align: center;
+  width: 100%;
+  background-color: aquamarine;
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+}
+
 @media (max-width: 500px) {
-  .Index {
+  .Container {
     width: 80%;
-    margin: 0 auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .Header {
     text-align: center;
     font-size: 1.8rem;
+  }
+
+  .Container p {
+    text-align: center;
+  }
+
+  .Container button {
+    position: relative;
+    margin: 10px 0px;
+    left: 50%;
+    display: block;
+    transform: translateX(-50%)
   }
 }

@@ -9,8 +9,9 @@ const initialState = {
   userKey: null,
   activeTrackerName: null,
   activeTrackerKey: null,
-  allTrackers: null, // TODO
-  lastUpdated: new Date()
+  allTrackers: null,
+  lastUpdated: new Date(),
+  message: null
 };
 
 const calculateTimeTillSpawn = (state, action) => {
@@ -93,10 +94,35 @@ const reducer = (state = initialState, action) => {
       return saveSingleMvpSuccess(state, action);
     case actionTypes.SAVE_SINGLE_MVP_FAIL:
       return updateObject(state, { error: action.payload.error });
+    case actionTypes.DELETE_TRACKER_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.DELETE_TRACKER_SUCCESS:
+      return updateObject(state, {
+        loading: false,
+        message: action.payload.message
+      });
+    case actionTypes.DELETE_TRACKER_FAIL:
+      return updateObject(state, { loading: false });
     case actionTypes.UPDATE_CURRENT_TIME:
       return updateObject(state, { currentTime: action.payload.currentTime });
     case actionTypes.CALCULATE_TIME_TILL_SPAWN:
       return calculateTimeTillSpawn(state, action);
+    case actionTypes.STORE_ALL_TRACKERS:
+      return updateObject(state, { allTrackers: action.payload.trackers });
+    case actionTypes.CLEAR_MVP_MESSAGE:
+      return updateObject(state, { message: null });
+    case actionTypes.FETCH_USER_KEY_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.FETCH_USER_KEY_SUCCESS:
+      return updateObject(state, {
+        loading: false,
+        userKey: action.payload.userKey,
+      });
+    case actionTypes.FETCH_MVPS_FAIL:
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
     default:
       return initialState;
   }

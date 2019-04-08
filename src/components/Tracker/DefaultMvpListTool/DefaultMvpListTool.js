@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 
 class DefaultMvpListTool extends Component {
   refreshed() {
-    this.props.onRefreshed()
+    this.props.onRefreshed();
   }
 
   setPreReHandler = () => {
@@ -23,7 +23,7 @@ class DefaultMvpListTool extends Component {
   };
 
   render() {
-    const dataToRender = !this.props.parentUpdated ? (
+    const dataToRender = (
       <React.Fragment>
         <Button classes="ButtonDefaultOrCustom" clicked={this.setPreReHandler}>
           Pre-Re
@@ -35,7 +35,7 @@ class DefaultMvpListTool extends Component {
           Renewal
         </Button>
       </React.Fragment>
-    ) : null;
+    );
 
     return <div className={classes.DefaultMvpListTool}>{dataToRender}</div>;
   }
