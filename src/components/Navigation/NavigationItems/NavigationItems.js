@@ -8,7 +8,7 @@ const navigationItems = props => {
   let varNavItems = props.isAuthenticated ? (
     <React.Fragment>
       <NavigationItem link="/tracker">My Tracker</NavigationItem>
-      <NavigationItem link="/profile">Profile</NavigationItem>
+      <NavigationItem link="/profile">Control Panel</NavigationItem>
       <NavigationItem link="/logout">Logout</NavigationItem>
     </React.Fragment>
   ) : (

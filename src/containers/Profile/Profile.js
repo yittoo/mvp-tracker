@@ -21,7 +21,7 @@ class Profile extends Component {
     this.state = {
       deleteValue: "",
       trackerName: "",
-      selectDefaultTrackerName: "",
+      selectDefaultTrackerKey: "",
       message: null,
       importDefault: false
     };
@@ -33,19 +33,29 @@ class Profile extends Component {
 
   chooseDefaultHandler = event => {
     event.preventDefault();
-    if(this.state.selectDefaultTrackerName !== ""){
+    if (this.state.selectDefaultTrackerKey !== "") {
+      localStorage.setItem(
+        "activeTrackerKey",
+        this.state.selectDefaultTrackerKey
+      );
       this.setState({
         ...this.state,
         message: "Default Tracker Changed",
-        selectDefaultTrackerName: ""
-      })
+        selectDefaultTrackerKey: ""
+      });
     }
-  }
+  };
 
   handleCreateTracker = event => {
     event.preventDefault();
     if (this.state.trackerName !== "") {
-      // this.props.createNewTracker(this.props.userId, this.props.token, this.state.trackerName, this.props.userKey, null)
+      this.props.createNewTracker(
+        this.props.userId,
+        this.props.token,
+        this.state.trackerName,
+        this.props.userKey,
+        null
+      );
       this.setState({
         ...this.state,
         message: "Tracker Created",
@@ -80,9 +90,9 @@ class Profile extends Component {
       <div className={classes.Section}>
         <form onSubmit={this.chooseDefaultHandler}>
           <select
-            value={this.state.selectDefaultTrackerName}
+            value={this.state.selectDefaultTrackerKey}
             onChange={event =>
-              this.handleChange(event, "selectDefaultTrackerName")
+              this.handleChange(event, "selectDefaultTrackerKey")
             }
           >
             <option value="">Please Select</option>
@@ -92,9 +102,12 @@ class Profile extends Component {
               </option>
             ))}
           </select>
+          <Button type="submit">Change Default Tracker</Button>
         </form>
       </div>
-    ) : <div className={classes.Section}>No tracker to select</div>
+    ) : (
+      <div className={classes.Section}>No tracker to select</div>
+    );
 
     const addNewTracker = (
       <div className={classes.Section}>

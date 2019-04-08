@@ -26,10 +26,10 @@ class Tracker extends Component {
   };
 
   componentWillMount() {
-    this.fetchMvps(true);
   }
 
   componentDidMount() {
+    this.fetchMvps(true);
     let fetchInterval = setInterval(() => this.fetchMvps(false), 60000);
   }
 
@@ -43,7 +43,8 @@ class Tracker extends Component {
         this.props.token,
         this.props.userId,
         localStorage.getItem("activeTrackerName"),
-        shouldSpinner
+        shouldSpinner,
+        localStorage.getItem("activeTrackerKey")
       );
     }
   };
@@ -83,7 +84,8 @@ class Tracker extends Component {
         this.props.token,
         "My Tracker",
         this.props.userKey,
-        updatedMvps
+        updatedMvps,
+        null
       );
     }
   };
@@ -143,9 +145,10 @@ class Tracker extends Component {
                 this.props.createNewTracker(
                   this.props.userId,
                   this.props.token,
-                  "My Tracker",
+                  this.props.trackerName || "My Tracker",
                   this.props.userKey,
-                  mvps
+                  mvps,
+                  this.props.trackerKey
                 )
               }
               isPremium={this.props.isPremium}
@@ -216,11 +219,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchMvpsFromDb: (token, userId, trackerName, isLoader) =>
-      dispatch(actions.fetchMvpsFromDb(token, userId, trackerName, isLoader)),
-    createNewTracker: (userId, token, trackerName, userKey, mvps) =>
+    fetchMvpsFromDb: (token, userId, trackerName, isLoader, trackerKey) =>
+      dispatch(actions.fetchMvpsFromDb(token, userId, trackerName, isLoader, trackerKey)),
+    createNewTracker: (userId, token, trackerName, userKey, mvps, trackerKey) =>
       dispatch(
-        actions.createNewMvpTracker(userId, token, trackerName, userKey, mvps)
+        actions.createNewMvpTracker(userId, token, trackerName, userKey, mvps, trackerKey)
       ),
     saveMvpsToDbAndFetch: (
       userId,
