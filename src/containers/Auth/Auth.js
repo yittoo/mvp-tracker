@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import Button from "../../components/UI/Button/Button";
-import { Redirect , withRouter } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import Input from "../../components/UI/Input/Input";
 import classes from "./Auth.css";
 import * as actions from "../../store/actions/index";
 import { connect } from "react-redux";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import HeaderBar from '../../components/UI/HeaderBar/HeaderBar';
+import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
 
 class Auth extends Component {
   state = {
@@ -40,14 +40,11 @@ class Auth extends Component {
         touched: false
       }
     },
-    isSignup: false
+    isSignup: false,
+    isForgot: false,
+    forgotValue: "",
+    message: null
   };
-
-//   componentDidMount() {
-//     if (!this.props.buildingBurger && this.props.authRedirect !== "/") {
-//       this.props.onSetAuthRedirectPath();
-//     }
-//   }
 
   checkValidity(value, rules) {
     let isValid = true;
@@ -97,6 +94,28 @@ class Auth extends Component {
     });
   };
 
+  switchForgotModeHandler = () => {
+    this.setState(prevState => {
+      return { ...prevState, isForgot: !prevState.isForgot };
+    });
+  };
+
+  forgotChangedHandler = event => {
+    this.setState({
+      ...this.state,
+      forgotValue: event.target.value
+    });
+  };
+
+  forgotSubmitHandler = event => {
+    event.preventDefault();
+    this.props.resetPassword(this.state.forgotValue);
+    this.setState({
+      ...this.state,
+      message: "E-mail has been sent, please check your inbox and junk"
+    })
+  };
+
   render() {
     const formElementsArray = [];
     for (let key in this.state.controls) {
@@ -133,11 +152,21 @@ class Auth extends Component {
       <Redirect to={"/tracker"} />
     ) : null;
 
-    return (
-      <div className={classes.Auth}>
-        <HeaderBar>Authentication</HeaderBar>
-        {errorMessage}
-        {authRedirect}
+    const forgotForm = (
+      <form className={classes.ForgotForm} onSubmit={this.forgotSubmitHandler}>
+        <p>{this.state.message}</p>
+        <input
+          type="text"
+          value={this.state.forgotValue}
+          onChange={this.forgotChangedHandler}
+          placeholder="E-mail you used when you registered"
+        />
+        <Button type="submit" classes="ButtonAuth" disabled={this.state.message}>SUBMIT</Button>
+      </form>
+    );
+
+    const dataToRender = !this.state.isForgot ? (
+      <React.Fragment>
         <form onSubmit={this.submitHandler}>
           {form}
           <Button classes="ButtonAuth">
@@ -146,6 +175,21 @@ class Auth extends Component {
         </form>
         <Button classes="ButtonAuth" clicked={this.switchAuthModeHandler}>
           SWITCH TO {this.state.isSignup ? "SIGNIN" : "SIGNUP"}
+        </Button>
+      </React.Fragment>
+    ) : (
+      forgotForm
+    );
+
+    return (
+      <div className={classes.Auth}>
+        <HeaderBar>Authentication</HeaderBar>
+        {errorMessage}
+        {authRedirect}
+        {dataToRender}
+        <br />
+        <Button classes="ButtonAuth" clicked={this.switchForgotModeHandler}>
+          FORGOT MY PASSWORD
         </Button>
       </div>
     );
@@ -156,18 +200,21 @@ const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
-    isAuthenticated: state.auth.token !== null,
+    isAuthenticated: state.auth.token !== null
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password, isSignup) =>
-      dispatch(actions.auth(email, password, isSignup))
+      dispatch(actions.auth(email, password, isSignup)),
+    resetPassword: email => dispatch(actions.sendPasswordReset(email))
   };
 };
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Auth));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Auth)
+);

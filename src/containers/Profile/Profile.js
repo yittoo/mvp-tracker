@@ -81,10 +81,24 @@ class Profile extends Component {
     }
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps !== this.props || nextState !== this.state){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   render() {
     const message = this.state.message ? (
       <p className={classes.Message}>{this.state.message}</p>
     ) : null;
+
+    // const currentChosenTracker = this.props.activeTrackerName || localStorage.getItem("activeTrackerName") ? (
+    //   <div>
+    //     <h2>Current active tracker: "{this.props.activeTrackerName || localStorage.getItem("activeTrackerName")}"</h2>
+    //   </div>
+    // ) : null;
 
     const changeDefaultTracker = this.props.allTrackers ? (
       <div className={classes.Section}>
@@ -165,6 +179,7 @@ class Profile extends Component {
         <React.Fragment>
           <div className={classes.Profile}>
             {message}
+            {/* {currentChosenTracker} */}
             {changeDefaultTracker}
             {addNewTracker}
             {deleteTracker}
@@ -193,7 +208,8 @@ const mapStateToProps = state => {
     userKey: state.mvp.userKey,
     authLoading: state.auth.loading,
     mvpLoading: state.mvp.loading,
-    allTrackers: state.mvp.allTrackers
+    allTrackers: state.mvp.allTrackers,
+    activeTrackerName: state.mvp.activeTrackerName
   };
 };
 
