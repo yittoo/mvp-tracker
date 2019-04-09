@@ -99,6 +99,10 @@
 }
 
 @media (max-width: 1000px) {
+  .ButtonDefaultOrCustom {
+    width: 80%;
+    margin: 5% 10%;
+  }
   .HideOnSmall {
     display: none;
   }

@@ -6,6 +6,7 @@ import Button from "../../components/UI/Button/Button";
 import * as actions from "../../store/actions";
 import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
 import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
+import colors from "../../components/UI/Colors/Colors.css";
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("../../components/Tracker/DefaultMvpListTool/DefaultMvpListTool");
@@ -23,12 +24,19 @@ class Profile extends Component {
       trackerName: "",
       selectDefaultTrackerKey: "",
       message: null,
-      importDefault: false
+      importDefault: false,
+      refreshComponent: 0,
+      resetBtnDisabled: false,
+      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true"
     };
   }
 
   handleChange = (event, area) => {
-    this.setState({ ...this.state, [area]: event.target.value });
+    let value = event.target.value;
+    if (area === "trackerName") {
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+    this.setState({ ...this.state, [area]: value });
   };
 
   chooseDefaultHandler = event => {
@@ -70,7 +78,8 @@ class Profile extends Component {
       this.setState({
         ...this.state,
         message: "Tracker Deleted",
-        deleteValue: ""
+        deleteValue: "",
+        refreshComponent: this.state.refreshComponent + 1
       });
       this.props.deleteTracker(
         this.props.userKey,
@@ -81,8 +90,25 @@ class Profile extends Component {
     }
   };
 
+  mvpDeleteModeHandler = () => {
+    localStorage.setItem("mvpDeleteMode", !this.state.mvpDeleteMode)
+    this.setState({
+      ...this.state,
+      mvpDeleteMode: !this.state.mvpDeleteMode
+    })
+  }
+
+  resetBtnHandler = () => {
+    this.props.resetPassword(localStorage.getItem("loggedEmail"));
+    this.setState({
+      ...this.state,
+      resetBtnDisabled: true,
+      message: "Reset password e-mail has been sent"
+    });
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
-    if(nextProps !== this.props || nextState !== this.state){
+    if (nextProps !== this.props || nextState !== this.state) {
       return true;
     } else {
       return false;
@@ -94,15 +120,27 @@ class Profile extends Component {
       <p className={classes.Message}>{this.state.message}</p>
     ) : null;
 
-    // const currentChosenTracker = this.props.activeTrackerName || localStorage.getItem("activeTrackerName") ? (
-    //   <div>
-    //     <h2>Current active tracker: "{this.props.activeTrackerName || localStorage.getItem("activeTrackerName")}"</h2>
-    //   </div>
-    // ) : null;
+    const currentChosenTracker =
+      this.props.activeTrackerName ||
+      localStorage.getItem("activeTrackerName") ? (
+        <span>
+          Current active tracker:{" "}
+          <span className={classes.LineBreakSpan}>
+            "
+            {this.props.activeTrackerName ||
+              localStorage.getItem("activeTrackerName")}
+            "
+          </span>
+        </span>
+      ) : null;
 
     const changeDefaultTracker = this.props.allTrackers ? (
       <div className={classes.Section}>
-        <form onSubmit={this.chooseDefaultHandler}>
+        {currentChosenTracker}
+        <form
+          className={classes.FloatRight}
+          onSubmit={this.chooseDefaultHandler}
+        >
           <select
             value={this.state.selectDefaultTrackerKey}
             onChange={event =>
@@ -116,7 +154,7 @@ class Profile extends Component {
               </option>
             ))}
           </select>
-          <Button type="submit">Change Default Tracker</Button>
+          <Button type="submit">Set as Default Tracker</Button>
         </form>
       </div>
     ) : (
@@ -126,49 +164,64 @@ class Profile extends Component {
     const addNewTracker = (
       <div className={classes.Section}>
         <form onSubmit={this.handleCreateTracker}>
-          <label>Tracker Name: </label>
-          <input
-            value={this.state.trackerName}
-            type="text"
-            onChange={event => this.handleChange(event, "trackerName")}
-          />{" "}
-          <Button type="submit">Create Tracker</Button>
+          <label>New Tracker: </label>
+          <div className={classes.FloatRight}>
+            <input
+              value={this.state.trackerName}
+              type="text"
+              placeholder="Tracker Name"
+              onChange={event => this.handleChange(event, "trackerName")}
+            />
+            <Button type="submit">Create</Button>
+          </div>
         </form>
       </div>
     );
 
     const deleteTracker = this.props.allTrackers ? (
       <div className={classes.Section}>
-        Delete Tracker (CAN'T BE UNDONE)
-        <form onSubmit={this.handleDeleteTracker}>
-          <select
-            value={this.state.deleteValue}
-            onChange={event => this.handleChange(event, "deleteValue")}
-          >
-            <option value="">Please Select</option>
-            {this.props.allTrackers.map(tracker => (
-              <option key={tracker.trackerKey} value={tracker.trackerKey}>
-                {tracker.trackerName}
-              </option>
-            ))}
-          </select>
-          <Button type="submit">DELETE</Button>
-        </form>
+        Delete Tracker <span className={colors.LightGray}>(Permanently)</span>
+        <div className={classes.FloatRight}>
+          <form onSubmit={this.handleDeleteTracker}>
+            <select
+              value={this.state.deleteValue}
+              onChange={event => this.handleChange(event, "deleteValue")}
+            >
+              <option value="">Please Select</option>
+              {this.props.allTrackers.map(tracker => (
+                <option key={tracker.trackerKey} value={tracker.trackerKey}>
+                  {tracker.trackerName}
+                </option>
+              ))}
+            </select>
+            <Button type="submit">DELETE</Button>
+          </form>
+        </div>
       </div>
     ) : (
       <div className={classes.Section}>No tracker to delete</div>
     );
 
+    const mvpDeleteModeBtn = (
+      <div className={classes.Section}>
+        Enable/Disable MvP Deleting Mode{" "}
+        <div className={classes.FloatRight}>
+          <Button clicked={this.mvpDeleteModeHandler}>{this.state.mvpDeleteMode ? "Disable" : "Enable"}</Button>
+        </div>
+      </div>
+    );
+
     const passwordReset = (
       <div className={classes.Section}>
-        Send Reset Password Email{" "}
-        <Button
-          clicked={() =>
-            this.props.resetPassword(localStorage.getItem("loggedEmail"))
-          }
-        >
-          Reset
-        </Button>
+        Send Reset Password Email
+        <div className={classes.FloatRight}>
+          <Button
+            clicked={this.resetBtnHandler}
+            disabled={this.state.resetBtnDisabled}
+          >
+            Reset
+          </Button>
+        </div>
       </div>
     );
 
@@ -183,8 +236,23 @@ class Profile extends Component {
             {changeDefaultTracker}
             {addNewTracker}
             {deleteTracker}
+            {mvpDeleteModeBtn}
             {passwordReset}
-            <p>Delete Account</p>
+            <div className={classes.Section}>
+              Delete Account{" "}
+              <span
+                className={
+                  classes.FloatRight +
+                  " " +
+                  classes.LineBreakSpan +
+                  " " +
+                  colors.LightGray
+                }
+              >
+                Not implemented yet contact suggest@mvp-ro.com with your email
+                to delete your accound
+              </span>
+            </div>
           </div>
         </React.Fragment>
       );

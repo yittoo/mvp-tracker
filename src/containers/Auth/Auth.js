@@ -43,7 +43,8 @@ class Auth extends Component {
     isSignup: false,
     isForgot: false,
     forgotValue: "",
-    message: null
+    message: null,
+    keepLogged: false
   };
 
   checkValidity(value, rules) {
@@ -80,10 +81,14 @@ class Auth extends Component {
 
   submitHandler = event => {
     event.preventDefault();
+    if(this.state.keepLogged){
+      localStorage.setItem("keepLogged", true)
+    }
     this.props.onAuth(
       this.state.controls.email.value,
       this.state.controls.password.value,
-      this.state.isSignup
+      this.state.isSignup,
+      this.state.keepLogged
     );
     this.props.history.replace("/tracker");
   };
@@ -113,7 +118,14 @@ class Auth extends Component {
     this.setState({
       ...this.state,
       message: "E-mail has been sent, please check your inbox and junk"
-    })
+    });
+  };
+
+  checkboxHandler = event => {
+    this.setState(prevState => ({
+      ...prevState,
+      keepLogged: !prevState.keepLogged
+    }))
   };
 
   render() {
@@ -161,7 +173,13 @@ class Auth extends Component {
           onChange={this.forgotChangedHandler}
           placeholder="E-mail you used when you registered"
         />
-        <Button type="submit" classes="ButtonAuth" disabled={this.state.message}>SUBMIT</Button>
+        <Button
+          type="submit"
+          classes="ButtonAuth"
+          disabled={this.state.message}
+        >
+          SUBMIT
+        </Button>
       </form>
     );
 
@@ -169,6 +187,14 @@ class Auth extends Component {
       <React.Fragment>
         <form onSubmit={this.submitHandler}>
           {form}
+          <div className={classes.CheckboxContainer}>
+            <label>Keep me signed in: </label>
+            <input
+              type="checkbox"
+              checked={this.state.keepLogged}
+              onChange={this.checkboxHandler}
+            />
+          </div>
           <Button classes="ButtonAuth">
             {this.state.isSignup ? "SIGNUP" : "SIGNIN"}
           </Button>
@@ -206,8 +232,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignup) =>
-      dispatch(actions.auth(email, password, isSignup)),
+    onAuth: (email, password, isSignup, keepLogged) =>
+      dispatch(actions.auth(email, password, isSignup, keepLogged)),
     resetPassword: email => dispatch(actions.sendPasswordReset(email))
   };
 };

@@ -35,6 +35,8 @@ export const logout = () => {
   localStorage.removeItem("userId");
   localStorage.removeItem("loggedEmail");
   localStorage.removeItem("userKey");
+  localStorage.removeItem("keepLogged");
+  localStorage.removeItem("refreshToken");
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -43,7 +45,12 @@ export const logout = () => {
 export const checkAuthTimeout = expirationTime => {
   return dispatch => {
     setTimeout(() => {
-      dispatch(logout());
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken) {
+        refreshLoginSession(refreshToken);
+      } else {
+        dispatch(logout());
+      }
     }, expirationTime * 1000);
   };
 };
@@ -59,7 +66,7 @@ export const createNewUserEntry = (userId, token, username) => {
 
 export const checkPremium = userId => {};
 
-export const auth = (email, password, isSignup) => {
+export const auth = (email, password, isSignup, keepLogged) => {
   return dispatch => {
     dispatch(authStart());
     const authData = {
@@ -83,6 +90,9 @@ export const auth = (email, password, isSignup) => {
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
         localStorage.setItem("loggedEmail", email);
+        if (keepLogged) {
+          localStorage.setItem("refreshToken", response.data.refreshToken);
+        }
         if (isSignup) {
           createNewUserEntry(
             response.data.localId,
@@ -107,7 +117,12 @@ export const authCheckState = () => {
     } else {
       const expirationDate = new Date(localStorage.getItem("expirationDate"));
       if (expirationDate <= new Date()) {
-        dispatch(logout());
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (refreshToken) {
+          refreshLoginSession(refreshToken);
+        } else {
+          dispatch(logout());
+        }
       } else {
         const userId = localStorage.getItem("userId");
         const userKey = localStorage.getItem("userKey");
@@ -120,6 +135,24 @@ export const authCheckState = () => {
       }
     }
   };
+};
+
+export const refreshLoginSession = refreshToken => {
+  const url =
+    "https://securetoken.googleapis.com/v1/token?key=AIzaSyD0Zeimu-WY9hXaPj5A93eo6naiB8OAnGw";
+  const objToCast = {
+    grant_type: "refresh_token",
+    refresh_token: refreshToken
+  };
+  vanillaAxios.post(url, objToCast).then(response => {
+    const expirationDate = new Date(
+      new Date().getTime() + response.data.expires_in * 1000
+    );
+    console.log(response)
+    localStorage.setItem("token", response.data.id_token);
+    localStorage.setItem("expirationDate", expirationDate);
+    localStorage.setItem("refreshToken", response.data.refresh_token);
+  });
 };
 
 export const sendPasswordReset = email => {
@@ -173,5 +206,3 @@ export const clearAuthMessage = () => {
     type: actionTypes.CLEAR_AUTH_MESSAGE
   };
 };
-
-

@@ -14,19 +14,26 @@
   box-sizing: border-box;
 }
 
+.TrackerName{
+  font-weight: bold;
+}
+
 .LastUpdated p {
   margin: 0;
 }
 
-.LastUpdated p:after {
+.Timer:after {
   content: " seconds ago";
 }
 
 @media (max-width: 500px) {
+  .TrackerLabel {
+    display: none;
+  }
   .LastUpdated {
     bottom: 6%;
   }
-  .LastUpdated p:after {
+  .Timer:after {
     content: "s";
     position: relative;
     left: 1px;

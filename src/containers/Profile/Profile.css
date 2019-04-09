@@ -10,6 +10,31 @@
 .Section{
   padding: 10px;
   margin: 12px 0px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.Section form {
+  display: inline;
+  margin-left: auto;
+}
+
+.Section select {
+  border: 1px solid #ccc;
+}
+
+.FloatRight {
+  float: right;
+}
+
+.Section button {
+  margin-left: 6px;
+}
+
+.Section input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 .Container {
@@ -23,7 +48,7 @@
 .Message {
   text-align: center;
   width: 100%;
-  background-color: aquamarine;
+  background-color: rgba(168, 184, 215, 1);
   border-radius: 10px;
   padding: 10px;
   color: white;
@@ -33,6 +58,31 @@
 }
 
 @media (max-width: 500px) {
+  .FloatRight{
+    float: unset;
+  }
+  .Section {
+    text-align: center;
+  }
+  .LineBreakSpan {
+    margin-top: 4px;
+    display: block;
+  }
+  .Section label {
+    display: block;
+    margin: 8px 0;
+  }
+  .Section form{
+    display: block;
+  }
+  .Section select {
+    width: 100%;
+    margin: 10px 0;
+  }
+  .Section button {
+    margin: 12px 0;
+    width: 100%;
+  }
   .Container {
     width: 80%;
     position: relative;

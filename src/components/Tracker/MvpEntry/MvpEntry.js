@@ -4,32 +4,14 @@ import classes from "./MvpEntry.css";
 import colors from "../../UI/Colors/Colors.css";
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions";
+import Modal from "../../UI/Modal/Modal";
 
 class MvpEntry extends Component {
   state = {
-    minAgoValue: 0
+    minAgoValue: 0,
+    showModal: false,
+    deleteMode: localStorage.getItem("mvpDeleteMode") === "true"
   };
-
-  componentDidMount() {
-    this.props.calculateTimeTillSpawn(
-      this.props.mvp.timeKilled,
-      this.props.mvp.minSpawn,
-      this.props.mvp.maxSpawn,
-      this.props.currentTime,
-      this.props.id
-    );
-    this.interval = setInterval(
-      () =>
-        this.props.calculateTimeTillSpawn(
-          this.props.mvp.timeKilled,
-          this.props.mvp.minSpawn,
-          this.props.mvp.maxSpawn,
-          this.props.currentTime,
-          this.props.id
-        ),
-      30000
-    );
-  }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (
@@ -43,7 +25,10 @@ class MvpEntry extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.mvp.timeKilled !== this.props.mvp.timeKilled) {
+    if (
+      prevProps.mvp.timeKilled !== this.props.mvp.timeKilled &&
+      this.state.mvpKilled
+    ) {
       this.props.calculateTimeTillSpawn(
         this.props.mvp.timeKilled,
         this.props.mvp.minSpawn,
@@ -51,6 +36,10 @@ class MvpEntry extends Component {
         this.props.currentTime,
         this.props.id
       );
+      this.setState({
+        ...this.state,
+        mvpKilled: false
+      });
     }
   }
 
@@ -59,7 +48,10 @@ class MvpEntry extends Component {
   }
 
   inputChangedHandler = event => {
-    const value = event.target.value < 0 ? 0 : event.target.value;
+    const value =
+      event.target.value < 0 || isNaN(event.target.value)
+        ? 0
+        : event.target.value;
     this.setState({
       ...this.state,
       minAgoValue: Number(value)
@@ -67,12 +59,27 @@ class MvpEntry extends Component {
   };
 
   onMvpKilledBtn = (minAgo, mvpKey) => {
-    this.props.mvpKilledHandler(minAgo, mvpKey, this.props.userKey, this.props.token, this.props.trackerKey, this.props.mvp);
-    this.setState({ ...this.state, minAgoValue: 0 });
-    // setTimeout(() => {
-    //   this.props.saveMvps();
-    // }, 100);
+    this.props.mvpKilledOrDeletedHandler(
+      minAgo,
+      mvpKey,
+      this.props.userKey,
+      this.props.token,
+      this.props.trackerKey,
+      this.props.mvp
+    );
+    this.setState({ ...this.state, minAgoValue: 0, mvpKilled: true });
   };
+
+  onMvpDeletedBtn = (mvpKey) => {
+    this.props.mvpKilledOrDeletedHandler(
+      null,
+      mvpKey,
+      this.props.userKey,
+      this.props.token,
+      this.props.trackerKey,
+      null
+    );
+  }
 
   render() {
     const nameClasses = [classes.Name, colors.Blue];
@@ -83,7 +90,8 @@ class MvpEntry extends Component {
       Number(this.props.mvp.maxTillSpawn) <= 0 ? "Red" : untilSpawnColor;
     untilSpawnColor =
       this.props.mvp.maxTillSpawn === "Unknown" ||
-      !this.props.mvp.maxTillSpawn
+      this.props.mvp.maxTillSpawn === undefined ||
+      this.props.mvp.maxTillSpawn === null
         ? "LightGray"
         : untilSpawnColor;
 
@@ -92,9 +100,25 @@ class MvpEntry extends Component {
 
     const untilSpawnValue =
       this.props.mvp.minTillSpawn === "Unknown" ||
-      !this.props.mvp.minTillSpawn
+      this.props.mvp.minTillSpawn === undefined ||
+      this.props.mvp.minTillSpawn === null
         ? "Unknown"
         : this.props.mvp.minTillSpawn + " - " + this.props.mvp.maxTillSpawn;
+
+    const minuteInput = (
+      <input
+        className={classes.HideOnSmall}
+        type="text"
+        value={this.state.minAgoValue}
+        min="0"
+        placeholder="Killed ... minutes ago"
+        onChange={this.inputChangedHandler}
+      />
+    );
+
+    console.log(this.state.deleteMode)
+
+    const mvpDeleteBtn = this.state.deleteMode ? <Button clicked={() => this.onMvpDeletedBtn(this.props.id)}>Delete</Button> : null;
 
     return (
       <div className={classes.MvpEntry}>
@@ -112,14 +136,8 @@ class MvpEntry extends Component {
         </div>
         <div className={classes.Killed}>
           <span>Killed</span>
-          <input
-            className={classes.HideOnSmall}
-            type="number"
-            value={this.state.minAgoValue}
-            min="0"
-            placeholder="Killed ... minutes ago"
-            onChange={this.inputChangedHandler}
-          />
+          {minuteInput}
+
           <span className={classes.MarginRight5px}>minutes ago</span>
           <Button
             classes="HideOnSmall"
@@ -137,6 +155,7 @@ class MvpEntry extends Component {
           >
             Killed Now
           </Button>
+          {mvpDeleteBtn}
         </div>
       </div>
     );
@@ -148,11 +167,9 @@ const mapStateToProps = state => {
     currentTime: state.mvp.currentTime,
     userKey: state.mvp.userKey,
     token: state.auth.token,
-    trackerKey: state.mvp.activeTrackerKey,
+    trackerKey: state.mvp.activeTrackerKey
   };
 };
-
-// mvp key = this.props.id
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -172,8 +189,17 @@ const mapDispatchToProps = dispatch => {
           mvpId
         )
       ),
-    mvpKilledHandler: (minuteAgo, mvpKey, userKey, token, trackerKey, mvp) => {
-      return dispatch(actions.saveSingleMvpToDb(minuteAgo, mvpKey, userKey, token, trackerKey, mvp));
+    mvpKilledOrDeletedHandler: (minuteAgo, mvpKey, userKey, token, trackerKey, mvp) => {
+      return dispatch(
+        actions.saveSingleMvpToDb(
+          minuteAgo,
+          mvpKey,
+          userKey,
+          token,
+          trackerKey,
+          mvp
+        )
+      );
     }
   };
 };

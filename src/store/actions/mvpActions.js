@@ -42,6 +42,12 @@ export const fetchMvpsFromDb = (
                     trackerName
                   )
                 );
+                dispatch(
+                  calculateTimeToSpawnAllMvps(
+                    new Date(),
+                    trackerObj[trackerKey].mvps
+                  )
+                );
               }
             });
             dispatch(storeAllTrackers(allTrackerIdentifiers));
@@ -240,10 +246,23 @@ export const saveSingleMvpToDb = (
   mvp
 ) => {
   return dispatch => {
-    const mvpToCast = {
-      ...mvp,
-      timeKilled: new Date(new Date().getTime() - Number(minuteAgo) * 60000)
-    };
+    // const mvpToCast = mvp
+    //   ? {
+    //       ...mvp,
+    //       timeKilled: new Date(new Date().getTime() - Number(minuteAgo) * 60000)
+    //     }
+    //   : null;
+    const mvpToCast = mvp
+      ? {
+          id: mvp.id,
+          name: mvp.name,
+          map: mvp.map,
+          maxSpawn: mvp.maxSpawn,
+          minSpawn: mvp.minSpawn,
+          timeKilled: new Date(new Date().getTime() - Number(minuteAgo) * 60000)
+        }
+      : {};
+
     dispatch(saveSingleMvpStart());
     const url =
       "/users/" +
@@ -255,14 +274,7 @@ export const saveSingleMvpToDb = (
       ".json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, {
-        id: mvpToCast.id,
-        name: mvpToCast.name,
-        map: mvpToCast.map,
-        maxSpawn: mvpToCast.maxSpawn,
-        minSpawn: mvpToCast.minSpawn,
-        timeKilled: mvpToCast.timeKilled
-      })
+      .put(url + queryParams, mvpToCast)
       .then(res => {
         dispatch(saveSingleMvpSuccess(mvpToCast.timeKilled, mvpKey));
       })
@@ -278,9 +290,12 @@ export const saveSingleMvpStart = () => {
   };
 };
 
-export const saveSingleMvpFail = () => {
+export const saveSingleMvpFail = (err) => {
   return {
-    type: actionTypes.SAVE_SINGLE_MVP_FAIL
+    type: actionTypes.SAVE_SINGLE_MVP_FAIL,
+    payload: {
+      error:err
+    }
   };
 };
 
@@ -299,10 +314,6 @@ export const saveSingleMvpSuccess = (timeKilled, mvpKey) => {
 export const deleteTracker = (userKey, trackerKey, token, userId) => {
   return dispatch => {
     dispatch(deleteTrackerStart);
-    // console.log(userKey)
-    // console.log(trackerKey)
-    // console.log(token)
-    // console.log(userId)
     const url = "/users/" + userKey + "/trackers/" + trackerKey + ".json";
     const queryParams = "?auth=" + token;
     mainAxios
@@ -442,6 +453,39 @@ export const calculateTimeToSpawn = (
       mvpId: mvpId,
       minTillSpawn: minTillSpawn,
       maxTillSpawn: maxTillSpawn
+    }
+  };
+};
+
+export const calculateTimeToSpawnAllMvps = (currentTime, mvps) => {
+  let mvpsToCast = {};
+  Object.keys(mvps).map(mvpKey => {
+    const mvp = { ...mvps[mvpKey] };
+    const fixedKilledAt = mvp.timeKilled
+      ? new Date(JSON.parse(JSON.stringify(mvp.timeKilled)))
+      : null;
+    const differenceInMinutes = ((currentTime - fixedKilledAt) / 60000).toFixed(
+      0
+    );
+    const minTillSpawn =
+      differenceInMinutes > 1440
+        ? "Unknown"
+        : mvp.minSpawn - differenceInMinutes;
+    const maxTillSpawn =
+      differenceInMinutes > 1440
+        ? "Unknown"
+        : mvp.maxSpawn - differenceInMinutes;
+    mvpsToCast[mvpKey] = {
+      ...mvps[mvpKey],
+      maxTillSpawn: maxTillSpawn,
+      minTillSpawn: minTillSpawn,
+      timeKilled: fixedKilledAt
+    };
+  });
+  return {
+    type: actionTypes.CALCULATE_TIME_ALL_MVPS,
+    payload: {
+      mvps: mvpsToCast
     }
   };
 };

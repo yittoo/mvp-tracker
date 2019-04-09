@@ -3,6 +3,7 @@ import classes from "./Index.css";
 import { connect } from "react-redux";
 import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import colors from '../../components/UI/Colors/Colors.css'
 
 const Index = props => {
   const dataToRender = props.authLoading ? (
@@ -11,8 +12,8 @@ const Index = props => {
     <React.Fragment>
       <HeaderBar>Welcome</HeaderBar>
       <div className={classes.Index}>
-        <h1>*** TODO STYLING</h1>
-        <h1 className={classes.Header}>Hey everyone!</h1>
+        <h1 style={{ display: "none" }}> TODO STYLING</h1>
+        <h1 className={classes.Header}>Hey everyone!<span className={colors.LightGray}>I know index page right now is ugly but functionality is all set!</span></h1>
         <p className={classes.Paragraph}>
           Currently this website consists of a MvP TimeTracker that is in alpha
           testing phase. More functionalities will be coming, entirity of
@@ -35,11 +36,7 @@ const Index = props => {
       </div>
     </React.Fragment>
   );
-  return (
-    <React.Fragment>
-      {dataToRender}
-    </React.Fragment>
-  );
+  return <React.Fragment>{dataToRender}</React.Fragment>;
 };
 
 const mapStateToProps = state => {

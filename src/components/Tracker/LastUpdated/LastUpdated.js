@@ -15,13 +15,15 @@ class LastUpdated extends Component {
   }
 
   componentDidMount() {
-    this.interval = setInterval(() =>
-      this.setState({
-        timeToShow: (
-          (new Date().getTime() - this.props.lastTime.getTime()) /
-          1000
-        ).toFixed(0)
-      }), 1000
+    this.interval = setInterval(
+      () =>
+        this.setState({
+          timeToShow: (
+            (new Date().getTime() - this.props.lastTime.getTime()) /
+            1000
+          ).toFixed(0)
+        }),
+      1000
     );
   }
 
@@ -33,8 +35,10 @@ class LastUpdated extends Component {
     return (
       <div className={classes.LastUpdated}>
         <p>
-          Last Updated: {this.state.timeToShow}
+          <span className={classes.TrackerLabel}>Tracker Name: </span>
+          <span className={classes.TrackerName}>{this.props.trackerName}</span>
         </p>
+        <p className={classes.Timer}>Last Updated: {this.state.timeToShow}</p>
       </div>
     );
   }

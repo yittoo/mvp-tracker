@@ -25,8 +25,7 @@ class Tracker extends Component {
     newMvpAdded: false
   };
 
-  componentWillMount() {
-  }
+  componentWillMount() {}
 
   componentDidMount() {
     this.fetchMvps(true);
@@ -56,10 +55,10 @@ class Tracker extends Component {
     });
   };
 
-  toggleNewMvpFormHandler = () => {
+  toggleFormHandler = formStateName => {
     this.setState({
       ...this.state,
-      showNewMvpForm: !this.state.showNewMvpForm
+      [formStateName]: !this.state[formStateName]
     });
   };
 
@@ -91,30 +90,28 @@ class Tracker extends Component {
   };
 
   render() {
-    const mvpsArray = this.props.mvps
-      ? Object.keys(this.props.mvps).map(mvp => {
-          return <MvpEntry key={mvp} id={mvp} mvp={this.props.mvps[mvp]} />;
-        })
-      : null;
 
-    // const saveMvpsToDbBtn = (
-    //   <Button
-    //     clicked={() =>
-    //       this.props.saveAllMvpsHandler(
-    //         this.props.userKey,
-    //         this.props.token,
-    //         this.props.trackerKey,
-    //         this.props.mvps,
-    //         this.props.trackerName
-    //       )
-    //     }
-    //   >
-    //     Save MvPs
-    //   </Button>
-    // );
-    // THERE IS AUTO SAVE ON MVP KILLED SO IT IS NEEDLESS ATM
+    let sortableMvpArr = [];
+    for (let mvpKey in this.props.mvps) {
+      sortableMvpArr.push([
+        this.props.mvps[mvpKey],
+        this.props.mvps[mvpKey].minTillSpawn,
+        mvpKey
+      ]);
+    }
 
-    let noMvpsPlaceholder = mvpsArray ? null : (
+    sortableMvpArr.sort(function(a, b) {
+      const compare1 = isNaN(a[1]) ? 99999999 : a[1]
+      const compare2 = isNaN(b[1]) ? 99999999 : b[1]
+      return compare1 - compare2;
+    });
+
+    let mvpsArrToRender = []
+    sortableMvpArr.forEach(orderedMvpPair => {
+      mvpsArrToRender.push(<MvpEntry key={orderedMvpPair[2]} id={orderedMvpPair[2]} mvp={orderedMvpPair[0]} />)
+    });
+
+    let noMvpsPlaceholder = mvpsArrToRender.length ? null : (
       <div className={classes.DefaultPlaceholder}>
         <p>
           Hello, currently there is no registered MVP List. Would you like to
@@ -128,7 +125,7 @@ class Tracker extends Component {
         </Link>
         <Button
           classes="ButtonDefaultOrCustom"
-          clicked={this.toggleNewMvpFormHandler}
+          clicked={() => this.toggleFormHandler("showNewMvpForm")}
         >
           Make my own
         </Button>
@@ -136,7 +133,7 @@ class Tracker extends Component {
     );
 
     const routeToDefault =
-      mvpsArray !== null && mvpsArray.length !== 0 ? null : (
+    mvpsArrToRender !== null && mvpsArrToRender.length !== 0 ? null : (
         <Route
           path={this.props.match.path + "/default"}
           render={() => (
@@ -158,17 +155,20 @@ class Tracker extends Component {
           )}
         />
       );
-    const mainContentToRender = mvpsArray ? (
+    const mainContentToRender = mvpsArrToRender.length ? (
       <React.Fragment>
-        <LastUpdated lastTime={this.props.lastUpdated} />
-        {mvpsArray}
+        <LastUpdated
+          lastTime={this.props.lastUpdated}
+          trackerName={this.props.trackerName}
+        />
+        {mvpsArrToRender}
       </React.Fragment>
     ) : null;
 
     const newMvpForm = (
       <Modal
         show={this.state.showNewMvpForm}
-        modalClosed={this.toggleNewMvpFormHandler}
+        modalClosed={() => this.toggleFormHandler("showNewMvpForm")}
       >
         <NewMvpForm
           onNewMvpAdded={updatedMvps => this.newMvpAddedHandler(updatedMvps)}
@@ -177,15 +177,20 @@ class Tracker extends Component {
       </Modal>
     );
 
-    const newMvpButton = mvpsArray ? (
-      <Button classes="NewMvpButton" clicked={this.toggleNewMvpFormHandler}>
+    const newMvpButton = mvpsArrToRender.length ? (
+      <Button
+        classes="NewMvpButton"
+        clicked={() => this.toggleFormHandler("showNewMvpForm")}
+      >
         New MvP
       </Button>
     ) : null;
 
     return (
       <div className={classes.Tracker}>
-        <HeaderBar>{this.props.trackerName ? this.props.trackerName : "MvP Tracker"}</HeaderBar>
+        <HeaderBar>
+          {this.props.trackerName ? this.props.trackerName : "MvP Tracker"}
+        </HeaderBar>
         {this.props.loading ? (
           <Spinner />
         ) : (
@@ -220,10 +225,25 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchMvpsFromDb: (token, userId, trackerName, isLoader, trackerKey) =>
-      dispatch(actions.fetchMvpsFromDb(token, userId, trackerName, isLoader, trackerKey)),
+      dispatch(
+        actions.fetchMvpsFromDb(
+          token,
+          userId,
+          trackerName,
+          isLoader,
+          trackerKey
+        )
+      ),
     createNewTracker: (userId, token, trackerName, userKey, mvps, trackerKey) =>
       dispatch(
-        actions.createNewMvpTracker(userId, token, trackerName, userKey, mvps, trackerKey)
+        actions.createNewMvpTracker(
+          userId,
+          token,
+          trackerName,
+          userKey,
+          mvps,
+          trackerKey
+        )
       ),
     saveMvpsToDbAndFetch: (
       userId,

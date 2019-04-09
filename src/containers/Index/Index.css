@@ -8,23 +8,34 @@
 }
 
 .Header {
-    margin: 0px 30px;
+  padding: 10px;
+}
+
+.Header span {
+  font-size: 0.6em;
+  margin-left: 20px;
 }
 
 .Paragraph {
-  width: 30%;
+  width: 100%;
   padding: 10px;
-  margin-left: 2.5%;
-  border: 1px solid #eee;
   border-radius: 10px;
-  display: inline-block;
   align-self: center;
   box-sizing: border-box;
 }
 
-@media (max-width: 500px) {
+.Paragraph::before{
+  content: "";
+  border-left: #2980b9 6px solid;
+  position: relative;
+  left: 2px;
+  margin-right: 5px;
+  bottom: 1px;
+}
+
+@media (max-width: 1000px) {
   .Index {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
   }
   .Header {
@@ -32,7 +43,7 @@
     font-size: 1.8rem;
   }
   .Paragraph {
-    width: 80%;
-    margin: 10px auto;
+    width: 90%;
+    margin: 10px 5%;
   }
 }

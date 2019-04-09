@@ -107,6 +107,8 @@ const reducer = (state = initialState, action) => {
       return updateObject(state, { currentTime: action.payload.currentTime });
     case actionTypes.CALCULATE_TIME_TILL_SPAWN:
       return calculateTimeTillSpawn(state, action);
+    case actionTypes.CALCULATE_TIME_ALL_MVPS:
+      return updateObject(state, { mvps: action.payload.mvps });
     case actionTypes.STORE_ALL_TRACKERS:
       return updateObject(state, { allTrackers: action.payload.trackers });
     case actionTypes.CLEAR_MVP_MESSAGE:
