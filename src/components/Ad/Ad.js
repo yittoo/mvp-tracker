@@ -8,13 +8,13 @@ class Ad extends Component {
     if (this.props.type === "horizontal" && this.props.alignment === "bottom") {
       this.state = {
         fixedFooterState:
-          window.innerHeight + 200 <
+          window.innerHeight - 200 >
           document.getElementById("root").clientHeight
       };
       this.interval = setInterval(() => {
         this.setState({
           fixedFooterState:
-            window.innerHeight + 200 <
+            window.innerHeight - 200 >
             document.getElementById("root").clientHeight
         });
       }, 200);
@@ -22,8 +22,11 @@ class Ad extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.type === "horizontal" && this.props.alignment === "bottom") {
-      if (nextState.fixedFooterState !== this.state.fixedFooterState) {
+    if (nextState.fixedFooterState !== this.state.fixedFooterState) {
+      if (
+        this.props.type === "horizontal" &&
+        this.props.alignment === "bottom"
+      ) {
         return true;
       } else {
         return false;
@@ -59,8 +62,8 @@ class Ad extends Component {
         break;
     }
 
-    if(this.state.fixedFooterState){
-      adClasses.push("Fixed")
+    if (this.state.fixedFooterState) {
+      adClasses.push(classes.Fixed);
     }
     return (
       <div style={this.props.style} className={adClasses.join(" ")}>

@@ -18,7 +18,12 @@ const Index = props => {
           <p className={classes.Paragraph}>
             Currently this website consists of a MvP TimeTracker that is in beta
             testing phase. More functionalities will be coming as well as other
-            content, entirity of service will be free.
+            content.
+          </p>
+          <p className={classes.Paragraph}>
+            This website's only source of income is ads, I promise to keep them
+            on sides and not display on screen. So if you have it on please
+            disable adblocker, thanks!
           </p>
           <p className={classes.Paragraph}>
             Our website is fully responsive so that you are capable of using

@@ -5,11 +5,11 @@ class Footer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fixedFooterState: window.innerHeight + 200 < document.getElementById("root").clientHeight,
+      fixedFooterState: window.innerHeight - 200 < document.getElementById("root").clientHeight,
     };
     this.interval = setInterval(() => {
       this.setState({
-        fixedFooterState: window.innerHeight + 200 < document.getElementById("root").clientHeight,
+        fixedFooterState: window.innerHeight - 200 < document.getElementById("root").clientHeight,
       });
     }, 200)
   }
