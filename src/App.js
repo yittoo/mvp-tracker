@@ -41,9 +41,6 @@ class App extends Component {
   };
   componentWillMount() {
     this.interval = setInterval(this.props.updateCurrentTime, 10000);
-  }
-
-  componentDidMount() {
     this.props.onTryAutoSignup();
   }
 
@@ -115,14 +112,16 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
+    userId: state.mvp.userId || localStorage.getItem("userId"),
+    token: state.auth.token || localStorage.getItem("token")
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onTryAutoSignup: () => dispatch(actions.authCheckState()),
-    updateCurrentTime: () => dispatch(actions.updateCurrentTime())
+    updateCurrentTime: () => dispatch(actions.updateCurrentTime()),
   };
 };
 

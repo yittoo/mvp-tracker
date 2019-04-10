@@ -20,18 +20,24 @@ export const fetchMvpsFromDb = (
       .then(res => {
         Object.keys(res.data).map(userKey => {
           const trackerObj = res.data[userKey].trackers;
+          let trackersLength = Object.keys(trackerObj).length;
           if (!trackerObj) {
             return dispatch(fetchMvpsSuccess(null, userKey, null, null));
           } else {
             const allTrackerIdentifiers = [];
-            Object.keys(trackerObj).map(trackerKey => {
+            Object.keys(trackerObj).map((trackerKey, index) => {
               allTrackerIdentifiers.push({
                 trackerName: trackerObj[trackerKey].trackerName,
                 trackerKey: trackerKey
               });
-              if (!inputTrackerKey || inputTrackerKey === trackerKey) {
-                trackerName = trackerObj[trackerKey].trackerName;
-                localStorage.setItem("activeTrackerName", trackerName);
+              if (
+                !inputTrackerKey ||
+                inputTrackerKey === trackerKey ||
+                trackersLength === index + 1
+              ) {
+                trackersLength = null;
+                const liveTrackerName = trackerObj[trackerKey].trackerName;
+                localStorage.setItem("activeTrackerName", liveTrackerName);
                 localStorage.setItem("activeTrackerKey", trackerKey);
                 localStorage.setItem("userKey", userKey);
                 dispatch(
@@ -39,7 +45,7 @@ export const fetchMvpsFromDb = (
                     trackerObj[trackerKey].mvps,
                     userKey,
                     trackerKey,
-                    trackerName
+                    liveTrackerName
                   )
                 );
                 dispatch(
@@ -290,11 +296,11 @@ export const saveSingleMvpStart = () => {
   };
 };
 
-export const saveSingleMvpFail = (err) => {
+export const saveSingleMvpFail = err => {
   return {
     type: actionTypes.SAVE_SINGLE_MVP_FAIL,
     payload: {
-      error:err
+      error: err
     }
   };
 };
@@ -369,6 +375,7 @@ export const fetchUserKey = (userId, token) => {
         let allTrackerIdentifiers = [];
         Object.keys(res.data).map(userKey => {
           const trackerObj = res.data[userKey].trackers;
+          localStorage.setItem("userKey", userKey);
           Object.keys(trackerObj).map(trackerKey => {
             allTrackerIdentifiers.push({
               trackerName: trackerObj[trackerKey].trackerName,

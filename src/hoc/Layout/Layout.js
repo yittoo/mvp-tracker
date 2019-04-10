@@ -3,14 +3,12 @@ import classes from "./Layout.css";
 import Ad from "../../components/Ad/Ad";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
-import Footer from '../../components/Footer/Footer';
-import SageFemale from '../../components/Images/SageFemale';
+import Footer from "../../components/Footer/Footer";
 
 class Layout extends Component {
   state = {
     showSideDrawer: false,
-    showSideAds: false,
-    bottomAdFixed: false,
+    showSideAds: false
   };
 
   componentDidMount() {
@@ -28,21 +26,15 @@ class Layout extends Component {
 
   sideDrawerToggleHandler = () => {
     this.setState(prevState => {
-      return { showSideDrawer: !prevState.showSideDrawer };
+      return { ...this.state, showSideDrawer: !prevState.showSideDrawer };
     });
   };
 
   updateDimentions = () => {
     const sideAdsState = window.innerWidth <= 500 ? false : true;
-    // const fixedBottomAdState =
-    //   window.innerHeight - 100 <
-    //   document.getElementsByTagName("body")[0].clientHeight
-    //     ? false
-    //     : true;
     this.setState({
       ...this.state,
-      showSideAds: sideAdsState,
-      bottomAdFixed: false // TODO FIX THIS
+      showSideAds: sideAdsState
     });
   };
 
@@ -80,9 +72,8 @@ class Layout extends Component {
           open={this.state.showSideDrawer}
           closed={this.sideDrawerClosedHandler}
         />
-        {/* <SageFemale></SageFemale> */}
         <div className={classes.Content}>{contentToShow}</div>
-        <Footer onLegal={this.props.onLegal}></Footer>
+        <Footer onLegal={this.props.onLegal} />
       </div>
     );
   }

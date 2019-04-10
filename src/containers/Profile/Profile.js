@@ -273,7 +273,7 @@ const mapStateToProps = state => {
     trackerKey: state.mvp.activeTrackerKey,
     token: state.auth.token,
     userId: state.auth.userId,
-    userKey: state.mvp.userKey,
+    userKey: state.mvp.userKey || localStorage.getItem("userKey"),
     authLoading: state.auth.loading,
     mvpLoading: state.mvp.loading,
     allTrackers: state.mvp.allTrackers,

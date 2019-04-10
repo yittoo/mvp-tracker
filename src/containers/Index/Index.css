@@ -1,5 +1,5 @@
 .Index {
-  padding: 20px;
+  padding: 20px 30px;
   width: 100%;
   box-sizing: border-box;
   background-color: white;
@@ -8,8 +8,29 @@
   border-radius: 0 0 20px 20px;
 }
 
+/* .LeftColumn{
+  width: 70%;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.RightColumn{
+  width: 30%;
+  box-sizing: border-box;
+  display: inline-block;
+  margin-bottom: auto;
+  height: 100%;
+} */
+
+.Index hr {
+  border-top: 1px solid #ccc;
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+}
+
 .Header {
-  padding: 10px;
+  text-align: center;
 }
 
 .Header span {
@@ -17,9 +38,13 @@
   margin-left: 20px;
 }
 
+.MiniHeader {
+
+}
+
 .Paragraph {
   width: 100%;
-  padding: 10px;
+  padding: 10px 0;
   border-radius: 10px;
   align-self: center;
   box-sizing: border-box;

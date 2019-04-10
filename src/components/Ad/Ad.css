@@ -1,54 +1,60 @@
 .Ad {
-    background-color: black;
-    color: white;
-    font-size: 2rem;
-    margin: 10px 0;
-    z-index: 50;
-    /* visibility: hidden; */
+  background-color: black;
+  color: white;
+  font-size: 2rem;
+  margin: 10px 0;
+  z-index: 50;
+  /* visibility: hidden; */
+}
+
+.Fixed {
+  position: fixed;
+  bottom: 0%;
 }
 
 .Vertical {
-    position: fixed;
-    height: 85%;
-    width: 10%;
-    top: 10%;
+  position: fixed;
+  height: 85%;
+  width: 10%;
+  top: 10%;
 }
 
-.Horizontal{
-    height: 80px;
+.Horizontal {
+  height: 80px;
 }
 
-.Top, .Bottom{
-    margin-left: auto;
-    margin-right: auto;
+.Top,
+.Bottom {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .Left {
-    left: 5%;
+  left: 5%;
 }
 
 .Right {
-    right: 5%;
+  right: 5%;
 }
 
-@media (max-width: 500px){
-    .Ad {
-        margin: 0;
-    }
-    .Horizontal{
-        position: fixed;
-        height: 5%;
-    }
-    .Top, .Bottom{
-        position: fixed;
-        width: 100%;
-        left: 0;
-    }
-    .Top{
-        top: 56px;
-    }
-    .Bottom{
-        bottom: 0%;
-    }
+@media (max-width: 500px) {
+  .Ad {
+    margin: 0;
+  }
+  .Horizontal {
+    position: fixed;
+    height: 5%;
+  }
+  .Top,
+  .Bottom {
+    position: fixed;
+    width: 100%;
+    left: 0;
+  }
+  .Top {
+    top: 56px;
+  }
+  .Bottom {
+    bottom: 0%;
+  }
 }
-

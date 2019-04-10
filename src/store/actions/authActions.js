@@ -110,7 +110,7 @@ export const auth = (email, password, isSignup, keepLogged) => {
         } else {
           dispatch(authSuccess(response.data.idToken, response.data.localId));
           dispatch(checkAuthTimeout(response.data.expiresIn));
-        } // TODO signupta promise döndürt sonra auth success dispatchle
+        }
       })
       .catch(err => {
         dispatch(authFail(err.response.data.error));
@@ -157,7 +157,6 @@ export const refreshLoginSession = refreshToken => {
     const expirationDate = new Date(
       new Date().getTime() + response.data.expires_in * 1000
     );
-    console.log(response);
     localStorage.setItem("token", response.data.id_token);
     localStorage.setItem("expirationDate", expirationDate);
     localStorage.setItem("refreshToken", response.data.refresh_token);
