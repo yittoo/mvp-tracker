@@ -116,8 +116,6 @@ class MvpEntry extends Component {
       />
     );
 
-    console.log(this.state.deleteMode)
-
     const mvpDeleteBtn = this.state.deleteMode ? <Button clicked={() => this.onMvpDeletedBtn(this.props.id)}>Delete</Button> : null;
 
     return (

@@ -1,0 +1,28 @@
+.Footer {
+  width: 100%;
+  background-color: #ffffff44;
+  text-align: center;
+  padding: 8px;
+  box-sizing: border-box;
+  z-index: 30;
+}
+
+.Footer p {
+  font-size: 0.8rem;
+  color: #444;
+  margin: 10px 0;
+  padding: 0;
+  color: #aaa;
+}
+
+.Link {
+  color: #0000ffaa;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .Footer {
+    margin-bottom: 10%;
+  }
+}

@@ -9,9 +9,10 @@ class Modal extends Component {
   }
 
   render() {
-    const currentClass = this.props.show
+    let currentClass = this.props.show
       ? classes.Modal + " " + classes["Modal-Visible"]
       : classes.Modal;
+    currentClass = this.props.isLegalModal ? currentClass + " " + classes.Legal : currentClass
     return (
       <React.Fragment>
         <Backdrop show={this.props.show} clicked={this.props.modalClosed} />

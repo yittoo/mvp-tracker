@@ -1,0 +1,11 @@
+.Legal h1{
+    text-align: center;
+}
+
+.Legal p::before {
+    content: "";
+    border-left: 6px solid #2980b9;
+    margin-right: 4px;
+    position: relative;
+    bottom: 1px;
+}

@@ -9,12 +9,13 @@ import Layout from "./hoc/Layout/Layout";
 import asyncComponent from "./hoc/asyncComponent/asyncComponent";
 import * as actions from "./store/actions";
 import IndexPage from "./containers/Index/Index";
+import Modal from "./components/UI/Modal/Modal";
 
 const asyncTracker = asyncComponent(() => {
   return import("./containers/MvpTracker/MvpTracker");
 });
 
-const asyncAuth = asyncComponent(() => {
+const AsyncAuth = asyncComponent(() => {
   return import("./containers/Auth/Auth");
 });
 
@@ -23,10 +24,21 @@ const asyncLogout = asyncComponent(() => {
 });
 
 const asyncProfile = asyncComponent(() => {
-  return import("./containers/Profile/Profile")
-})
+  return import("./containers/Profile/Profile");
+});
+
+const AsyncPrivacy = asyncComponent(() => {
+  return import("./components/PrivacyAndTos/PrivacyPolicy");
+});
+const AsyncTerms = asyncComponent(() => {
+  return import("./components/PrivacyAndTos/TermsOfService");
+});
 
 class App extends Component {
+  state = {
+    showPrivacyStatement: false,
+    showTermsOfService: false
+  };
   componentWillMount() {
     this.interval = setInterval(this.props.updateCurrentTime, 10000);
   }
@@ -39,7 +51,37 @@ class App extends Component {
     clearInterval(this.interval);
   }
 
+  toggleShowLegalHandler = legalDocKey => {
+    this.setState({
+      ...this.state,
+      [legalDocKey]: !this.state[legalDocKey]
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      ...this.state,
+      showPrivacyStatement: false,
+      showTermsOfService: false
+    });
+  };
+
   render() {
+    const privacyStatement = this.state.showPrivacyStatement ? (
+      <AsyncPrivacy />
+    ) : null;
+    const termsOfService = this.state.showTermsOfService ? (
+      <AsyncTerms />
+    ) : null;
+    let modalPrivacy = (
+      <Modal modalClosed={this.closeModal} isLegalModal show={this.state.showPrivacyStatement}>{privacyStatement}</Modal>
+    );
+    let modalService = (
+      <Modal modalClosed={this.closeModal} isLegalModal show={this.state.showTermsOfService}>{termsOfService}</Modal>
+    );
+
+    modalPrivacy = privacyStatement && termsOfService ? null : modalPrivacy;
+
     let routes = this.props.isAuthenticated ? (
       <Switch>
         <Redirect path="/auth" to="/" />
@@ -50,11 +92,24 @@ class App extends Component {
       </Switch>
     ) : (
       <Switch>
-        <Route path="/auth" component={asyncAuth} />
+        <Route
+          path="/auth"
+          render={() => (
+            <AsyncAuth
+              onLegal={legalDocKey => this.toggleShowLegalHandler(legalDocKey)}
+            />
+          )}
+        />
         <Route path="/" component={IndexPage} />
       </Switch>
     );
-    return <Layout>{routes}</Layout>;
+    return (
+      <Layout onLegal={legalDocKey => this.toggleShowLegalHandler(legalDocKey)}>
+        {modalPrivacy}
+        {modalService}
+        {routes}
+      </Layout>
+    );
   }
 }
 

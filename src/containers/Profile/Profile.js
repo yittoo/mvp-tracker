@@ -250,7 +250,7 @@ class Profile extends Component {
                 }
               >
                 Not implemented yet contact suggest@mvp-ro.com with your email
-                to delete your accound
+                to delete your account
               </span>
             </div>
           </div>

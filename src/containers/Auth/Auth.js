@@ -90,7 +90,6 @@ class Auth extends Component {
       this.state.isSignup,
       this.state.keepLogged
     );
-    this.props.history.replace("/tracker");
   };
 
   switchAuthModeHandler = () => {
@@ -161,7 +160,7 @@ class Auth extends Component {
     }
 
     const authRedirect = this.props.isAuthenticated ? (
-      <Redirect to={"/tracker"} />
+      <Redirect to={"/"} />
     ) : null;
 
     const forgotForm = (

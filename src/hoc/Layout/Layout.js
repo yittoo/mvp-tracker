@@ -3,12 +3,14 @@ import classes from "./Layout.css";
 import Ad from "../../components/Ad/Ad";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
+import Footer from '../../components/Footer/Footer';
+import SageFemale from '../../components/Images/SageFemale';
 
 class Layout extends Component {
   state = {
     showSideDrawer: false,
     showSideAds: false,
-    bottomAdFixed: false
+    bottomAdFixed: false,
   };
 
   componentDidMount() {
@@ -78,8 +80,9 @@ class Layout extends Component {
           open={this.state.showSideDrawer}
           closed={this.sideDrawerClosedHandler}
         />
+        {/* <SageFemale></SageFemale> */}
         <div className={classes.Content}>{contentToShow}</div>
-        {/* footer TODO */}
+        <Footer onLegal={this.props.onLegal}></Footer>
       </div>
     );
   }

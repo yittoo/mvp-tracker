@@ -61,7 +61,11 @@ export const createNewUserEntry = (userId, token, username) => {
     premium: false,
     username: username
   };
-  mainAxios.post("/users.json?auth=" + token, objToCast);
+  return new Promise((resolve, reject) => {
+    mainAxios.post("/users.json?auth=" + token, objToCast).then(res => {
+      resolve(true);
+    });
+  });
 };
 
 export const checkPremium = userId => {};
@@ -94,14 +98,19 @@ export const auth = (email, password, isSignup, keepLogged) => {
           localStorage.setItem("refreshToken", response.data.refreshToken);
         }
         if (isSignup) {
-          createNewUserEntry(
+          let promise = createNewUserEntry(
             response.data.localId,
             response.data.idToken,
             email
           );
-        }
-        dispatch(authSuccess(response.data.idToken, response.data.localId));
-        dispatch(checkAuthTimeout(response.data.expiresIn));
+          promise.then(bool => {
+            dispatch(authSuccess(response.data.idToken, response.data.localId));
+            dispatch(checkAuthTimeout(response.data.expiresIn));
+          });
+        } else {
+          dispatch(authSuccess(response.data.idToken, response.data.localId));
+          dispatch(checkAuthTimeout(response.data.expiresIn));
+        } // TODO signupta promise döndürt sonra auth success dispatchle
       })
       .catch(err => {
         dispatch(authFail(err.response.data.error));
@@ -148,7 +157,7 @@ export const refreshLoginSession = refreshToken => {
     const expirationDate = new Date(
       new Date().getTime() + response.data.expires_in * 1000
     );
-    console.log(response)
+    console.log(response);
     localStorage.setItem("token", response.data.id_token);
     localStorage.setItem("expirationDate", expirationDate);
     localStorage.setItem("refreshToken", response.data.refresh_token);
