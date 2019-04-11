@@ -44,6 +44,35 @@ class App extends Component {
     this.props.onTryAutoSignup();
   }
 
+  componentDidMount() {
+    const notiSound = localStorage.getItem("notiSound")
+      ? localStorage.getItem("notiSound") === "true"
+      : null;
+    const notiMode = localStorage.getItem("notiMode")
+      ? localStorage.getItem("notiMode")
+      : null;
+    const notiType =
+      localStorage.getItem("notiTypeOnMax") &&
+      localStorage.getItem("notiTypeOnMin") &&
+      localStorage.getItem("notiType10Till")
+        ? {
+            onMax: localStorage.getItem("notiTypeOnMax") === "true",
+            onMin: localStorage.getItem("notiTypeOnMin") === "true",
+            tenTillMin: localStorage.getItem("notiType10Till") === "true"
+          }
+        : null;
+    const notiSettingsLocal = {
+      notiSound: notiSound,
+      notiMode: notiMode,
+      notiType: notiType
+    };
+    this.props.initializeNotificationSettings(
+      this.props.userId,
+      this.props.token,
+      notiSettingsLocal
+    );
+  }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -71,10 +100,22 @@ class App extends Component {
       <AsyncTerms />
     ) : null;
     let modalPrivacy = (
-      <Modal modalClosed={this.closeModal} isLegalModal show={this.state.showPrivacyStatement}>{privacyStatement}</Modal>
+      <Modal
+        modalClosed={this.closeModal}
+        isLegalModal
+        show={this.state.showPrivacyStatement}
+      >
+        {privacyStatement}
+      </Modal>
     );
     let modalService = (
-      <Modal modalClosed={this.closeModal} isLegalModal show={this.state.showTermsOfService}>{termsOfService}</Modal>
+      <Modal
+        modalClosed={this.closeModal}
+        isLegalModal
+        show={this.state.showTermsOfService}
+      >
+        {termsOfService}
+      </Modal>
     );
 
     modalPrivacy = privacyStatement && termsOfService ? null : modalPrivacy;
@@ -122,6 +163,10 @@ const mapDispatchToProps = dispatch => {
   return {
     onTryAutoSignup: () => dispatch(actions.authCheckState()),
     updateCurrentTime: () => dispatch(actions.updateCurrentTime()),
+    initializeNotificationSettings: (userId, token, notiSettingsLocal) =>
+      dispatch(
+        actions.initializeNotificationSettings(userId, token, notiSettingsLocal)
+      )
   };
 };
 

@@ -81,8 +81,8 @@ class Auth extends Component {
 
   submitHandler = event => {
     event.preventDefault();
-    if(this.state.keepLogged){
-      localStorage.setItem("keepLogged", true)
+    if (this.state.keepLogged) {
+      localStorage.setItem("keepLogged", true);
     }
     this.props.onAuth(
       this.state.controls.email.value,
@@ -124,7 +124,7 @@ class Auth extends Component {
     this.setState(prevState => ({
       ...prevState,
       keepLogged: !prevState.keepLogged
-    }))
+    }));
   };
 
   render() {
@@ -194,6 +194,12 @@ class Auth extends Component {
               onChange={this.checkboxHandler}
             />
           </div>
+          <p className={classes.Legal}>
+            Our trackers uses cookies to work please enable them if you haven't
+            {this.state.isSignup
+              ? ", by hitting sign up you accept that you've read and accepted our terms of service and privacy policy, that is located at bottom of this page"
+              : null}
+          </p>
           <Button classes="ButtonAuth">
             {this.state.isSignup ? "SIGNUP" : "SIGNIN"}
           </Button>

@@ -59,7 +59,20 @@ export const createNewUserEntry = (userId, token, username) => {
   const objToCast = {
     userId: userId,
     premium: false,
-    username: username
+    username: username,
+    settings: {
+      notiMode: {
+        mode: "all"
+      },
+      notiSound: {
+        mode: true
+      },
+      notiType: {
+        onMax: true,
+        onMin: true,
+        tenTillMin: true
+      }
+    }
   };
   return new Promise((resolve, reject) => {
     mainAxios.post("/users.json?auth=" + token, objToCast).then(res => {

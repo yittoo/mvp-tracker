@@ -44,7 +44,7 @@ class Footer extends Component {
             className={classes.Link}
             onClick={() => this.props.onLegal("showPrivacyStatement")}
           >
-            Privacy Statement
+            Privacy Policy
           </span>{" "}
           and{" "}
           <span

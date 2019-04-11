@@ -17,6 +17,11 @@
   display: block;
 }
 
+.Legal {
+  padding: 10px;
+  color: #aaa;
+}
+
 .ForgotForm input{
   width: 90%;
   padding: 10px 20px;

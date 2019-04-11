@@ -24,6 +24,12 @@ class MvpEntry extends Component {
     }
   }
 
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.onShouldNotificate();
+    }, 60000);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (
       prevProps.mvp.timeKilled !== this.props.mvp.timeKilled &&
@@ -70,7 +76,7 @@ class MvpEntry extends Component {
     this.setState({ ...this.state, minAgoValue: 0, mvpKilled: true });
   };
 
-  onMvpDeletedBtn = (mvpKey) => {
+  onMvpDeletedBtn = mvpKey => {
     this.props.mvpKilledOrDeletedHandler(
       null,
       mvpKey,
@@ -79,7 +85,29 @@ class MvpEntry extends Component {
       this.props.trackerKey,
       null
     );
-  }
+  };
+
+  onShouldNotificate = () => {
+    if (
+      this.props.notifications === "all" ||
+      (this.props.notifications === "custom" && this.props.mvp.notification)
+    ) {
+      let notificationToSend;
+      notificationToSend =
+        this.props.mvp.minTillSpawn === 10
+          ? { mvpKey: this.props.id, type: "tenMinTillMinSpawn" }
+          : null;
+      notificationToSend =
+        this.props.mvp.minTillSpawn === 0
+          ? { mvpKey: this.props.id, type: "onMinSpawn" }
+          : notificationToSend;
+      notificationToSend =
+        this.props.mvp.maxTillSpawn === 0
+          ? { mvpKey: this.props.id, type: "onMaxSpawn" }
+          : notificationToSend;
+      this.props.onNotificate(notificationToSend);
+    }
+  };
 
   render() {
     const nameClasses = [classes.Name, colors.Blue];
@@ -116,7 +144,11 @@ class MvpEntry extends Component {
       />
     );
 
-    const mvpDeleteBtn = this.state.deleteMode ? <Button clicked={() => this.onMvpDeletedBtn(this.props.id)}>Delete</Button> : null;
+    const mvpDeleteBtn = this.state.deleteMode ? (
+      <Button clicked={() => this.onMvpDeletedBtn(this.props.id)}>
+        Delete
+      </Button>
+    ) : null;
 
     return (
       <div className={classes.MvpEntry}>
@@ -187,7 +219,14 @@ const mapDispatchToProps = dispatch => {
           mvpId
         )
       ),
-    mvpKilledOrDeletedHandler: (minuteAgo, mvpKey, userKey, token, trackerKey, mvp) => {
+    mvpKilledOrDeletedHandler: (
+      minuteAgo,
+      mvpKey,
+      userKey,
+      token,
+      trackerKey,
+      mvp
+    ) => {
       return dispatch(
         actions.saveSingleMvpToDb(
           minuteAgo,

@@ -1,7 +1,7 @@
 import * as actionTypes from "./actionTypes";
 import mainAxios from "../../axios-mvps";
 
-//-----FETCH
+//----- FETCH
 export const fetchMvpsFromDb = (
   token,
   userId,
@@ -252,12 +252,6 @@ export const saveSingleMvpToDb = (
   mvp
 ) => {
   return dispatch => {
-    // const mvpToCast = mvp
-    //   ? {
-    //       ...mvp,
-    //       timeKilled: new Date(new Date().getTime() - Number(minuteAgo) * 60000)
-    //     }
-    //   : null;
     const mvpToCast = mvp
       ? {
           id: mvp.id,
@@ -381,8 +375,8 @@ export const fetchUserKey = (userId, token) => {
               trackerName: trackerObj[trackerKey].trackerName,
               trackerKey: trackerKey
             });
-            dispatch(fetchUserKeySuccess(userKey));
           });
+          dispatch(fetchUserKeySuccess(userKey));
           dispatch(storeAllTrackers(allTrackerIdentifiers));
         });
       })
@@ -410,6 +404,191 @@ export const fetchUserKeySuccess = userKey => {
 export const fetchUserKeyFail = error => {
   return {
     type: actionTypes.FETCH_USER_KEY_FAIL,
+    payload: {
+      error: error
+    }
+  };
+};
+
+//----- NOTIFICATION SETTINGS - SAVE
+
+export const saveNotificationsLocal = (notiTypeKey, itemToCast) => {
+  return dispatch => {
+    dispatch(saveNotificationSettingsSuccess(notiTypeKey, itemToCast));
+  };
+};
+
+export const saveNotificationSettings = (
+  token,
+  userKey,
+  notiTypeKey,
+  itemToCast
+) => {
+  return dispatch => {
+    dispatch(saveNotificationSettingsStart());
+    const url = "/users/" + userKey + "/settings/" + notiTypeKey + ".json";
+    const queryParams = "?auth=" + token;
+    mainAxios
+      .put(url + queryParams, itemToCast)
+      .then(res => {
+        dispatch(saveNotificationSettingsSuccess(notiTypeKey, itemToCast));
+      })
+      .catch(err => {
+        dispatch(saveNotificationSettingsFail(err));
+      });
+  };
+};
+
+export const addInitialNotificationSettings = (token, userKey) => {
+  return dispatch => {
+    dispatch(saveNotificationSettingsStart());
+    const url = "/users/" + userKey + "/settings" + ".json";
+    const queryParams = "?auth=" + token;
+    const itemToCast = {
+      notiMode: { mode: "all" },
+      notiSound: { mode: true },
+      notiType: { onMax: true, onMin: true, tenTillMin: true }
+    };
+    mainAxios
+      .put(url + queryParams, itemToCast)
+      .then(res => {
+        dispatch(
+          saveNotificationSettingsSuccess("notiMode", itemToCast.notiMode)
+        );
+        dispatch(
+          saveNotificationSettingsSuccess("notiType", itemToCast.notiType)
+        );
+        dispatch(
+          saveNotificationSettingsSuccess("notiSound", itemToCast.notiSound)
+        );
+      })
+      .catch(err => {
+        dispatch(saveNotificationSettingsFail(err));
+      });
+  };
+};
+
+export const saveNotificationSettingsStart = () => {
+  return {
+    type: actionTypes.SAVE_NOTIFICATIONS_START
+  };
+};
+
+export const saveNotificationSettingsSuccess = (notiTypeKey, itemToCast) => {
+  return {
+    type: actionTypes.SAVE_NOTIFICATIONS_SUCCESS,
+    payload: {
+      notiTypeKey: notiTypeKey,
+      itemToCast: itemToCast
+    }
+  };
+};
+
+export const saveNotificationSettingsFail = error => {
+  return {
+    type: actionTypes.SAVE_NOTIFICATIONS_FAIL,
+    payload: {
+      error: error
+    }
+  };
+};
+
+//----- INITIALIZE NOTIFICATION SETTINGS
+
+export const initializeNotificationSettings = (
+  userId,
+  token,
+  notiSettingsLocal
+) => {
+  return dispatch => {
+    dispatch(initializeNotificationSettingsStart());
+    const queryParams =
+      "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
+    console.log(
+      notiSettingsLocal.notiSound,
+      notiSettingsLocal.notiMode,
+      notiSettingsLocal.notiType
+    );
+    if (
+      notiSettingsLocal.notiSound !== null &&
+      notiSettingsLocal.notiMode !== null &&
+      notiSettingsLocal.notiType !== null
+    ) {
+      dispatch(initializeNotificationSettingsSuccess(notiSettingsLocal));
+    } else {
+      mainAxios
+        .get("users.json" + queryParams)
+        .then(res => {
+          Object.keys(res.data).map(userKey => {
+            const notiSettingsFromServer = res.data[userKey].settings
+              ? { ...res.data[userKey].settings }
+              : null;
+            const castedNotiSettings = notiSettingsFromServer
+              ? {
+                  notiSound: {
+                    mode: notiSettingsFromServer.notiSound.mode
+                  },
+                  notiMode: {
+                    mode: notiSettingsFromServer.notiMode.mode
+                  },
+                  notiType: {
+                    onMax: notiSettingsFromServer.notiType.onMax,
+                    onMin: notiSettingsFromServer.notiType.onMin,
+                    tenTillMin: notiSettingsFromServer.notiType.tenTillMin
+                  }
+                }
+              : null;
+            if (castedNotiSettings) {
+              const notiSoundToCast =
+                notiSettingsLocal.notiSound !== null
+                  ? notiSettingsLocal.notiSound
+                  : castedNotiSettings.notiSound;
+              const notiModeToCast =
+                notiSettingsLocal.notiMode !== null
+                  ? notiSettingsLocal.notiMode
+                  : castedNotiSettings.notiMode;
+              const notiTypeToCast =
+                notiSettingsLocal.notiType !== null
+                  ? notiSettingsLocal.notiType
+                  : castedNotiSettings.notiType;
+              const finalNotiSettToCast = {
+                notiSound: notiSoundToCast,
+                notiMode: notiModeToCast,
+                notiType: notiTypeToCast
+              };
+              dispatch(
+                initializeNotificationSettingsSuccess(finalNotiSettToCast)
+              );
+            } else {
+              dispatch(addInitialNotificationSettings(token, userKey));
+            }
+          });
+        })
+        .catch(error => {
+          return initializeNotificationSettingsFail(error);
+        });
+    }
+  };
+};
+
+export const initializeNotificationSettingsStart = () => {
+  return {
+    type: actionTypes.INITIALIZE_NOTIFICATIONS_START
+  };
+};
+
+export const initializeNotificationSettingsSuccess = notificationSettings => {
+  return {
+    type: actionTypes.INITIALIZE_NOTIFICATIONS_SUCCESS,
+    payload: {
+      notificationSettings: notificationSettings
+    }
+  };
+};
+
+export const initializeNotificationSettingsFail = error => {
+  return {
+    type: actionTypes.INITIALIZE_NOTIFICATIONS_FAIL,
     payload: {
       error: error
     }

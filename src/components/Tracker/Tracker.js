@@ -25,8 +25,6 @@ class Tracker extends Component {
     newMvpAdded: false
   };
 
-  componentWillMount() {}
-
   componentDidMount() {
     this.fetchMvps(true);
     let fetchInterval = setInterval(() => this.fetchMvps(false), 60000);
@@ -89,8 +87,12 @@ class Tracker extends Component {
     }
   };
 
-  render() {
+  notificationHandler = notiObj => {
+    // check current noti types compare and send noti if it allows
+    // console.log(notiObj) TODO
+  };
 
+  render() {
     let sortableMvpArr = [];
     for (let mvpKey in this.props.mvps) {
       sortableMvpArr.push([
@@ -101,15 +103,25 @@ class Tracker extends Component {
     }
 
     sortableMvpArr.sort(function(a, b) {
-      const compare1 = isNaN(a[1]) ? 99999999 : a[1]
-      const compare2 = isNaN(b[1]) ? 99999999 : b[1]
+      const compare1 = isNaN(a[1]) ? 99999999 : a[1];
+      const compare2 = isNaN(b[1]) ? 99999999 : b[1];
       return compare1 - compare2;
     });
 
-    let mvpsArrToRender = []
+    let mvpsArrToRender = [];
     sortableMvpArr.forEach(orderedMvpPair => {
-      mvpsArrToRender.push(<MvpEntry key={orderedMvpPair[2]} id={orderedMvpPair[2]} mvp={orderedMvpPair[0]} />)
+      mvpsArrToRender.push(
+        <MvpEntry
+          notifications="all"
+          onNotificate={noti => this.notificationHandler(noti)}
+          key={orderedMvpPair[2]}
+          id={orderedMvpPair[2]}
+          mvp={orderedMvpPair[0]}
+        />
+      );
     });
+
+    // TODO handle notifications prop above
 
     let noMvpsPlaceholder = mvpsArrToRender.length ? null : (
       <div className={classes.DefaultPlaceholder}>
@@ -133,7 +145,7 @@ class Tracker extends Component {
     );
 
     const routeToDefault =
-    mvpsArrToRender !== null && mvpsArrToRender.length !== 0 ? null : (
+      mvpsArrToRender !== null && mvpsArrToRender.length !== 0 ? null : (
         <Route
           path={this.props.match.path + "/default"}
           render={() => (

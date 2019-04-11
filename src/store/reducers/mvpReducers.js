@@ -1,5 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../../utility/utility";
+import { NONAME } from "dns";
 
 const initialState = {
   mvps: null,
@@ -11,7 +12,16 @@ const initialState = {
   activeTrackerKey: null,
   allTrackers: null,
   lastUpdated: new Date(),
-  message: null
+  message: null,
+  notificationSettings: {
+    notiSound: { mode: false },
+    notiMode: { mode: "none" },
+    notiType: {
+      onMax: false,
+      onMin: false,
+      tenTillMin: false
+    }
+  }
 };
 
 const calculateTimeTillSpawn = (state, action) => {
@@ -69,7 +79,10 @@ const reducer = (state = initialState, action) => {
     case actionTypes.FETCH_MVPS_SUCCESS:
       return fetchMvpsSuccess(state, action);
     case actionTypes.FETCH_MVPS_FAIL:
-      return updateObject(state, { loading: false });
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
     case actionTypes.CREATE_MVPS_START:
       return updateObject(state, { loading: true, mvps: action.payload.mvps });
     case actionTypes.CREATE_MVPS_SUCCESS:
@@ -118,9 +131,33 @@ const reducer = (state = initialState, action) => {
     case actionTypes.FETCH_USER_KEY_SUCCESS:
       return updateObject(state, {
         loading: false,
-        userKey: action.payload.userKey,
+        userKey: action.payload.userKey
       });
-    case actionTypes.FETCH_MVPS_FAIL:
+    case actionTypes.SAVE_NOTIFICATIONS_START:
+      return updateObject(state, {
+        loading: true
+      });
+    case actionTypes.SAVE_NOTIFICATIONS_SUCCESS:
+      return updateObject(state, {
+        loading: false,
+        notificationSettings: {
+          ...state.notificationSettings,
+          [action.payload.notiTypeKey]: action.payload.itemToCast
+        }
+      });
+    case actionTypes.SAVE_NOTIFICATIONS_FAIL:
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
+    case actionTypes.INITIALIZE_NOTIFICATIONS_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.INITIALIZE_NOTIFICATIONS_SUCCESS:
+      return updateObject(state, {
+        loading: false,
+        notificationSettings: action.payload.notificationSettings
+      });
+    case actionTypes.INITIALIZE_NOTIFICATIONS_FAIL:
       return updateObject(state, {
         loading: false,
         error: action.payload.error
