@@ -30,26 +30,6 @@ class MvpEntry extends Component {
     }, 60000);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.mvp.timeKilled !== this.props.mvp.timeKilled &&
-      this.state.mvpKilled
-
-    ) {
-      this.props.calculateTimeTillSpawn(
-        this.props.mvp.timeKilled,
-        this.props.mvp.minSpawn,
-        this.props.mvp.maxSpawn,
-        this.props.currentTime,
-        this.props.id
-      );
-      this.setState({
-        ...this.state,
-        mvpKilled: false
-      });
-    }
-  }
-
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -75,7 +55,7 @@ class MvpEntry extends Component {
       this.props.mvp,
       "killed"
     );
-    this.setState({ ...this.state, minAgoValue: 0, mvpKilled: true });
+    this.setState({ ...this.state, minAgoValue: 0 });
   };
 
   onMvpDeletedBtn = mvpKey => {
@@ -88,14 +68,28 @@ class MvpEntry extends Component {
       null,
       "delete"
     );
-    this.setState({ ...this.state, minAgoValue: 0, mvpKilled: true });
+    this.setState({ ...this.state, minAgoValue: 0 });
   };
 
   onMvpNotiToggleBtn = mvpKey => {
-    // dispatch action to put data on server
-  }
+    const mvpToCast = {
+      ...this.props.mvp,
+      notification: !this.props.mvp.notification
+    };
+    this.props.mvpKilledOrDeletedHandler(
+      null,
+      mvpKey,
+      this.props.userKey,
+      this.props.token,
+      this.props.trackerKey,
+      mvpToCast,
+      "toggleNotification"
+    );
+    this.setState({ ...this.state, minAgoValue: 0 });
+  };
 
   onShouldNotificate = () => {
+    console.log(this.props.notiMode)
     if (
       this.props.notiMode === "all" ||
       (this.props.notiMode === "custom" && this.props.mvp.notification)
@@ -103,17 +97,19 @@ class MvpEntry extends Component {
       let notificationToSend;
       notificationToSend =
         this.props.mvp.minTillSpawn === 10
-          ? { mvpKey: this.props.id, type: "tenMinTillMinSpawn" }
+          ? { mvpKey: this.props.id, type: "tenTillMin" }
           : null;
       notificationToSend =
         this.props.mvp.minTillSpawn === 0
-          ? { mvpKey: this.props.id, type: "onMinSpawn" }
+          ? { mvpKey: this.props.id, type: "onMin" }
           : notificationToSend;
       notificationToSend =
         this.props.mvp.maxTillSpawn === 0
-          ? { mvpKey: this.props.id, type: "onMaxSpawn" }
+          ? { mvpKey: this.props.id, type: "onMax" }
           : notificationToSend;
-      this.props.onNotificate(notificationToSend);
+      if (notificationToSend) {
+        this.props.onNotificate(notificationToSend);
+      }
     }
   };
 

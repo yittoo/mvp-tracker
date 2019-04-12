@@ -201,11 +201,11 @@ class Auth extends Component {
               : null}
           </p>
           <Button classes="ButtonAuth">
-            {this.state.isSignup ? "SIGNUP" : "SIGNIN"}
+            {this.state.isSignup ? "REGISTER" : "LOGIN"}
           </Button>
         </form>
         <Button classes="ButtonAuth" clicked={this.switchAuthModeHandler}>
-          SWITCH TO {this.state.isSignup ? "SIGNIN" : "SIGNUP"}
+          SWITCH TO {this.state.isSignup ? "LOGIN" : "REGISTER"}
         </Button>
       </React.Fragment>
     ) : (

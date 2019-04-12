@@ -13,6 +13,7 @@ import NewMvpForm from "../NewMvpForm/NewMvpForm";
 import Spinner from "../UI/Spinner/Spinner";
 import { clearInterval } from "timers";
 import LastUpdated from "./LastUpdated/LastUpdated";
+import Notification from "../Notification/Notification";
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("./DefaultMvpListTool/DefaultMvpListTool");
@@ -22,11 +23,12 @@ class Tracker extends Component {
   state = {
     defaultMvpListChosen: 0,
     showNewMvpForm: false,
-    newMvpAdded: false
+    newMvpAdded: false,
+    notiArr: []
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(nextProps !== this.props || nextState !== this.state){
+    if (nextProps !== this.props || nextState !== this.state) {
       return true;
     } else {
       return false;
@@ -95,9 +97,42 @@ class Tracker extends Component {
     }
   };
 
+  pushNotiToArr = () => {
+
+  }
+
   notificationHandler = notiObj => {
-    // check current noti types compare and send noti if it allows
-    // console.log(notiObj) TODO
+    console.log(this.props.notiSettings, notiObj)
+    // if (
+    //    ||
+    //   notiObj.type === this.props.notiSettings.notiType.onMin ||
+    //   notiObj.type === this.props.notiSettings.notiType.tenTillMin
+    // ) {
+    //   // TODO SPLIT NOTIS, FOR STATES LIKE FALSE TRUE FALSE ETC.
+    //   let notiArr = this.state.notiArr;
+    //   notiArr.push(notiObj);
+    //   this.setState(prevState => ({
+    //     ...prevState,
+    //     notiArr: notiArr
+    //   }));
+    //   setTimeout(() => {
+    //     let notiArrToSplice = this.state.notiArr;
+    //     notiArrToSplice.splice(0, 1);
+    //     this.setState(prevState => ({
+    //       ...prevState,
+    //       notiArr: notiArrToSplice
+    //     }));
+    //   }, 10000);
+    // }
+    if(notiObj.type === "onMax" && this.props.notiSettings.notiType.onMax){
+      console.log("onmax noti run")
+    }
+    if(notiObj.type === "onMin" && this.props.notiSettings.notiType.onMin){
+      console.log("onmin noti run")
+    }
+    if(notiObj.type === "tenTillMin" && this.props.notiSettings.notiType.tenTillMin){
+      console.log("tentill noti run")
+    }
   };
 
   render() {
@@ -127,8 +162,6 @@ class Tracker extends Component {
         />
       );
     });
-
-    // TODO handle notifications prop above
 
     let noMvpsPlaceholder = mvpsArrToRender.length ? null : (
       <div className={classes.DefaultPlaceholder}>
@@ -205,6 +238,23 @@ class Tracker extends Component {
       </Button>
     ) : null;
 
+    let notificationToRender = null;
+
+    notificationToRender =
+      this.state.notiArr && this.state.notiArr[0] && this.props.mvps ? (
+        <Notification show={this.state.notiArr.length}>
+          {this.state.notiArr[0].type !== "onMin"
+            ? this.state.notiArr[0].type === "onMax"
+              ? "Maximum time of "
+              : "Ten minutes till "
+            : "Minimum time of "}
+          <em>{this.props.mvps[this.state.notiArr[0].mvpKey].name}</em>
+          {this.state.notiArr[0].type === "tenTillMin"
+            ? "'s minimum spawn time"
+            : " is here"}
+        </Notification>
+      ) : null;
+
     return (
       <div className={classes.Tracker}>
         <HeaderBar>
@@ -219,6 +269,7 @@ class Tracker extends Component {
             {newMvpForm}
             {routeToDefault}
             {newMvpButton}
+            {notificationToRender}
           </React.Fragment>
         )}
       </div>
@@ -237,7 +288,8 @@ const mapStateToProps = state => {
     trackerName: state.mvp.activeTrackerName,
     trackerKey: state.mvp.activeTrackerKey,
     userKey: state.mvp.userKey || localStorage.getItem("userKey"),
-    lastUpdated: state.mvp.lastUpdated
+    lastUpdated: state.mvp.lastUpdated,
+    notiSettings: state.mvp.notificationSettings
   };
 };
 

@@ -253,30 +253,32 @@ export const saveSingleMvpToDb = (
   eventType
 ) => {
   return dispatch => {
-    // let mvpToCast;
-    // if (eventType === "killed" || eventType === "delete") {
-    const mvpToCast = mvp
-      ? {
-          id: mvp.id,
-          name: mvp.name,
-          map: mvp.map,
-          maxSpawn: mvp.maxSpawn,
-          minSpawn: mvp.minSpawn,
-          notification: mvp.notification,
-          timeKilled: new Date(new Date().getTime() - Number(minuteAgo) * 60000)
-        }
-      : {};
-    // } else if (eventType === "toggleNotification") {
-    //   mvpToCast = {
-    //     id: mvp.id,
-    //     name: mvp.name,
-    //     map: mvp.map,
-    //     maxSpawn: mvp.maxSpawn,
-    //     minSpawn: mvp.minSpawn,
-    //     notification: mvp.notification,
-    //     timeKilled: mvp.timeKilled
-    //   };
-    // }
+    let mvpToCast;
+    if (eventType === "killed" || eventType === "delete") {
+      mvpToCast = mvp
+        ? {
+            id: mvp.id,
+            name: mvp.name,
+            map: mvp.map,
+            maxSpawn: mvp.maxSpawn,
+            minSpawn: mvp.minSpawn,
+            notification: mvp.notification,
+            timeKilled: new Date(
+              new Date().getTime() - Number(minuteAgo) * 60000
+            )
+          }
+        : {};
+    } else if (eventType === "toggleNotification") {
+      mvpToCast = {
+        id: mvp.id,
+        name: mvp.name,
+        map: mvp.map,
+        maxSpawn: mvp.maxSpawn,
+        minSpawn: mvp.minSpawn,
+        notification: mvp.notification,
+        timeKilled: mvp.timeKilled
+      };
+    }
 
     dispatch(saveSingleMvpStart());
     const url =
@@ -291,34 +293,13 @@ export const saveSingleMvpToDb = (
     mainAxios
       .put(url + queryParams, mvpToCast)
       .then(res => {
-        console.log(res.data);
-        let mvpToUpdate = res.data ? { ...res.data } : null;
-        // if (mvpToUpdate) {
-        //   const fixedKilledAt = res.data.timeKilled
-        //     ? new Date(JSON.parse(JSON.stringify(res.data.timeKilled)))
-        //     : null;
-        //   const currentTime = new Date().getTime();
-        //   const differenceInMinutes = (
-        //     (currentTime - fixedKilledAt) /
-        //     60000
-        //   ).toFixed(0);
-        //   const minTillSpawn =
-        //     differenceInMinutes > 1440
-        //       ? "Unknown"
-        //       : res.data.minSpawn - differenceInMinutes;
-        //   const maxTillSpawn =
-        //     differenceInMinutes > 1440
-        //       ? "Unknown"
-        //       : res.data.maxSpawn - differenceInMinutes;
-        //   mvpToUpdate = {
-        //     ...res.data,
-        //     minTillSpawn: minTillSpawn,
-        //     maxTillSpawn: maxTillSpawn
-        //   };
-        //   dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
-        // } else {
-          dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
-        // }
+        let mvpToUpdate = res.data
+          ? {
+              ...res.data
+            }
+          : null;
+        dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
+        dispatch(calculateTimeToSpawn(mvpToUpdate.timeKilled, mvpToUpdate.minSpawn, mvpToUpdate.maxSpawn, new Date(), mvpKey))
       })
       .catch(err => {
         dispatch(saveSingleMvpFail(err));
@@ -659,7 +640,6 @@ export const calculateTimeToSpawn = (
   currentTime,
   mvpId
 ) => {
-  // TODO combine this to a single action for entirity of mvps
   const fixedKilledAt = killedAt
     ? new Date(JSON.parse(JSON.stringify(killedAt)))
     : null;

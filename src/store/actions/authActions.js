@@ -42,12 +42,11 @@ export const logout = () => {
   };
 };
 
-export const checkAuthTimeout = expirationTime => {
+export const checkAuthTimeout = (expirationTime, refreshToken) => {
   return dispatch => {
     setTimeout(() => {
-      const refreshToken = localStorage.getItem("refreshToken");
       if (refreshToken) {
-        refreshLoginSession(refreshToken);
+        dispatch(refreshLoginSession(refreshToken));
       } else {
         dispatch(logout());
       }
@@ -81,8 +80,6 @@ export const createNewUserEntry = (userId, token, username) => {
   });
 };
 
-export const checkPremium = userId => {};
-
 export const auth = (email, password, isSignup, keepLogged) => {
   return dispatch => {
     dispatch(authStart());
@@ -107,8 +104,10 @@ export const auth = (email, password, isSignup, keepLogged) => {
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
         localStorage.setItem("loggedEmail", email);
+        let refreshToken;
         if (keepLogged) {
-          localStorage.setItem("refreshToken", response.data.refreshToken);
+          refreshToken = response.data.refreshToken;
+          localStorage.setItem("refreshToken", refreshToken);
         }
         if (isSignup) {
           let promise = createNewUserEntry(
@@ -118,11 +117,11 @@ export const auth = (email, password, isSignup, keepLogged) => {
           );
           promise.then(bool => {
             dispatch(authSuccess(response.data.idToken, response.data.localId));
-            dispatch(checkAuthTimeout(response.data.expiresIn));
+            dispatch(checkAuthTimeout(response.data.expiresIn, refreshToken));
           });
         } else {
           dispatch(authSuccess(response.data.idToken, response.data.localId));
-          dispatch(checkAuthTimeout(response.data.expiresIn));
+          dispatch(checkAuthTimeout(response.data.expiresIn, refreshToken));
         }
       })
       .catch(err => {
@@ -138,10 +137,10 @@ export const authCheckState = () => {
       dispatch(logout());
     } else {
       const expirationDate = new Date(localStorage.getItem("expirationDate"));
+      const refreshToken = localStorage.getItem("refreshToken");
       if (expirationDate <= new Date()) {
-        const refreshToken = localStorage.getItem("refreshToken");
         if (refreshToken) {
-          refreshLoginSession(refreshToken);
+          dispatch(refreshLoginSession(refreshToken));
         } else {
           dispatch(logout());
         }
@@ -151,7 +150,8 @@ export const authCheckState = () => {
         dispatch(authSuccess(token, userId, userKey));
         dispatch(
           checkAuthTimeout(
-            (expirationDate.getTime() - new Date().getTime()) / 1000
+            (expirationDate.getTime() - new Date().getTime()) / 1000,
+            refreshToken
           )
         );
       }
@@ -160,20 +160,24 @@ export const authCheckState = () => {
 };
 
 export const refreshLoginSession = refreshToken => {
-  const url =
-    "https://securetoken.googleapis.com/v1/token?key=AIzaSyD0Zeimu-WY9hXaPj5A93eo6naiB8OAnGw";
-  const objToCast = {
-    grant_type: "refresh_token",
-    refresh_token: refreshToken
+  return dispatch => {
+    const url =
+      "https://securetoken.googleapis.com/v1/token?key=AIzaSyD0Zeimu-WY9hXaPj5A93eo6naiB8OAnGw";
+    const objToCast = {
+      grant_type: "refresh_token",
+      refresh_token: refreshToken
+    };
+    vanillaAxios.post(url, objToCast).then(response => {
+      const expirationDate = new Date(
+        new Date().getTime() + response.data.expires_in * 1000
+      );
+      localStorage.setItem("token", response.data.id_token);
+      localStorage.setItem("expirationDate", expirationDate);
+      localStorage.setItem("refreshToken", response.data.refresh_token);
+      dispatch(authSuccess(response.data.id_token, response.data.user_id));
+      dispatch(checkAuthTimeout(response.data.expires_in, refreshToken));
+    });
   };
-  vanillaAxios.post(url, objToCast).then(response => {
-    const expirationDate = new Date(
-      new Date().getTime() + response.data.expires_in * 1000
-    );
-    localStorage.setItem("token", response.data.id_token);
-    localStorage.setItem("expirationDate", expirationDate);
-    localStorage.setItem("refreshToken", response.data.refresh_token);
-  });
 };
 
 export const sendPasswordReset = email => {

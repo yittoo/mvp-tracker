@@ -393,7 +393,7 @@ class Profile extends Component {
       </div>
     );
 
-    const notiTypeForm = (
+    const notiTypeForm = notiSettingsProp.notiMode.mode !== "none" ? (
       <div className={classes.Section + " " + classes.Grid}>
         <div className={classes.Left}>
           Current notification modes{" "}
@@ -447,9 +447,9 @@ class Profile extends Component {
           </form>
         </div>
       </div>
-    );
+    ) : null;
 
-    const notiSoundForm = (
+    const notiSoundForm = notiSettingsProp.notiMode.mode !== "none" ? (
       <div className={classes.Section + " " + classes.Grid}>
         <div className={classes.Left}>
           Play sound with notification: {currentNotiData.sound}
@@ -485,7 +485,7 @@ class Profile extends Component {
           </form>
         </div>
       </div>
-    );
+    ) : null;
 
     const addNewTracker = (
       <div className={classes.Section + " " + classes.Grid}>

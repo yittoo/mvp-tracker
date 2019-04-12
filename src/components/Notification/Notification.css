@@ -1,0 +1,77 @@
+.Notification {
+  position: fixed;
+  width: 12%;
+  padding: 20px 20px 0 20px;
+  right: 5%;
+  bottom: -50%;
+}
+
+.Show {
+  bottom: -4%;
+  animation: slidein 0.6s cubic-bezier(0.47, 0.95, 1, 0.99);
+}
+
+.Hide {
+  animation: slideout 1s linear;
+  bottom: -50%;
+}
+
+@keyframes slidein {
+  0% {
+    bottom: -50%;
+  }
+  70% {
+    bottom: 2%;
+  }
+  100% {
+    bottom: -4%;
+  }
+}
+
+@keyframes slideout {
+  0% {
+    bottom: -4%;
+    opacity: 1;
+  }
+  100% {
+    bottom: -50%;
+    opacity: 0;
+  }
+}
+
+.NotiText {
+  position: relative;
+  left: 35px;
+  bottom: 5px;
+  color: white;
+  font-size: 1.2rem;
+  text-align: center;
+  width: 70%;
+  border: 3px solid #2980b9;
+  border-radius: 50%;
+  padding: 30px;
+  z-index: 10;
+  background-color: #2980b9;
+}
+
+.NotiText::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 41px solid transparent;
+  border-top-color: #2980b9;
+  border-bottom: 0;
+  border-right: 0;
+  margin-left: -20.5px;
+  margin-bottom: -41px;
+}
+
+.NotiImage {
+  position: relative;
+  bottom: 10px;
+  margin-left: 100%;
+  transform: translate(-70px, 0);
+}

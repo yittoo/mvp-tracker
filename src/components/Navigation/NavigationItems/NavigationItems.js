@@ -12,7 +12,7 @@ const navigationItems = props => {
       <NavigationItem link="/logout">Logout</NavigationItem>
     </React.Fragment>
   ) : (
-    <NavigationItem link="/auth">Authenticate</NavigationItem>
+    <NavigationItem link="/auth">Get Started!</NavigationItem>
   );
   return (
     <ul className={classes.NavigationItems}>

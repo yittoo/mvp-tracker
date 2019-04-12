@@ -21,15 +21,18 @@ const Index = props => {
             content.
           </p>
           <p className={classes.Paragraph}>
-            This website's only source of income is ads, I promise to keep them
-            on sides and not display on screen. So if you have it on please
-            disable adblocker, thanks!
-          </p>
-          <p className={classes.Paragraph}>
             Our website is fully responsive so that you are capable of using
             wherever you like whether it's on laptop, tablet or phone. It always
             syncronizes itself so you are able to share it even among your guild
             mates and friends.
+          </p>
+          <p className={classes.Paragraph}>
+            Edit your notification settings, decide whether to be warned
+            10minutes before, on minimum time or on maximum time! Save your
+            settings either on account or device. This allows different people
+            using same account have custom notifications each. You can also
+            choose specific MvPs that you want to recieve notifications from.
+            All in click of a button!
           </p>
           <p className={classes.Paragraph}>
             Please if you do find any bugs or want to advice contact us on
@@ -40,6 +43,14 @@ const Index = props => {
           <h3>Change Log:</h3>
           <hr />
           <p>10.04.2019 - Initial (open beta) launch</p>
+          <hr />
+          <h4>Known bugs:</h4>
+          <p>
+            After 1 hour into "Keep me signed in" there is a mvp update bug,
+            simply refresh page if "Last Updated" passes 60seconds,
+            notifications <em>should</em> still work even if the new times are
+            not fetched.
+          </p>
         </div>
       </div>
     </React.Fragment>
