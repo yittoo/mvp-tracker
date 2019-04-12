@@ -59,6 +59,8 @@ const saveSingleMvpSuccess = (state, action) => {
   let mvpsCopy = {...state.mvps}
   if(!action.payload.mvp){
     delete mvpsCopy[action.payload.mvpId]
+  } else {
+    mvpsCopy[action.payload.mvpId] = action.payload.mvp
   }
   return {
     ...state,

@@ -293,32 +293,32 @@ export const saveSingleMvpToDb = (
       .then(res => {
         console.log(res.data);
         let mvpToUpdate = res.data ? { ...res.data } : null;
-        if (mvpToUpdate) {
-          const fixedKilledAt = res.data.timeKilled
-            ? new Date(JSON.parse(JSON.stringify(res.data.timeKilled)))
-            : null;
-          const currentTime = new Date().getTime();
-          const differenceInMinutes = (
-            (currentTime - fixedKilledAt) /
-            60000
-          ).toFixed(0);
-          const minTillSpawn =
-            differenceInMinutes > 1440
-              ? "Unknown"
-              : res.data.minSpawn - differenceInMinutes;
-          const maxTillSpawn =
-            differenceInMinutes > 1440
-              ? "Unknown"
-              : res.data.maxSpawn - differenceInMinutes;
-          mvpToUpdate = {
-            ...res.data,
-            minTillSpawn: minTillSpawn,
-            maxTillSpawn: maxTillSpawn
-          };
+        // if (mvpToUpdate) {
+        //   const fixedKilledAt = res.data.timeKilled
+        //     ? new Date(JSON.parse(JSON.stringify(res.data.timeKilled)))
+        //     : null;
+        //   const currentTime = new Date().getTime();
+        //   const differenceInMinutes = (
+        //     (currentTime - fixedKilledAt) /
+        //     60000
+        //   ).toFixed(0);
+        //   const minTillSpawn =
+        //     differenceInMinutes > 1440
+        //       ? "Unknown"
+        //       : res.data.minSpawn - differenceInMinutes;
+        //   const maxTillSpawn =
+        //     differenceInMinutes > 1440
+        //       ? "Unknown"
+        //       : res.data.maxSpawn - differenceInMinutes;
+        //   mvpToUpdate = {
+        //     ...res.data,
+        //     minTillSpawn: minTillSpawn,
+        //     maxTillSpawn: maxTillSpawn
+        //   };
+        //   dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
+        // } else {
           dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
-        } else {
-          dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
-        }
+        // }
       })
       .catch(err => {
         dispatch(saveSingleMvpFail(err));
