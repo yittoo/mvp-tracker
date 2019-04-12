@@ -112,7 +112,6 @@ class Tracker extends Component {
     sortableMvpArr.forEach(orderedMvpPair => {
       mvpsArrToRender.push(
         <MvpEntry
-          notifications="all"
           onNotificate={noti => this.notificationHandler(noti)}
           key={orderedMvpPair[2]}
           id={orderedMvpPair[2]}

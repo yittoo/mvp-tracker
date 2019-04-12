@@ -29,5 +29,6 @@
 @media (max-width: 500px) {
   .Footer {
     margin-bottom: 10%;
+    margin-top: 5%;
   }
 }

@@ -87,10 +87,14 @@ class MvpEntry extends Component {
     );
   };
 
+  onMvpNotiToggleBtn = mvpKey => {
+    // dispatch action to put data on server
+  }
+
   onShouldNotificate = () => {
     if (
-      this.props.notifications === "all" ||
-      (this.props.notifications === "custom" && this.props.mvp.notification)
+      this.props.notiMode === "all" ||
+      (this.props.notiMode === "custom" && this.props.mvp.notification)
     ) {
       let notificationToSend;
       notificationToSend =
@@ -150,6 +154,15 @@ class MvpEntry extends Component {
       </Button>
     ) : null;
 
+    const mvpNotiToggleBtn =
+      this.props.notiMode === "custom" ? (
+        <Button clicked={() => this.onMvpNotiToggleBtn(this.props.id)}>
+          {this.props.mvp.shouldNotificate
+            ? "Disable Notification"
+            : "Enable Notification"}
+        </Button>
+      ) : null;
+
     return (
       <div className={classes.MvpEntry}>
         <div className={nameClasses.join(" ")}>{this.props.mvp.name}</div>
@@ -167,7 +180,6 @@ class MvpEntry extends Component {
         <div className={classes.Killed}>
           <span>Killed</span>
           {minuteInput}
-
           <span className={classes.MarginRight5px}>minutes ago</span>
           <Button
             classes="HideOnSmall"
@@ -186,6 +198,7 @@ class MvpEntry extends Component {
             Killed Now
           </Button>
           {mvpDeleteBtn}
+          {mvpNotiToggleBtn}
         </div>
       </div>
     );
@@ -197,7 +210,8 @@ const mapStateToProps = state => {
     currentTime: state.mvp.currentTime,
     userKey: state.mvp.userKey,
     token: state.auth.token,
-    trackerKey: state.mvp.activeTrackerKey
+    trackerKey: state.mvp.activeTrackerKey,
+    notiMode: state.mvp.notificationSettings.notiMode.mode
   };
 };
 

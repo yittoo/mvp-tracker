@@ -151,15 +151,13 @@ const reducer = (state = initialState, action) => {
         error: action.payload.error
       });
     case actionTypes.INITIALIZE_NOTIFICATIONS_START:
-      return updateObject(state, { loading: true });
+      return updateObject(state, {});
     case actionTypes.INITIALIZE_NOTIFICATIONS_SUCCESS:
       return updateObject(state, {
-        loading: false,
         notificationSettings: action.payload.notificationSettings
       });
     case actionTypes.INITIALIZE_NOTIFICATIONS_FAIL:
       return updateObject(state, {
-        loading: false,
         error: action.payload.error
       });
     default:

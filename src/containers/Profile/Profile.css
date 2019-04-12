@@ -8,7 +8,7 @@
   border-radius: 0 0 20px 20px;
 }
 
-.Section{
+.Section {
   padding: 10px;
   margin: 12px 0px;
   border-bottom: 1px solid #eee;
@@ -18,6 +18,25 @@
 .Section form {
   display: inline;
   margin-left: auto;
+}
+
+.Left{
+  grid-area: left;
+}
+.Right{
+  grid-area: right;
+}
+
+.TextAlignRight{
+  text-align: right;
+}
+
+.Grid {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  grid-template-areas: "left right";
+  align-items: center;
 }
 
 .Section select {
@@ -39,6 +58,7 @@
   padding: 5px 10px;
   border-radius: 10px;
   border: 1px solid #ccc;
+  margin: 8px 10px;
 }
 
 .Container {
@@ -61,8 +81,15 @@
   box-sizing: border-box;
 }
 
+@media (max-width: 1400px) {
+  .Grid {
+    grid-template-columns: 100%;
+    grid-template-areas: "left" "right";
+  }
+}
+
 @media (max-width: 500px) {
-  .FloatRight{
+  .FloatRight {
     float: unset;
   }
   .Section {
@@ -76,7 +103,7 @@
     display: block;
     margin: 8px 0;
   }
-  .Section form{
+  .Section form {
     display: block;
   }
   .Section select {
@@ -107,6 +134,9 @@
     margin: 10px 0px;
     left: 50%;
     display: block;
-    transform: translateX(-50%)
+    transform: translateX(-50%);
+  }
+  .TextAlignRight{
+    text-align: center;
   }
 }

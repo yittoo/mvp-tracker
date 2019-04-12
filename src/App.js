@@ -34,6 +34,28 @@ const AsyncTerms = asyncComponent(() => {
   return import("./components/PrivacyAndTos/TermsOfService");
 });
 
+const notiSound = localStorage.getItem("notiSound")
+  ? { mode: localStorage.getItem("notiSound") === "true" }
+  : null;
+const notiMode = localStorage.getItem("notiMode")
+  ? { mode: localStorage.getItem("notiMode") }
+  : null;
+const notiType =
+  localStorage.getItem("notiTypeOnMax") &&
+  localStorage.getItem("notiTypeOnMin") &&
+  localStorage.getItem("notiType10Till")
+    ? {
+        onMax: localStorage.getItem("notiTypeOnMax") === "true",
+        onMin: localStorage.getItem("notiTypeOnMin") === "true",
+        tenTillMin: localStorage.getItem("notiType10Till") === "true"
+      }
+    : null;
+const notiSettingsLocal = {
+  notiSound: notiSound,
+  notiMode: notiMode,
+  notiType: notiType
+};
+
 class App extends Component {
   state = {
     showPrivacyStatement: false,
@@ -45,27 +67,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const notiSound = localStorage.getItem("notiSound")
-      ? localStorage.getItem("notiSound") === "true"
-      : null;
-    const notiMode = localStorage.getItem("notiMode")
-      ? localStorage.getItem("notiMode")
-      : null;
-    const notiType =
-      localStorage.getItem("notiTypeOnMax") &&
-      localStorage.getItem("notiTypeOnMin") &&
-      localStorage.getItem("notiType10Till")
-        ? {
-            onMax: localStorage.getItem("notiTypeOnMax") === "true",
-            onMin: localStorage.getItem("notiTypeOnMin") === "true",
-            tenTillMin: localStorage.getItem("notiType10Till") === "true"
-          }
-        : null;
-    const notiSettingsLocal = {
-      notiSound: notiSound,
-      notiMode: notiMode,
-      notiType: notiType
-    };
     this.props.initializeNotificationSettings(
       this.props.userId,
       this.props.token,
@@ -91,6 +92,19 @@ class App extends Component {
       showTermsOfService: false
     });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.isAuthenticated !== this.props.isAuthenticated &&
+      this.props.isAuthenticated
+    ) {
+      this.props.initializeNotificationSettings(
+        this.props.userId,
+        this.props.token,
+        notiSettingsLocal
+      );
+    }
+  }
 
   render() {
     const privacyStatement = this.state.showPrivacyStatement ? (

@@ -504,11 +504,6 @@ export const initializeNotificationSettings = (
     dispatch(initializeNotificationSettingsStart());
     const queryParams =
       "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
-    console.log(
-      notiSettingsLocal.notiSound,
-      notiSettingsLocal.notiMode,
-      notiSettingsLocal.notiType
-    );
     if (
       notiSettingsLocal.notiSound !== null &&
       notiSettingsLocal.notiMode !== null &&

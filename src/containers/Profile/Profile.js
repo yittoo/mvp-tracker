@@ -109,9 +109,6 @@ class Profile extends Component {
 
   mvpNotiModeHandler = event => {
     event.preventDefault();
-    if (this.state.isForAllDevicesMode === "removeSettings") {
-      localStorage.removeItem("notiMode");
-    }
     if (
       this.state.selectNotificationMvps !== "" &&
       this.state.isForAllDevicesMode !== ""
@@ -130,6 +127,21 @@ class Profile extends Component {
           { mode: this.state.selectNotificationMvps }
         );
       }
+      this.setState({
+        ...this.state,
+        isForAllDevicesMode: "",
+        selectNotificationMvps: "",
+        message: "Notification mode updated."
+      });
+    }
+    if (this.state.isForAllDevicesMode === "removeSettings") {
+      localStorage.removeItem("notiMode");
+      this.setState({
+        ...this.state,
+        isForAllDevicesMode: "",
+        selectNotificationMvps: "",
+        message: "Please refresh the page for effects to take place"
+      });
     }
   };
 
@@ -152,11 +164,6 @@ class Profile extends Component {
 
   mvpNotiTypeHandler = event => {
     event.preventDefault();
-    if (this.state.isForAllDevicesType === "removeSettings") {
-      localStorage.removeItem("notiType10Till");
-      localStorage.removeItem("notiTypeOnMin");
-      localStorage.removeItem("notiTypeOnMax");
-    }
     if (this.state.isForAllDevicesType !== "") {
       if (this.state.isForAllDevicesType === "singleDevice") {
         localStorage.setItem("notiType10Till", this.state.notiType.tenTillMin);
@@ -181,14 +188,26 @@ class Profile extends Component {
           itemToCast
         );
       }
+      this.setState({
+        ...this.state,
+        isForAllDevicesType: "",
+        message: "Notification preferences updated."
+      });
+    }
+    if (this.state.isForAllDevicesType === "removeSettings") {
+      localStorage.removeItem("notiType10Till");
+      localStorage.removeItem("notiTypeOnMin");
+      localStorage.removeItem("notiTypeOnMax");
+      this.setState({
+        ...this.state,
+        isForAllDevicesType: "",
+        message: "Please refresh the page for effects to take place"
+      });
     }
   };
 
   mvpNotiSoundHandler = event => {
     event.preventDefault();
-    if (this.state.isForAllDevicesSound === "removeSettings") {
-      localStorage.removeItem("notiSound");
-    }
     if (this.state.isForAllDevicesSound !== "") {
       if (this.state.isForAllDevicesSound === "singleDevice") {
         localStorage.setItem("notiSound", this.state.notiSound);
@@ -204,6 +223,19 @@ class Profile extends Component {
           { mode: this.state.notiSound }
         );
       }
+      this.setState({
+        ...this.state,
+        isForAllDevicesSound: "",
+        message: "Notification sound setting updated."
+      });
+    }
+    if (this.state.isForAllDevicesSound === "removeSettings") {
+      localStorage.removeItem("notiSound");
+      this.setState(prevState => ({
+        ...prevState,
+        isForAllDevicesSound: "",
+        message: "Please refresh the page for effects to take place"
+      }));
     }
   };
 
@@ -278,53 +310,99 @@ class Profile extends Component {
       <div className={classes.Section}>No tracker to select</div>
     );
 
+    const notiSettingsProp = this.props.notiSettings;
+
+    const currentNotiData = {
+      mode:
+        notiSettingsProp.notiMode.mode === "none"
+          ? "No Notifications"
+          : notiSettingsProp.notiMode.mode === "all"
+          ? "All MvPs"
+          : "Selected MvPs",
+      sound: notiSettingsProp.notiSound.mode ? "On" : "Off"
+    };
+
     const notiModeForm = (
-      <div className={classes.Section}>
-        Current notification mode: All MvPs{" "}
-        <span className={colors.LightGray}>
-          (Local setting overrides all devices setting)
-        </span>
-        <form className={classes.FloatRight} onSubmit={this.mvpNotiModeHandler}>
-          <label>Notificate on:</label>
-          <select
-            value={this.state.selectNotificationMvps}
-            onChange={event =>
-              this.handleChange(event, "selectNotificationMvps")
-            }
-            disabled={this.state.isForAllDevicesMode === "removeSettings"}
-          >
-            {this.state.isForAllDevicesMode === "removeSettings" ? (
-              <option value="">Remove Local</option>
-            ) : (
-              <React.Fragment>
-                <option value="">Which MvPs</option>
-                <option value="all">All MvPs</option>
-                <option value="custom">Selected MvPs</option>
-                <option value="none">No Notifications</option>
-              </React.Fragment>
-            )}
-          </select>
-          <select
-            value={this.state.isForAllDevicesMode}
-            onChange={event => this.handleChange(event, "isForAllDevicesMode")}
-          >
-            <option value="">Where</option>
-            <option value="singleDevice">Just this device</option>
-            <option value="allDevices">For this account</option>
-            <option value="removeSettings">-Remove Local Settings-</option>
-          </select>
-          <Button type="submit">Update</Button>
-        </form>
+      <div className={classes.Section + " " + classes.Grid}>
+        <div className={classes.Left}>
+          Current notification mode: {currentNotiData.mode}{" "}
+          <span className={colors.LightGray}>
+            (Local settings overrides server)
+          </span>
+        </div>
+        <div className={classes.Right + " " + classes.TextAlignRight}>
+          <form onSubmit={this.mvpNotiModeHandler}>
+            <label>Notificate on:</label>
+            <select
+              value={this.state.selectNotificationMvps}
+              onChange={event =>
+                this.handleChange(event, "selectNotificationMvps")
+              }
+              disabled={this.state.isForAllDevicesMode === "removeSettings"}
+            >
+              {this.state.isForAllDevicesMode === "removeSettings" ? (
+                <option value="">Remove Local</option>
+              ) : (
+                <React.Fragment>
+                  <option value="">Which MvPs</option>
+                  <option value="all">All MvPs</option>
+                  <option value="custom">Selected MvPs</option>
+                  <option value="none">No Notifications</option>
+                </React.Fragment>
+              )}
+            </select>
+            <select
+              value={this.state.isForAllDevicesMode}
+              onChange={event =>
+                this.handleChange(event, "isForAllDevicesMode")
+              }
+            >
+              <option value="">Where</option>
+              <option value="singleDevice">Just this device</option>
+              <option value="allDevices">For this account</option>
+              <option value="removeSettings">-Remove Local Settings-</option>
+            </select>
+            <Button type="submit">Update</Button>
+          </form>
+        </div>
+      </div>
+    );
+
+    const notiModeTenTill = notiSettingsProp.notiType.tenTillMin ? (
+      <p className={colors.LightGray}>On 10 minutes to spawn: On</p>
+    ) : (
+      <p className={colors.LightGray}>On 10 minutes to spawn: Off</p>
+    );
+    const notiModeOnMin = notiSettingsProp.notiType.onMin ? (
+      <p className={colors.LightGray}>On minimum time: On</p>
+    ) : (
+      <p className={colors.LightGray}>On minimum time: Off</p>
+    );
+    const notiModeOnMax = notiSettingsProp.notiType.onMax ? (
+      <p className={colors.LightGray}>On maximum time: On</p>
+    ) : (
+      <p className={colors.LightGray}>On maximum time: Off</p>
+    );
+
+    const currentNotiMode = (
+      <div>
+        <p>Current Settings:</p>
+        {notiModeTenTill}
+        {notiModeOnMin}
+        {notiModeOnMax}
       </div>
     );
 
     const notiTypeForm = (
-      <div className={classes.Section}>
-        Current notification modes{" "}
-        <span className={colors.LightGray}>
-          Works only if you have notifications enabled
-        </span>
-        <div>
+      <div className={classes.Section + " " + classes.Grid}>
+        <div className={classes.Left}>
+          Current notification modes{" "}
+          <span className={colors.LightGray}>
+            Works only if you have notifications enabled
+          </span>
+          {currentNotiMode}
+        </div>
+        <div className={classes.Right + " " + classes.TextAlignRight}>
           <form onSubmit={this.mvpNotiTypeHandler}>
             <label>For:</label>
             <select
@@ -339,7 +417,7 @@ class Profile extends Component {
               <option value="removeSettings">-Remove Local Settings-</option>
             </select>
             <div>
-              <label>On 10 minutes to spawn</label>
+              <label>On 10 minutes to spawn:</label>
               <input
                 disabled={this.state.isForAllDevicesType === "removeSettings"}
                 type="checkbox"
@@ -348,7 +426,7 @@ class Profile extends Component {
               />
             </div>
             <div>
-              <label>On minimum time</label>
+              <label>On minimum time:</label>
               <input
                 disabled={this.state.isForAllDevicesType === "removeSettings"}
                 type="checkbox"
@@ -357,7 +435,7 @@ class Profile extends Component {
               />
             </div>
             <div>
-              <label>On max time:</label>
+              <label>On maximum time:</label>
               <input
                 disabled={this.state.isForAllDevicesType === "removeSettings"}
                 type="checkbox"
@@ -372,12 +450,15 @@ class Profile extends Component {
     );
 
     const notiSoundForm = (
-      <div className={classes.Section}>
-        Play sound with notification (True){" "}
-        <span className={colors.LightGray}>
-          Works only if you have notifications enabled
-        </span>
-        <div>
+      <div className={classes.Section + " " + classes.Grid}>
+        <div className={classes.Left}>
+          Play sound with notification: {currentNotiData.sound}
+          {"  "}
+          <span className={colors.LightGray}>
+            Works only if you have notifications enabled
+          </span>
+        </div>
+        <div className={classes.Right + " " + classes.TextAlignRight}>
           <form onSubmit={this.mvpNotiSoundHandler}>
             <label>Notificate on:</label>
             <select
@@ -407,27 +488,32 @@ class Profile extends Component {
     );
 
     const addNewTracker = (
-      <div className={classes.Section}>
-        <form onSubmit={this.handleCreateTracker}>
-          <label>New Tracker: </label>
-          <div className={classes.FloatRight}>
-            <input
-              value={this.state.trackerName}
-              type="text"
-              placeholder="Tracker Name"
-              onChange={event => this.handleChange(event, "trackerName")}
-            />
-            <Button type="submit">Create</Button>
-          </div>
-        </form>
+      <div className={classes.Section + " " + classes.Grid}>
+        <div className={classes.Left}>
+          <p>New Tracker:</p>
+        </div>
+        <div className={classes.Right}>
+          <form onSubmit={this.handleCreateTracker}>
+            <div className={classes.FloatRight}>
+              <input
+                value={this.state.trackerName}
+                type="text"
+                placeholder="Tracker Name"
+                onChange={event => this.handleChange(event, "trackerName")}
+              />
+              <Button type="submit">Create</Button>
+            </div>
+          </form>
+        </div>
       </div>
     );
 
     const deleteTracker = this.props.allTrackers ? (
-      <div className={classes.Section}>
-        Delete Tracker <span className={colors.LightGray}>(Permanently)</span>
-        <div className={classes.FloatRight}>
-          <form onSubmit={this.handleDeleteTracker}>
+      <div className={classes.Section + " " + classes.Grid}>
+      <div className={classes.Left}>
+        Delete Tracker <span className={colors.LightGray}>(Permanently)</span></div>
+        <div className={classes.Right}>
+          <form  className={classes.FloatRight} onSubmit={this.handleDeleteTracker}>
             <select
               value={this.state.deleteValue}
               onChange={event => this.handleChange(event, "deleteValue")}
@@ -532,7 +618,8 @@ const mapStateToProps = state => {
     authLoading: state.auth.loading,
     mvpLoading: state.mvp.loading,
     allTrackers: state.mvp.allTrackers,
-    activeTrackerName: state.mvp.activeTrackerName
+    activeTrackerName: state.mvp.activeTrackerName,
+    notiSettings: state.mvp.notificationSettings
   };
 };
 
