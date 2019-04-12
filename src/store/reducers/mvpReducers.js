@@ -56,18 +56,16 @@ const saveMvpsSuccess = (state, action) => {
 };
 
 const saveSingleMvpSuccess = (state, action) => {
+  let mvpsCopy = {...state.mvps}
+  if(!action.payload.mvp){
+    delete mvpsCopy[action.payload.mvpId]
+  }
   return {
     ...state,
     loading: false,
     lastUpdated: new Date(),
     mvps: {
-      ...state.mvps,
-      [action.payload.mvpId]: {
-        ...state.mvps[action.payload.mvpId],
-        timeKilled: action.payload.timeKilled,
-        maxTillSpawn: action.payload.maxTillSpawn,
-        minTillSpawn: action.payload.minTillSpawn
-      }
+      ...mvpsCopy
     }
   };
 };

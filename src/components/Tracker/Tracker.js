@@ -25,6 +25,14 @@ class Tracker extends Component {
     newMvpAdded: false
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps !== this.props || nextState !== this.state){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   componentDidMount() {
     this.fetchMvps(true);
     let fetchInterval = setInterval(() => this.fetchMvps(false), 60000);

@@ -34,6 +34,7 @@ class MvpEntry extends Component {
     if (
       prevProps.mvp.timeKilled !== this.props.mvp.timeKilled &&
       this.state.mvpKilled
+
     ) {
       this.props.calculateTimeTillSpawn(
         this.props.mvp.timeKilled,
@@ -71,7 +72,8 @@ class MvpEntry extends Component {
       this.props.userKey,
       this.props.token,
       this.props.trackerKey,
-      this.props.mvp
+      this.props.mvp,
+      "killed"
     );
     this.setState({ ...this.state, minAgoValue: 0, mvpKilled: true });
   };
@@ -83,8 +85,10 @@ class MvpEntry extends Component {
       this.props.userKey,
       this.props.token,
       this.props.trackerKey,
-      null
+      null,
+      "delete"
     );
+    this.setState({ ...this.state, minAgoValue: 0, mvpKilled: true });
   };
 
   onMvpNotiToggleBtn = mvpKey => {
@@ -157,7 +161,7 @@ class MvpEntry extends Component {
     const mvpNotiToggleBtn =
       this.props.notiMode === "custom" ? (
         <Button clicked={() => this.onMvpNotiToggleBtn(this.props.id)}>
-          {this.props.mvp.shouldNotificate
+          {this.props.mvp.notification
             ? "Disable Notification"
             : "Enable Notification"}
         </Button>
@@ -239,7 +243,8 @@ const mapDispatchToProps = dispatch => {
       userKey,
       token,
       trackerKey,
-      mvp
+      mvp,
+      eventType
     ) => {
       return dispatch(
         actions.saveSingleMvpToDb(
@@ -248,7 +253,8 @@ const mapDispatchToProps = dispatch => {
           userKey,
           token,
           trackerKey,
-          mvp
+          mvp,
+          eventType
         )
       );
     }

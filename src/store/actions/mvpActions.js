@@ -249,9 +249,12 @@ export const saveSingleMvpToDb = (
   userKey,
   token,
   trackerKey,
-  mvp
+  mvp,
+  eventType
 ) => {
   return dispatch => {
+    // let mvpToCast;
+    // if (eventType === "killed" || eventType === "delete") {
     const mvpToCast = mvp
       ? {
           id: mvp.id,
@@ -259,9 +262,21 @@ export const saveSingleMvpToDb = (
           map: mvp.map,
           maxSpawn: mvp.maxSpawn,
           minSpawn: mvp.minSpawn,
+          notification: mvp.notification,
           timeKilled: new Date(new Date().getTime() - Number(minuteAgo) * 60000)
         }
       : {};
+    // } else if (eventType === "toggleNotification") {
+    //   mvpToCast = {
+    //     id: mvp.id,
+    //     name: mvp.name,
+    //     map: mvp.map,
+    //     maxSpawn: mvp.maxSpawn,
+    //     minSpawn: mvp.minSpawn,
+    //     notification: mvp.notification,
+    //     timeKilled: mvp.timeKilled
+    //   };
+    // }
 
     dispatch(saveSingleMvpStart());
     const url =
@@ -276,7 +291,34 @@ export const saveSingleMvpToDb = (
     mainAxios
       .put(url + queryParams, mvpToCast)
       .then(res => {
-        dispatch(saveSingleMvpSuccess(mvpToCast.timeKilled, mvpKey));
+        console.log(res.data);
+        let mvpToUpdate = res.data ? { ...res.data } : null;
+        if (mvpToUpdate) {
+          const fixedKilledAt = res.data.timeKilled
+            ? new Date(JSON.parse(JSON.stringify(res.data.timeKilled)))
+            : null;
+          const currentTime = new Date().getTime();
+          const differenceInMinutes = (
+            (currentTime - fixedKilledAt) /
+            60000
+          ).toFixed(0);
+          const minTillSpawn =
+            differenceInMinutes > 1440
+              ? "Unknown"
+              : res.data.minSpawn - differenceInMinutes;
+          const maxTillSpawn =
+            differenceInMinutes > 1440
+              ? "Unknown"
+              : res.data.maxSpawn - differenceInMinutes;
+          mvpToUpdate = {
+            ...res.data,
+            minTillSpawn: minTillSpawn,
+            maxTillSpawn: maxTillSpawn
+          };
+          dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
+        } else {
+          dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
+        }
       })
       .catch(err => {
         dispatch(saveSingleMvpFail(err));
@@ -290,21 +332,21 @@ export const saveSingleMvpStart = () => {
   };
 };
 
+export const saveSingleMvpSuccess = (mvp, mvpKey) => {
+  return {
+    type: actionTypes.SAVE_SINGLE_MVP_SUCCESS,
+    payload: {
+      mvpId: mvpKey,
+      mvp: mvp
+    }
+  };
+};
+
 export const saveSingleMvpFail = err => {
   return {
     type: actionTypes.SAVE_SINGLE_MVP_FAIL,
     payload: {
       error: err
-    }
-  };
-};
-
-export const saveSingleMvpSuccess = (timeKilled, mvpKey) => {
-  return {
-    type: actionTypes.SAVE_SINGLE_MVP_SUCCESS,
-    payload: {
-      mvpId: mvpKey,
-      timeKilled: timeKilled
     }
   };
 };
