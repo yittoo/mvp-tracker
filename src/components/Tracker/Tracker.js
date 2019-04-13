@@ -14,6 +14,7 @@ import Spinner from "../UI/Spinner/Spinner";
 import { clearInterval } from "timers";
 import LastUpdated from "./LastUpdated/LastUpdated";
 import Notification from "../Notification/Notification";
+import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("./DefaultMvpListTool/DefaultMvpListTool");
@@ -97,41 +98,42 @@ class Tracker extends Component {
     }
   };
 
-  pushNotiToArr = () => {
-
-  }
+  pushNotiToArr = notiObj => {
+    let notiArr = this.state.notiArr;
+    notiArr.push(notiObj);
+    if (this.props.notiSettings.notiSound.mode && !this.state.playedSound) {
+      let audio = new Audio(noti_sound_url);
+      audio.volume = this.props.notiSettings.notiSound.volume || 0.5;
+      audio.play();
+    }
+    this.setState(prevState => ({
+      ...prevState,
+      notiArr: notiArr,
+      playedSound: true
+    }));
+    setTimeout(() => {
+      let notiArrToSplice = this.state.notiArr;
+      notiArrToSplice.splice(0, 1);
+      this.setState(prevState => ({
+        ...prevState,
+        notiArr: notiArrToSplice,
+        playedSound: false
+      }));
+    }, 10000);
+  };
 
   notificationHandler = notiObj => {
-    console.log(this.props.notiSettings, notiObj)
-    // if (
-    //    ||
-    //   notiObj.type === this.props.notiSettings.notiType.onMin ||
-    //   notiObj.type === this.props.notiSettings.notiType.tenTillMin
-    // ) {
-    //   // TODO SPLIT NOTIS, FOR STATES LIKE FALSE TRUE FALSE ETC.
-    //   let notiArr = this.state.notiArr;
-    //   notiArr.push(notiObj);
-    //   this.setState(prevState => ({
-    //     ...prevState,
-    //     notiArr: notiArr
-    //   }));
-    //   setTimeout(() => {
-    //     let notiArrToSplice = this.state.notiArr;
-    //     notiArrToSplice.splice(0, 1);
-    //     this.setState(prevState => ({
-    //       ...prevState,
-    //       notiArr: notiArrToSplice
-    //     }));
-    //   }, 10000);
-    // }
-    if(notiObj.type === "onMax" && this.props.notiSettings.notiType.onMax){
-      console.log("onmax noti run")
+    if (notiObj.type === "onMax" && this.props.notiSettings.notiType.onMax) {
+      this.pushNotiToArr(notiObj);
     }
-    if(notiObj.type === "onMin" && this.props.notiSettings.notiType.onMin){
-      console.log("onmin noti run")
+    if (notiObj.type === "onMin" && this.props.notiSettings.notiType.onMin) {
+      this.pushNotiToArr(notiObj);
     }
-    if(notiObj.type === "tenTillMin" && this.props.notiSettings.notiType.tenTillMin){
-      console.log("tentill noti run")
+    if (
+      notiObj.type === "tenTillMin" &&
+      this.props.notiSettings.notiType.tenTillMin
+    ) {
+      this.pushNotiToArr(notiObj);
     }
   };
 
@@ -238,22 +240,33 @@ class Tracker extends Component {
       </Button>
     ) : null;
 
-    let notificationToRender = null;
-
-    notificationToRender =
-      this.state.notiArr && this.state.notiArr[0] && this.props.mvps ? (
-        <Notification show={this.state.notiArr.length}>
-          {this.state.notiArr[0].type !== "onMin"
-            ? this.state.notiArr[0].type === "onMax"
-              ? "Maximum time of "
-              : "Ten minutes till "
-            : "Minimum time of "}
-          <em>{this.props.mvps[this.state.notiArr[0].mvpKey].name}</em>
-          {this.state.notiArr[0].type === "tenTillMin"
-            ? "'s minimum spawn time"
-            : " is here"}
-        </Notification>
-      ) : null;
+    const notiArrToRender = (
+      <Notification
+        show={this.state.notiArr ? this.state.notiArr.length : null}
+      >
+        {this.state.notiArr
+          ? this.state.notiArr.map(notiContent => {
+              return (
+                <p key={notiContent.mvpKey}>
+                  {notiContent.type !== "onMin"
+                    ? notiContent.type === "onMax"
+                      ? "Maximum time of "
+                      : "Ten minutes till "
+                    : "Minimum time of "}
+                  <em>
+                    {this.props.mvps
+                      ? this.props.mvps[notiContent.mvpKey].name
+                      : null}
+                  </em>
+                  {notiContent.type === "tenTillMin"
+                    ? "'s minimum spawn time"
+                    : " is here"}
+                </p>
+              );
+            })
+          : null}
+      </Notification>
+    );
 
     return (
       <div className={classes.Tracker}>
@@ -269,7 +282,7 @@ class Tracker extends Component {
             {newMvpForm}
             {routeToDefault}
             {newMvpButton}
-            {notificationToRender}
+            {notiArrToRender}
           </React.Fragment>
         )}
       </div>

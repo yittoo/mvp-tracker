@@ -64,12 +64,13 @@ export const createNewUserEntry = (userId, token, username) => {
         mode: "all"
       },
       notiSound: {
-        mode: true
+        mode: true,
+        volume: 0.5
       },
       notiType: {
-        onMax: true,
+        onMax: false,
         onMin: true,
-        tenTillMin: true
+        tenTillMin: false
       }
     }
   };

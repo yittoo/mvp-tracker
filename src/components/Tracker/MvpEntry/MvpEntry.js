@@ -4,13 +4,13 @@ import classes from "./MvpEntry.css";
 import colors from "../../UI/Colors/Colors.css";
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions";
-import Modal from "../../UI/Modal/Modal";
 
 class MvpEntry extends Component {
   state = {
     minAgoValue: 0,
     showModal: false,
-    deleteMode: localStorage.getItem("mvpDeleteMode") === "true"
+    deleteMode: localStorage.getItem("mvpDeleteMode") === "true",
+    hasNotificated: false
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -24,10 +24,19 @@ class MvpEntry extends Component {
     }
   }
 
-  componentDidMount() {
-    this.interval = setInterval(() => {
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.mvp.maxTillSpawn !== this.props.mvp.maxTillSpawn ||
+      prevProps.mvp.minTillSpawn !== this.props.mvp.minTillSpawn
+    ) {
       this.onShouldNotificate();
-    }, 60000);
+    }
+  }
+
+  componentDidMount() {
+    // this.interval = setInterval(() => {
+    //   this.onShouldNotificate();
+    // }, 60000);
   }
 
   componentWillUnmount() {
@@ -89,7 +98,6 @@ class MvpEntry extends Component {
   };
 
   onShouldNotificate = () => {
-    console.log(this.props.notiMode)
     if (
       this.props.notiMode === "all" ||
       (this.props.notiMode === "custom" && this.props.mvp.notification)
@@ -107,8 +115,18 @@ class MvpEntry extends Component {
         this.props.mvp.maxTillSpawn === 0
           ? { mvpKey: this.props.id, type: "onMax" }
           : notificationToSend;
-      if (notificationToSend) {
+      if (notificationToSend && !this.state.hasNotificated) {
+        this.setState({
+          ...this.state,
+          hasNotificated: true
+        });
         this.props.onNotificate(notificationToSend);
+        setTimeout(() => {
+          this.setState({
+            ...this.state,
+            hasNotificated: false
+          });
+        }, 60000);
       }
     }
   };

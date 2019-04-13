@@ -29,6 +29,20 @@
   border-left: none;
 }
 
+.Index ul {
+  list-style: none;
+}
+
+.Index ul li::before{
+  content: "-";
+  color: #2980b9;
+  font-weight: 900;
+  position: relative;
+  left: 2px;
+  margin-right: 5px;
+  bottom: 1px;
+}
+
 .Header {
   text-align: center;
 }
@@ -38,8 +52,13 @@
   margin-left: 20px;
 }
 
-.MiniHeader {
-
+.MiniHeader::before {
+  content: "";
+  border-left: #2980b9 6px solid;
+  position: relative;
+  left: 2px;
+  bottom: 1px;
+  margin-right: 5px;
 }
 
 .Paragraph {

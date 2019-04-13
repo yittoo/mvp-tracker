@@ -35,7 +35,7 @@ const AsyncTerms = asyncComponent(() => {
 });
 
 const notiSound = localStorage.getItem("notiSound")
-  ? { mode: localStorage.getItem("notiSound") === "true" }
+  ? { mode: localStorage.getItem("notiSound") === "true", volume: localStorage.getItem("notiVolume") }
   : null;
 const notiMode = localStorage.getItem("notiMode")
   ? { mode: localStorage.getItem("notiMode") }

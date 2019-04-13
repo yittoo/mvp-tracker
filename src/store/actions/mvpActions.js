@@ -544,7 +544,8 @@ export const initializeNotificationSettings = (
             const castedNotiSettings = notiSettingsFromServer
               ? {
                   notiSound: {
-                    mode: notiSettingsFromServer.notiSound.mode
+                    mode: notiSettingsFromServer.notiSound.mode,
+                    volume: notiSettingsFromServer.notiSound.volume || 0.5
                   },
                   notiMode: {
                     mode: notiSettingsFromServer.notiMode.mode

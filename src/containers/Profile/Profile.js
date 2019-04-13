@@ -5,17 +5,13 @@ import { connect } from "react-redux";
 import Button from "../../components/UI/Button/Button";
 import * as actions from "../../store/actions";
 import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
-import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
 import colors from "../../components/UI/Colors/Colors.css";
-
-const AsyncDefaultMvps = asyncComponent(() => {
-  return import("../../components/Tracker/DefaultMvpListTool/DefaultMvpListTool");
-});
+import xss from "xss";
+import Slider from "react-input-slider";
+import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
 
 class Profile extends Component {
-  componentDidMount() {
-    this.props.fetchUserKey(this.props.userId, this.props.token);
-  }
+  
 
   constructor(props) {
     super(props);
@@ -32,12 +28,17 @@ class Profile extends Component {
         onMin: false,
         onMax: false
       },
-      notiSound: false,
+      notiSound: true,
+      volume: 0.5,
       message: null,
       refreshComponent: 0,
       resetBtnDisabled: false,
-      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true"
+      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true",
     };
+  }
+
+  componentDidMount() {
+    this.props.fetchUserKey(this.props.userId, this.props.token);
   }
 
   handleChange = (event, area) => {
@@ -76,7 +77,7 @@ class Profile extends Component {
         this.props.createNewTracker(
           this.props.userId,
           this.props.token,
-          this.state.trackerName,
+          xss(this.state.trackerName),
           this.props.userKey,
           null
         );
@@ -211,8 +212,10 @@ class Profile extends Component {
     if (this.state.isForAllDevicesSound !== "") {
       if (this.state.isForAllDevicesSound === "singleDevice") {
         localStorage.setItem("notiSound", this.state.notiSound);
+        localStorage.setItem("notiVolume", this.state.volume);
         this.props.saveNotificationSettingsLocal("notiSound", {
-          mode: this.state.notiSound
+          mode: this.state.notiSound,
+          volume: this.state.volume
         });
       }
       if (this.state.isForAllDevicesSound === "allDevices") {
@@ -220,7 +223,7 @@ class Profile extends Component {
           this.props.token,
           this.props.userKey,
           "notiSound",
-          { mode: this.state.notiSound }
+          { mode: this.state.notiSound, volume: this.state.volume }
         );
       }
       this.setState({
@@ -231,12 +234,32 @@ class Profile extends Component {
     }
     if (this.state.isForAllDevicesSound === "removeSettings") {
       localStorage.removeItem("notiSound");
+      localStorage.setItem("notiVolume", this.state.volume);
       this.setState(prevState => ({
         ...prevState,
         isForAllDevicesSound: "",
         message: "Please refresh the page for effects to take place"
       }));
     }
+  };
+
+  notiSoundSliderHandler = value => {
+    if (!this.state.played) {
+      const audio = new Audio(noti_sound_url);
+      audio.volume = value;
+      audio.play();
+    }
+    this.setState({
+      ...this.state,
+      volume: value,
+      played: true
+    });
+    setTimeout(() => {
+      this.setState({
+        ...this.state,
+        played: false
+      });
+    }, 1000);
   };
 
   mvpDeleteModeHandler = () => {
@@ -319,7 +342,8 @@ class Profile extends Component {
           : notiSettingsProp.notiMode.mode === "all"
           ? "All MvPs"
           : "Selected MvPs",
-      sound: notiSettingsProp.notiSound.mode ? "On" : "Off"
+      sound: notiSettingsProp.notiSound.mode ? "On" : "Off",
+      volume: notiSettingsProp.notiSound.volume
     };
 
     const notiModeForm = (
@@ -393,99 +417,112 @@ class Profile extends Component {
       </div>
     );
 
-    const notiTypeForm = notiSettingsProp.notiMode.mode !== "none" ? (
-      <div className={classes.Section + " " + classes.Grid}>
-        <div className={classes.Left}>
-          Current notification modes{" "}
-          <span className={colors.LightGray}>
-            Works only if you have notifications enabled
-          </span>
-          {currentNotiMode}
+    const notiTypeForm =
+      notiSettingsProp.notiMode.mode !== "none" ? (
+        <div className={classes.Section + " " + classes.Grid}>
+          <div className={classes.Left}>
+            Current notification modes{" "}
+            <span className={colors.LightGray}>
+              Works only if you have notifications enabled
+            </span>
+            {currentNotiMode}
+          </div>
+          <div className={classes.Right + " " + classes.TextAlignRight}>
+            <form onSubmit={this.mvpNotiTypeHandler}>
+              <label>For:</label>
+              <select
+                value={this.state.isForAllDevicesType}
+                onChange={event =>
+                  this.handleChange(event, "isForAllDevicesType")
+                }
+              >
+                <option value="">Please Select</option>
+                <option value="singleDevice">Just this device</option>
+                <option value="allDevices">For this account</option>
+                <option value="removeSettings">-Remove Local Settings-</option>
+              </select>
+              <div>
+                <label>On 10 minutes to spawn:</label>
+                <input
+                  disabled={this.state.isForAllDevicesType === "removeSettings"}
+                  type="checkbox"
+                  checked={this.state.notiType.tenTillMin}
+                  onChange={() => this.checkboxHandler("tenTillMin")}
+                />
+              </div>
+              <div>
+                <label>On minimum time:</label>
+                <input
+                  disabled={this.state.isForAllDevicesType === "removeSettings"}
+                  type="checkbox"
+                  checked={this.state.notiType.onMin}
+                  onChange={() => this.checkboxHandler("onMin")}
+                />
+              </div>
+              <div>
+                <label>On maximum time:</label>
+                <input
+                  disabled={this.state.isForAllDevicesType === "removeSettings"}
+                  type="checkbox"
+                  checked={this.state.notiType.onMax}
+                  onChange={() => this.checkboxHandler("onMax")}
+                />
+              </div>
+              <Button type="submit">Update</Button>
+            </form>
+          </div>
         </div>
-        <div className={classes.Right + " " + classes.TextAlignRight}>
-          <form onSubmit={this.mvpNotiTypeHandler}>
-            <label>For:</label>
-            <select
-              value={this.state.isForAllDevicesType}
-              onChange={event =>
-                this.handleChange(event, "isForAllDevicesType")
-              }
-            >
-              <option value="">Please Select</option>
-              <option value="singleDevice">Just this device</option>
-              <option value="allDevices">For this account</option>
-              <option value="removeSettings">-Remove Local Settings-</option>
-            </select>
-            <div>
-              <label>On 10 minutes to spawn:</label>
-              <input
-                disabled={this.state.isForAllDevicesType === "removeSettings"}
-                type="checkbox"
-                checked={this.state.notiType.tenTillMin}
-                onChange={() => this.checkboxHandler("tenTillMin")}
-              />
-            </div>
-            <div>
-              <label>On minimum time:</label>
-              <input
-                disabled={this.state.isForAllDevicesType === "removeSettings"}
-                type="checkbox"
-                checked={this.state.notiType.onMin}
-                onChange={() => this.checkboxHandler("onMin")}
-              />
-            </div>
-            <div>
-              <label>On maximum time:</label>
-              <input
-                disabled={this.state.isForAllDevicesType === "removeSettings"}
-                type="checkbox"
-                checked={this.state.notiType.onMax}
-                onChange={() => this.checkboxHandler("onMax")}
-              />
-            </div>
-            <Button type="submit">Update</Button>
-          </form>
-        </div>
-      </div>
-    ) : null;
+      ) : null;
 
-    const notiSoundForm = notiSettingsProp.notiMode.mode !== "none" ? (
-      <div className={classes.Section + " " + classes.Grid}>
-        <div className={classes.Left}>
-          Play sound with notification: {currentNotiData.sound}
-          {"  "}
-          <span className={colors.LightGray}>
-            Works only if you have notifications enabled
-          </span>
+    const notiSoundForm =
+      notiSettingsProp.notiMode.mode !== "none" ? (
+        <div className={classes.Section + " " + classes.Grid}>
+          <div className={classes.Left}>
+            Play sound with notification: {currentNotiData.sound} Volume: ({currentNotiData.volume*100}%)
+            {"  "}
+            <p className={colors.LightGray}>
+              Works only if you have notifications enabled
+            </p>
+          </div>
+          <div className={classes.Right + " " + classes.TextAlignRight}>
+            <form onSubmit={this.mvpNotiSoundHandler}>
+              <label>Notificate on:</label>
+              <select
+                value={this.state.isForAllDevicesSound}
+                onChange={event =>
+                  this.handleChange(event, "isForAllDevicesSound")
+                }
+              >
+                <option value="">Please Select</option>
+                <option value="singleDevice">Just this device</option>
+                <option value="allDevices">For this account</option>
+                <option value="removeSettings">Remove Local Settings</option>
+              </select>
+              <div>
+                <label>Play sound with notification:</label>
+                <input
+                  disabled={
+                    this.state.isForAllDevicesSound === "removeSettings"
+                  }
+                  type="checkbox"
+                  checked={this.state.notiSound}
+                  onChange={() => this.checkboxHandler("notiSound")}
+                />
+              </div>
+              <div>
+                <Slider
+                  axis="x"
+                  x={this.state.volume}
+                  onChange={({ x }) => this.notiSoundSliderHandler(x)}
+                  xmax={1}
+                  xstep={0.01}
+                />
+              </div>
+              <Button type="submit">Update</Button>
+            </form>
+          </div>
         </div>
-        <div className={classes.Right + " " + classes.TextAlignRight}>
-          <form onSubmit={this.mvpNotiSoundHandler}>
-            <label>Notificate on:</label>
-            <select
-              value={this.state.isForAllDevicesSound}
-              onChange={event =>
-                this.handleChange(event, "isForAllDevicesSound")
-              }
-            >
-              <option value="">Please Select</option>
-              <option value="singleDevice">Just this device</option>
-              <option value="allDevices">For this account</option>
-              <option value="removeSettings">Remove Local Settings</option>
-            </select>
-            <div>
-              <label>Play sound with notification:</label>
-              <input
-                disabled={this.state.isForAllDevicesSound === "removeSettings"}
-                type="checkbox"
-                checked={this.state.notiSound}
-                onChange={() => this.checkboxHandler("notiSound")}
-              />
-            </div>
-            <Button type="submit">Update</Button>
-          </form>
-        </div>
-      </div>
-    ) : null;
+      ) : null;
 
     const addNewTracker = (
       <div className={classes.Section + " " + classes.Grid}>
@@ -510,10 +547,14 @@ class Profile extends Component {
 
     const deleteTracker = this.props.allTrackers ? (
       <div className={classes.Section + " " + classes.Grid}>
-      <div className={classes.Left}>
-        Delete Tracker <span className={colors.LightGray}>(Permanently)</span></div>
+        <div className={classes.Left}>
+          Delete Tracker <span className={colors.LightGray}>(Permanently)</span>
+        </div>
         <div className={classes.Right}>
-          <form  className={classes.FloatRight} onSubmit={this.handleDeleteTracker}>
+          <form
+            className={classes.FloatRight}
+            onSubmit={this.handleDeleteTracker}
+          >
             <select
               value={this.state.deleteValue}
               onChange={event => this.handleChange(event, "deleteValue")}

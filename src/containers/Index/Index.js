@@ -17,8 +17,13 @@ const Index = props => {
         <div className={classes.LeftColumn}>
           <p className={classes.Paragraph}>
             Currently this website consists of a MvP TimeTracker that is in beta
-            testing phase. More functionalities will be coming as well as other
-            content.
+            testing phase. All you have to do is register with an email(used in
+            case you forget your password), and that's it no activation
+            required.
+          </p>
+          <p className={classes.Paragraph}>
+            If you are a server owner and want a customized tracker for your
+            players contact me on suggest@mvp-ro.com with details.
           </p>
           <p className={classes.Paragraph}>
             Our website is fully responsive so that you are capable of using
@@ -27,13 +32,28 @@ const Index = props => {
             mates and friends.
           </p>
           <p className={classes.Paragraph}>
-            Edit your notification settings, decide whether to be warned
-            10minutes before, on minimum time or on maximum time! Save your
-            settings either on account or device. This allows different people
-            using same account have custom notifications each. You can also
-            choose specific MvPs that you want to recieve notifications from.
-            All in click of a button!
+            Edit your notification settings, decide whether to be warned 10
+            minutes before, on minimum time or on maximum time! Save your
+            settings either on account or single device. This allows different
+            people using same account have custom notifications each. You can
+            also choose specific MvPs that you want to recieve notifications
+            from. All in click of a button in your control panel.
           </p>
+          <h4 className={classes.MiniHeader}>Default notification settings:</h4>
+          <ul>
+            <li>
+              Play notification sound enabled{" "}
+              <span className={colors.LightGray}>
+                (Volume level adjustable at control panel)
+              </span>
+            </li>
+            <li>
+              It will warn you on minimum time, but you need to enable
+              notification on maximum time and 10 minutes till minimum spawn if
+              you want to.
+            </li>
+            <li>It will notificate on all MvPs</li>
+          </ul>
           <p className={classes.Paragraph}>
             Please if you do find any bugs or want to advice contact us on
             suggest@mvp-ro.com
@@ -42,15 +62,23 @@ const Index = props => {
         <div className={classes.RightColumn}>
           <h3>Change Log:</h3>
           <hr />
-          <p>10.04.2019 - Initial (open beta) launch</p>
+          <p>13.04.2019 - Notifications (Beta) Implemented</p>
+          <p>10.04.2019 - Initial (Beta) Launch</p>
+          <hr />
+          <h4>Updates to come:</h4>
+          <p>All around visual improvements</p>
+          <p>Custom themes - including dark mode</p>
+          <p>Customized server pages</p>
+          <p>
+            Ragnarok Online Guides{" "}
+            <span className={colors.LightGray}>
+              Content still not decided, if there is specific guide you'd like
+              contact us
+            </span>
+          </p>
           <hr />
           <h4>Known bugs:</h4>
-          <p>
-            After 1 hour into "Keep me signed in" there is a mvp update bug,
-            simply refresh page if "Last Updated" passes 60seconds,
-            notifications <em>should</em> still work even if the new times are
-            not fetched.
-          </p>
+          <p>-All known bugs have been fixed-</p>
         </div>
       </div>
     </React.Fragment>

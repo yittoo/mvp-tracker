@@ -5,6 +5,7 @@ import Spinner from "../UI/Spinner/Spinner";
 import { connect } from "react-redux";
 import Button from '../UI/Button/Button';
 import classes from './NewMvpForm.css';
+import xss from 'xss';
 
 
 class Form extends Component {
@@ -91,9 +92,9 @@ class Form extends Component {
     event.preventDefault();
     const formData = {};
     for (let formElementIdentifier in this.state.mvpForm) {
-      formData[formElementIdentifier] = this.state.mvpForm[
+      formData[formElementIdentifier] = xss(this.state.mvpForm[
         formElementIdentifier
-      ].value;
+      ].value);
     }
     formData.minTillSpawn = null;
     formData.maxTillSpawn = null;
