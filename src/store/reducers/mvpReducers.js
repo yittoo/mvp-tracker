@@ -13,7 +13,7 @@ const initialState = {
   lastUpdated: new Date(),
   message: null,
   notificationSettings: {
-    notiSound: { mode: false },
+    notiSound: { mode: false, volume: 0.5 },
     notiMode: { mode: "none" },
     notiType: {
       onMax: false,
@@ -132,6 +132,10 @@ const reducer = (state = initialState, action) => {
         loading: false,
         userKey: action.payload.userKey
       });
+    case actionTypes.FETCH_USER_KEY_FAIL:
+      return updateObject(state, {
+        loading: false
+      })
     case actionTypes.SAVE_NOTIFICATIONS_START:
       return updateObject(state, {
         loading: true
@@ -150,14 +154,16 @@ const reducer = (state = initialState, action) => {
         error: action.payload.error
       });
     case actionTypes.INITIALIZE_NOTIFICATIONS_START:
-      return updateObject(state, {});
+      return updateObject(state, { loading: true });
     case actionTypes.INITIALIZE_NOTIFICATIONS_SUCCESS:
       return updateObject(state, {
-        notificationSettings: action.payload.notificationSettings
+        notificationSettings: action.payload.notificationSettings,
+        loading: false
       });
     case actionTypes.INITIALIZE_NOTIFICATIONS_FAIL:
       return updateObject(state, {
-        error: action.payload.error
+        error: action.payload.error,
+        loading: false
       });
     default:
       return initialState;
