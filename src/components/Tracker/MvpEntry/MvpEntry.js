@@ -148,12 +148,16 @@ class MvpEntry extends Component {
     const agoOrMore = untilSpawnColor === "Red" ? "ago" : "more";
     const untilSpawnClasses = [classes.UntilSpawn, colors[untilSpawnColor]];
 
-    const untilSpawnValue =
+    let untilSpawnValue =
       this.props.mvp.minTillSpawn === "Unknown" ||
       this.props.mvp.minTillSpawn === undefined ||
       this.props.mvp.minTillSpawn === null
         ? "Unknown"
         : this.props.mvp.minTillSpawn + " - " + this.props.mvp.maxTillSpawn;
+
+    if(Number(this.props.mvp.maxTillSpawn < 0)){
+      untilSpawnValue = Math.abs(this.props.mvp.minTillSpawn) + " - " + Math.abs(this.props.mvp.maxTillSpawn)
+    }
 
     const minuteInput = (
       <input
