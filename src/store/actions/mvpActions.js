@@ -401,12 +401,17 @@ export const fetchUserKey = (userId, token) => {
         Object.keys(res.data).map(userKey => {
           const trackerObj = res.data[userKey].trackers;
           localStorage.setItem("userKey", userKey);
-          Object.keys(trackerObj).map(trackerKey => {
-            allTrackerIdentifiers.push({
-              trackerName: trackerObj[trackerKey].trackerName,
-              trackerKey: trackerKey
+          if(trackerObj){
+            Object.keys(trackerObj).map(trackerKey => {
+              allTrackerIdentifiers.push({
+                trackerName: trackerObj[trackerKey].trackerName,
+                trackerKey: trackerKey
+              });
             });
-          });
+          }
+          if(allTrackerIdentifiers.length === 0){
+            allTrackerIdentifiers = null
+          }
           dispatch(fetchUserKeySuccess(userKey));
           dispatch(storeAllTrackers(allTrackerIdentifiers));
         });
@@ -553,26 +558,29 @@ export const initializeSettings = (
             const settingsFromServer = res.data[userKey].settings
               ? { ...res.data[userKey].settings }
               : null;
-            const castedSettings = settingsFromServer
-              ? {
-                  notiSound: {
-                    mode: settingsFromServer.notiSound.mode,
-                    volume: settingsFromServer.notiSound.volume || 0.5
-                  },
-                  notiMode: {
-                    mode: settingsFromServer.notiMode.mode
-                  },
-                  notiType: {
-                    onMax: settingsFromServer.notiType.onMax,
-                    onMin: settingsFromServer.notiType.onMin,
-                    tenTillMin: settingsFromServer.notiType.tenTillMin
-                  },
-                  theme: {
-                    name: settingsFromServer.theme.name
+            const castedSettings =
+              settingsFromServer && settingsFromServer.theme
+                ? {
+                    notiSound: {
+                      mode: settingsFromServer.notiSound.mode,
+                      volume: settingsFromServer.notiSound.volume || 0.5
+                    },
+                    notiMode: {
+                      mode: settingsFromServer.notiMode.mode
+                    },
+                    notiType: {
+                      onMax: settingsFromServer.notiType.onMax,
+                      onMin: settingsFromServer.notiType.onMin,
+                      tenTillMin: settingsFromServer.notiType.tenTillMin
+                    },
+                    theme: {
+                      name: settingsFromServer.theme
+                        ? settingsFromServer.theme.name
+                        : null
+                    }
                   }
-                }
-              : null;
-            if (castedSettings && castedSettings.theme) {
+                : null;
+            if (castedSettings && castedSettings.theme.name) {
               const notiSoundToCast =
                 notiSettingsLocal.notiSound !== null
                   ? notiSettingsLocal.notiSound
@@ -585,8 +593,9 @@ export const initializeSettings = (
                 notiSettingsLocal.notiType !== null
                   ? notiSettingsLocal.notiType
                   : castedSettings.notiType;
-              const themeToCast =
-                themeLocal ? themeLocal : castedSettings.theme.name;
+              const themeToCast = themeLocal
+                ? themeLocal
+                : castedSettings.theme.name;
               const finalNotiSettToCast = {
                 notiSound: notiSoundToCast,
                 notiMode: notiModeToCast,

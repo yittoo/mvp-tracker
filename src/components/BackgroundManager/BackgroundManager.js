@@ -7,15 +7,11 @@ class BackgroundManager extends Component {
     right: null,
     leftStyle: {},
     rightStyle: {},
-    screenSizeChanged: true,
     currentWidth: null
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.props.theme &&
-      (!this.state.left || this.state.screenSizeChanged)
-    ) {
+    if (this.props.theme && prevProps.theme !== this.props.theme) {
       let urlLeft, urlRight, leftStyle, rightStyle;
       if (this.props.theme === "default") {
         urlLeft = "https://i.postimg.cc/bJCbGPqC/atrocewhitebgflipped.jpg";
@@ -23,8 +19,8 @@ class BackgroundManager extends Component {
       } else if (this.props.theme === "Bio Labs") {
         urlLeft = "https://i.postimg.cc/nzcq2k2P/bio-left.jpg";
         urlRight = "https://i.postimg.cc/jjhzy9Hf/bio-right.jpg";
-        leftStyle = {height: "100%", width: "100%"};
-        rightStyle = {height: "100%", width: "100%"};
+        leftStyle = { height: "100%", width: "100%" };
+        rightStyle = { height: "100%", width: "100%" };
       } else {
         urlLeft = "https://i.postimg.cc/bJCbGPqC/atrocewhitebgflipped.jpg";
         urlRight = "https://i.postimg.cc/Xqt3T6qr/rsx.jpg";
@@ -36,19 +32,25 @@ class BackgroundManager extends Component {
           right: urlRight,
           leftStyle: leftStyle,
           rightStyle: rightStyle,
-          screenSizeChanged: false,
           currentWidth: window.innerWidth
         });
       } else {
         this.setState({
           ...this.state,
           left: urlLeft,
-          screenSizeChanged: false,
           currentWidth: window.innerWidth,
           leftStyle: leftStyle,
-          rightStyle: rightStyle,
+          rightStyle: rightStyle
         });
       }
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps !== this.props || nextState !== this.state) {
+      return true;
+    } else {
+      return false;
     }
   }
   render() {

@@ -74,6 +74,15 @@ class App extends Component {
     clearInterval(this.interval);
   }
 
+  componentDidMount() {
+    if (!this.props.isAuthenticated) {
+      this.setState({
+        ...this.state,
+        unAuthenticatedTheme: "default"
+      });
+    }
+  }
+
   toggleShowLegalHandler = legalDocKey => {
     this.setState({
       ...this.state,
@@ -91,8 +100,9 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      prevProps.isAuthenticated !== this.props.isAuthenticated &&
-      this.props.isAuthenticated
+      (prevProps.isAuthenticated !== this.props.isAuthenticated &&
+        this.props.isAuthenticated) ||
+      prevProps.theme !== this.props.theme
     ) {
       this.props.initializeSettings(
         this.props.userId,
@@ -100,6 +110,15 @@ class App extends Component {
         notiSettingsLocal,
         theme
       );
+    }
+    if (
+      this.props.theme !== "default" &&
+      this.state.unAuthenticatedTheme === "default"
+    ) {
+      this.setState({
+        ...this.state,
+        unAuthenticatedTheme: null
+      });
     }
   }
 
@@ -152,10 +171,15 @@ class App extends Component {
         <Route path="/" component={IndexPage} />
       </Switch>
     );
+
     return (
       <Layout
         onLegal={legalDocKey => this.toggleShowLegalHandler(legalDocKey)}
-        theme={this.props.theme}
+        theme={
+          this.state.unAuthenticatedTheme
+            ? this.state.unAuthenticatedTheme
+            : this.props.theme
+        }
       >
         {modalPrivacy}
         {modalService}
