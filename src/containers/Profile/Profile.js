@@ -11,8 +11,6 @@ import Slider from "react-input-slider";
 import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
 
 class Profile extends Component {
-  
-
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +20,8 @@ class Profile extends Component {
       isForAllDevicesMode: "",
       isForAllDevicesType: "",
       isForAllDevicesSound: "",
+      isForAllDevicesTheme: "",
+      selectedTheme: "",
       selectNotificationMvps: "",
       notiType: {
         tenTillMin: false,
@@ -33,7 +33,7 @@ class Profile extends Component {
       message: null,
       refreshComponent: 0,
       resetBtnDisabled: false,
-      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true",
+      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true"
     };
   }
 
@@ -105,6 +105,38 @@ class Profile extends Component {
         this.props.token,
         this.props.userId
       );
+    }
+  };
+
+  themeSubmitHandler = event => {
+    event.preventDefault();
+    if (this.state.isForAllDevicesTheme !== "" && this.state.selectedTheme !== "") {
+      if (this.state.isForAllDevicesTheme === "singleDevice") {
+        localStorage.setItem("currentTheme", this.state.selectedTheme);
+        this.props.saveThemeLocal(this.state.selectedTheme);
+      }
+      if (this.state.isForAllDevicesTheme === "allDevices") {
+        this.props.saveThemeSettings(
+          this.props.token,
+          this.props.userKey,
+          this.state.selectedTheme
+        );
+      }
+      this.setState({
+        ...this.state,
+        isForAllDevicesTheme: "",
+        selectedTheme: "",
+        message: "Theme mode has updated please refresh page for events to take effect."
+      });
+    }
+    if (this.state.isForAllDevicesTheme === "removeSettings") {
+      localStorage.removeItem("currentTheme");
+      this.setState({
+        ...this.state,
+        isForAllDevicesTheme: "",
+        selectedTheme: "",
+        message: "Please refresh the page for effects to take place"
+      });
     }
   };
 
@@ -297,7 +329,7 @@ class Profile extends Component {
       localStorage.getItem("activeTrackerName") ? (
         <span>
           Current active tracker:{" "}
-          <span className={classes.LineBreakSpan}>
+          <span className={classes.LineBreakSpan + " " + colors.Green}>
             "
             {this.props.activeTrackerName ||
               localStorage.getItem("activeTrackerName")}
@@ -306,7 +338,7 @@ class Profile extends Component {
         </span>
       ) : null;
 
-    const changeDefaultTracker = this.props.allTrackers ? (
+    const changeDefaultTrackerForm = this.props.allTrackers ? (
       <div className={classes.Section}>
         {currentChosenTracker}
         <form
@@ -333,6 +365,52 @@ class Profile extends Component {
       <div className={classes.Section}>No tracker to select</div>
     );
 
+    const themeForm = (
+      <div className={classes.Section + " " + classes.Grid}>
+        <div className={classes.Left}>
+          Current theme:{" "}
+          <span className={colors.Yellow}>
+            {this.props.theme ? this.props.theme.charAt(0).toUpperCase() + this.props.theme.slice(1) : null}
+          </span>
+          <span className={colors.LightGray}>
+            {" "}(Local settings overrides server)
+          </span>
+        </div>
+        <div className={classes.Right + " " + classes.TextAlignRight}>
+          <form onSubmit={this.themeSubmitHandler}>
+            <label>Set theme to:</label>
+            <select
+              value={this.state.selectedTheme}
+              onChange={event => this.handleChange(event, "selectedTheme")}
+              disabled={this.state.isForAllDevicesTheme === "removeSettings"}
+            >
+              {this.state.isForAllDevicesTheme === "removeSettings" ? (
+                <option value="">Remove Local</option>
+              ) : (
+                <React.Fragment>
+                  <option value="">Select Theme</option>
+                  <option value="default">Default</option>
+                  <option value="Bio Labs">Bio Labs</option>
+                </React.Fragment>
+              )}
+            </select>
+            <select
+              value={this.state.isForAllDevicesTheme}
+              onChange={event =>
+                this.handleChange(event, "isForAllDevicesTheme")
+              }
+            >
+              <option value="">Where</option>
+              <option value="singleDevice">Just this device</option>
+              <option value="allDevices">For this account</option>
+              <option value="removeSettings">-Remove Local Settings-</option>
+            </select>
+            <Button type="submit">Update</Button>
+          </form>
+        </div>
+      </div>
+    );
+
     const notiSettingsProp = this.props.notiSettings;
 
     const currentNotiData = {
@@ -349,7 +427,18 @@ class Profile extends Component {
     const notiModeForm = (
       <div className={classes.Section + " " + classes.Grid}>
         <div className={classes.Left}>
-          Current notification mode: {currentNotiData.mode}{" "}
+          Current notification mode:{" "}
+          <span
+            className={
+              currentNotiData.mode === "All MvPs"
+                ? colors.Green
+                : currentNotiData.mode === "No Notifications"
+                ? colors.Red
+                : colors.Yellow
+            }
+          >
+            {currentNotiData.mode}{" "}
+          </span>
           <span className={colors.LightGray}>
             (Local settings overrides server)
           </span>
@@ -393,24 +482,35 @@ class Profile extends Component {
     );
 
     const notiModeTenTill = notiSettingsProp.notiType.tenTillMin ? (
-      <p className={colors.LightGray}>On 10 minutes to spawn: On</p>
+      <p className={colors.LightGray}>
+        On 10 minutes to spawn: <span className={colors.Green}>On</span>
+      </p>
     ) : (
-      <p className={colors.LightGray}>On 10 minutes to spawn: Off</p>
+      <p className={colors.LightGray}>
+        On 10 minutes to spawn: <span className={colors.Red}>Off</span>
+      </p>
     );
     const notiModeOnMin = notiSettingsProp.notiType.onMin ? (
-      <p className={colors.LightGray}>On minimum time: On</p>
+      <p className={colors.LightGray}>
+        On minimum time: <span className={colors.Green}>On</span>
+      </p>
     ) : (
-      <p className={colors.LightGray}>On minimum time: Off</p>
+      <p className={colors.LightGray}>
+        On minimum time: <span className={colors.Red}>Off</span>
+      </p>
     );
     const notiModeOnMax = notiSettingsProp.notiType.onMax ? (
-      <p className={colors.LightGray}>On maximum time: On</p>
+      <p className={colors.LightGray}>
+        On maximum time: <span className={colors.Green}>On</span>
+      </p>
     ) : (
-      <p className={colors.LightGray}>On maximum time: Off</p>
+      <p className={colors.LightGray}>
+        On maximum time: <span className={colors.Red}>Off</span>
+      </p>
     );
 
     const currentNotiMode = (
       <div>
-        <p>Current Settings:</p>
         {notiModeTenTill}
         {notiModeOnMin}
         {notiModeOnMax}
@@ -421,10 +521,7 @@ class Profile extends Component {
       notiSettingsProp.notiMode.mode !== "none" ? (
         <div className={classes.Section + " " + classes.Grid}>
           <div className={classes.Left}>
-            Current notification modes{" "}
-            <span className={colors.LightGray}>
-              Works only if you have notifications enabled
-            </span>
+            Current when to notificate
             {currentNotiMode}
           </div>
           <div className={classes.Right + " " + classes.TextAlignRight}>
@@ -478,11 +575,15 @@ class Profile extends Component {
       notiSettingsProp.notiMode.mode !== "none" ? (
         <div className={classes.Section + " " + classes.Grid}>
           <div className={classes.Left}>
-            Play sound with notification: {currentNotiData.sound} Volume: ({currentNotiData.volume*100}%)
-            {"  "}
-            <p className={colors.LightGray}>
-              Works only if you have notifications enabled
-            </p>
+            Play sound with notification:{" "}
+            <span
+              className={
+                currentNotiData.sound === "On" ? colors.Green : colors.Red
+              }
+            >
+              {currentNotiData.sound}
+            </span>{" "}
+            Volume: ({currentNotiData.volume * 100}%)
           </div>
           <div className={classes.Right + " " + classes.TextAlignRight}>
             <form onSubmit={this.mvpNotiSoundHandler}>
@@ -548,7 +649,7 @@ class Profile extends Component {
     const deleteTracker = this.props.allTrackers ? (
       <div className={classes.Section + " " + classes.Grid}>
         <div className={classes.Left}>
-          Delete Tracker <span className={colors.LightGray}>(Permanently)</span>
+          Delete Tracker <span className={colors.Red}>(Permanently)</span>
         </div>
         <div className={classes.Right}>
           <form
@@ -614,11 +715,12 @@ class Profile extends Component {
         <React.Fragment>
           <div className={classes.Profile}>
             {message}
-            {changeDefaultTracker}
-            {notiToRender}
-            {addNewTracker}
-            {deleteTracker}
+            {changeDefaultTrackerForm}
             {mvpDeleteModeBtn}
+            {addNewTracker}
+            {notiToRender}
+            {themeForm}
+            {deleteTracker}
             {passwordReset}
             <div className={classes.Section}>
               Delete Account{" "}
@@ -655,12 +757,13 @@ const mapStateToProps = state => {
     trackerKey: state.mvp.activeTrackerKey,
     token: state.auth.token,
     userId: state.auth.userId,
-    userKey: state.mvp.userKey || localStorage.getItem("userKey"),
+    userKey: state.mvp.userKey,
     authLoading: state.auth.loading,
     mvpLoading: state.mvp.loading,
     allTrackers: state.mvp.allTrackers,
     activeTrackerName: state.mvp.activeTrackerName,
-    notiSettings: state.mvp.notificationSettings
+    notiSettings: state.mvp.notificationSettings,
+    theme: state.mvp.theme
   };
 };
 
@@ -687,7 +790,10 @@ const mapDispatchToProps = dispatch => {
         )
       ),
     saveNotificationSettingsLocal: (notiTypeKey, itemToCast) =>
-      dispatch(actions.saveNotificationsLocal(notiTypeKey, itemToCast))
+      dispatch(actions.saveNotificationsLocal(notiTypeKey, itemToCast)),
+    saveThemeLocal: theme => dispatch(actions.saveThemeLocal(theme)),
+    saveThemeSettings: (token, userKey, theme) =>
+      dispatch(actions.saveThemeSettings(token, userKey, theme))
   };
 };
 

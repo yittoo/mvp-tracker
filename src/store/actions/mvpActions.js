@@ -299,7 +299,15 @@ export const saveSingleMvpToDb = (
             }
           : null;
         dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
-        dispatch(calculateTimeToSpawn(mvpToUpdate.timeKilled, mvpToUpdate.minSpawn, mvpToUpdate.maxSpawn, new Date(), mvpKey))
+        dispatch(
+          calculateTimeToSpawn(
+            mvpToUpdate.timeKilled,
+            mvpToUpdate.minSpawn,
+            mvpToUpdate.maxSpawn,
+            new Date(),
+            mvpKey
+          )
+        );
       })
       .catch(err => {
         dispatch(saveSingleMvpFail(err));
@@ -470,7 +478,8 @@ export const addInitialNotificationSettings = (token, userKey) => {
     const itemToCast = {
       notiMode: { mode: "all" },
       notiSound: { mode: true },
-      notiType: { onMax: true, onMin: true, tenTillMin: true }
+      notiType: { onMax: false, onMin: true, tenTillMin: false },
+      theme: { name: "default" }
     };
     mainAxios
       .put(url + queryParams, itemToCast)
@@ -484,6 +493,7 @@ export const addInitialNotificationSettings = (token, userKey) => {
         dispatch(
           saveNotificationSettingsSuccess("notiSound", itemToCast.notiSound)
         );
+        dispatch(saveThemeSettings("default"));
       })
       .catch(err => {
         dispatch(saveNotificationSettingsFail(err));
@@ -516,67 +526,74 @@ export const saveNotificationSettingsFail = error => {
   };
 };
 
-//----- INITIALIZE NOTIFICATION SETTINGS
+//----- INITIALIZE SETTINGS
 
-export const initializeNotificationSettings = (
+export const initializeSettings = (
   userId,
   token,
-  notiSettingsLocal
+  notiSettingsLocal,
+  themeLocal
 ) => {
   return dispatch => {
-    dispatch(initializeNotificationSettingsStart());
+    dispatch(initializeSettingsStart());
     const queryParams =
       "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
     if (
       notiSettingsLocal.notiSound !== null &&
       notiSettingsLocal.notiMode !== null &&
-      notiSettingsLocal.notiType !== null
+      notiSettingsLocal.notiType !== null &&
+      themeLocal
     ) {
-      dispatch(initializeNotificationSettingsSuccess(notiSettingsLocal));
+      dispatch(initializeSettingsSuccess(notiSettingsLocal, themeLocal));
     } else {
       mainAxios
         .get("users.json" + queryParams)
         .then(res => {
           Object.keys(res.data).map(userKey => {
-            const notiSettingsFromServer = res.data[userKey].settings
+            const settingsFromServer = res.data[userKey].settings
               ? { ...res.data[userKey].settings }
               : null;
-            const castedNotiSettings = notiSettingsFromServer
+            const castedSettings = settingsFromServer
               ? {
                   notiSound: {
-                    mode: notiSettingsFromServer.notiSound.mode,
-                    volume: notiSettingsFromServer.notiSound.volume || 0.5
+                    mode: settingsFromServer.notiSound.mode,
+                    volume: settingsFromServer.notiSound.volume || 0.5
                   },
                   notiMode: {
-                    mode: notiSettingsFromServer.notiMode.mode
+                    mode: settingsFromServer.notiMode.mode
                   },
                   notiType: {
-                    onMax: notiSettingsFromServer.notiType.onMax,
-                    onMin: notiSettingsFromServer.notiType.onMin,
-                    tenTillMin: notiSettingsFromServer.notiType.tenTillMin
+                    onMax: settingsFromServer.notiType.onMax,
+                    onMin: settingsFromServer.notiType.onMin,
+                    tenTillMin: settingsFromServer.notiType.tenTillMin
+                  },
+                  theme: {
+                    name: settingsFromServer.theme.name
                   }
                 }
               : null;
-            if (castedNotiSettings) {
+            if (castedSettings && castedSettings.theme) {
               const notiSoundToCast =
                 notiSettingsLocal.notiSound !== null
                   ? notiSettingsLocal.notiSound
-                  : castedNotiSettings.notiSound;
+                  : castedSettings.notiSound;
               const notiModeToCast =
                 notiSettingsLocal.notiMode !== null
                   ? notiSettingsLocal.notiMode
-                  : castedNotiSettings.notiMode;
+                  : castedSettings.notiMode;
               const notiTypeToCast =
                 notiSettingsLocal.notiType !== null
                   ? notiSettingsLocal.notiType
-                  : castedNotiSettings.notiType;
+                  : castedSettings.notiType;
+              const themeToCast =
+                themeLocal ? themeLocal : castedSettings.theme.name;
               const finalNotiSettToCast = {
                 notiSound: notiSoundToCast,
                 notiMode: notiModeToCast,
                 notiType: notiTypeToCast
               };
               dispatch(
-                initializeNotificationSettingsSuccess(finalNotiSettToCast)
+                initializeSettingsSuccess(finalNotiSettToCast, themeToCast)
               );
             } else {
               dispatch(addInitialNotificationSettings(token, userKey));
@@ -584,30 +601,79 @@ export const initializeNotificationSettings = (
           });
         })
         .catch(error => {
-          return initializeNotificationSettingsFail(error);
+          return dispatch(initializeSettingsFail(error));
         });
     }
   };
 };
 
-export const initializeNotificationSettingsStart = () => {
+export const initializeSettingsStart = () => {
   return {
-    type: actionTypes.INITIALIZE_NOTIFICATIONS_START
+    type: actionTypes.INITIALIZE_SETTINGS_START
   };
 };
 
-export const initializeNotificationSettingsSuccess = notificationSettings => {
+export const initializeSettingsSuccess = (notificationSettings, theme) => {
   return {
-    type: actionTypes.INITIALIZE_NOTIFICATIONS_SUCCESS,
+    type: actionTypes.INITIALIZE_SETTINGS_SUCCESS,
     payload: {
-      notificationSettings: notificationSettings
+      notificationSettings: notificationSettings,
+      theme: theme
     }
   };
 };
 
-export const initializeNotificationSettingsFail = error => {
+export const initializeSettingsFail = error => {
   return {
-    type: actionTypes.INITIALIZE_NOTIFICATIONS_FAIL,
+    type: actionTypes.INITIALIZE_SETTINGS_FAIL,
+    payload: {
+      error: error
+    }
+  };
+};
+
+//----- THEME SETTINGS SAVE
+
+export const saveThemeLocal = theme => {
+  return dispatch => {
+    dispatch(saveThemeSettingsSuccess(theme));
+  };
+};
+
+export const saveThemeSettings = (token, userKey, theme) => {
+  return dispatch => {
+    dispatch(saveThemeSettingsStart());
+    const url = "/users/" + userKey + "/settings/theme.json";
+    const queryParams = "?auth=" + token;
+    mainAxios
+      .put(url + queryParams, { name: theme })
+      .then(res => {
+        dispatch(saveThemeSettingsSuccess(theme));
+      })
+      .catch(err => {
+        dispatch(saveThemeSettingsFail(err));
+      });
+  };
+};
+
+export const saveThemeSettingsStart = () => {
+  return {
+    type: actionTypes.SAVE_THEME_START
+  };
+};
+
+export const saveThemeSettingsSuccess = theme => {
+  return {
+    type: actionTypes.SAVE_THEME_SUCCESS,
+    payload: {
+      theme: theme
+    }
+  };
+};
+
+export const saveThemeSettingsFail = error => {
+  return {
+    type: actionTypes.SAVE_THEME_FAIL,
     payload: {
       error: error
     }

@@ -2,11 +2,13 @@
   padding: 20px 30px;
   width: 100%;
   box-sizing: border-box;
-  background-color: white;
+  background-color: #ffffffdd;
   border: 1px solid #ccc;
   border-top: 0;
   border-radius: 0 0 20px 20px;
 }
+
+
 
 /* .LeftColumn{
   width: 70%;
@@ -43,13 +45,26 @@
   bottom: 1px;
 }
 
+.HeadBanner img{
+  display: block;
+  background-repeat: no-repeat;
+  width: 80%;
+  height: auto; 
+  margin: 0 10%;
+}
+
 .Header {
   text-align: center;
+  color: #2980b9;
 }
 
 .Header span {
   font-size: 0.6em;
   margin-left: 20px;
+}
+
+.MiniHeader {
+  color: #2980b9;
 }
 
 .MiniHeader::before {

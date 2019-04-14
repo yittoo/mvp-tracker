@@ -71,6 +71,9 @@ export const createNewUserEntry = (userId, token, username) => {
         onMax: false,
         onMin: true,
         tenTillMin: false
+      },
+      theme: {
+        name: "default"
       }
     }
   };

@@ -11,7 +11,9 @@ export {
   clearMvpMessage,
   saveNotificationSettings,
   saveNotificationsLocal,
-  initializeNotificationSettings
+  initializeSettings,
+  saveThemeSettings,
+  saveThemeLocal
 } from "./mvpActions";
 
 export {

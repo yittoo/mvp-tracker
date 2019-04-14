@@ -6,12 +6,20 @@
   color: #2ecc71;
 }
 
+.Yellow {
+  color: #f6b93b;
+}
+
 .Purple {
   color: #8e44ad;
 }
 
 .Blue {
   color: #2980b9;
+}
+
+.Gray {
+  color: #999;
 }
 
 .LightGray {

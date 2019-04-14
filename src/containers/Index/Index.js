@@ -13,7 +13,6 @@ const Index = props => {
       <HeaderBar>Welcome</HeaderBar>
       <div className={classes.Index}>
         <h1 className={classes.Header}>Hey everyone!</h1>
-        <h1 style={{ display: "none" }}> TODO STYLING</h1>
         <div className={classes.LeftColumn}>
           <p className={classes.Paragraph}>
             Currently this website consists of a MvP TimeTracker that is in beta
@@ -39,6 +38,12 @@ const Index = props => {
             also choose specific MvPs that you want to recieve notifications
             from. All in click of a button in your control panel.
           </p>
+          <div className={classes.HeadBanner}>
+            <img
+              src="https://i.postimg.cc/ZRdhpDVZ/detaletrans.png"
+              alt="detale site banner"
+            />
+          </div>
           <h4 className={classes.MiniHeader}>Default notification settings:</h4>
           <ul>
             <li>
@@ -60,12 +65,12 @@ const Index = props => {
           </p>
         </div>
         <div className={classes.RightColumn}>
-          <h3>Change Log:</h3>
+          <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
           <p>13.04.2019 - Notifications (Beta) Implemented</p>
           <p>10.04.2019 - Initial (Beta) Launch</p>
           <hr />
-          <h4>Updates to come:</h4>
+          <h4 className={classes.MiniHeader}>Updates to come:</h4>
           <p>All around visual improvements</p>
           <p>Custom themes - including dark mode</p>
           <p>Customized server pages</p>
@@ -77,7 +82,7 @@ const Index = props => {
             </span>
           </p>
           <hr />
-          <h4>Known bugs:</h4>
+          <h4 className={classes.MiniHeader}>Known bugs:</h4>
           <p>-All known bugs have been fixed-</p>
         </div>
       </div>

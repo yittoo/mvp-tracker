@@ -20,7 +20,8 @@ const initialState = {
       onMin: false,
       tenTillMin: false
     }
-  }
+  },
+  theme: null
 };
 
 const calculateTimeTillSpawn = (state, action) => {
@@ -55,11 +56,11 @@ const saveMvpsSuccess = (state, action) => {
 };
 
 const saveSingleMvpSuccess = (state, action) => {
-  let mvpsCopy = {...state.mvps}
-  if(!action.payload.mvp){
-    delete mvpsCopy[action.payload.mvpId]
+  let mvpsCopy = { ...state.mvps };
+  if (!action.payload.mvp) {
+    delete mvpsCopy[action.payload.mvpId];
   } else {
-    mvpsCopy[action.payload.mvpId] = action.payload.mvp
+    mvpsCopy[action.payload.mvpId] = action.payload.mvp;
   }
   return {
     ...state,
@@ -135,7 +136,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.FETCH_USER_KEY_FAIL:
       return updateObject(state, {
         loading: false
-      })
+      });
     case actionTypes.SAVE_NOTIFICATIONS_START:
       return updateObject(state, {
         loading: true
@@ -153,20 +154,30 @@ const reducer = (state = initialState, action) => {
         loading: false,
         error: action.payload.error
       });
-    case actionTypes.INITIALIZE_NOTIFICATIONS_START:
-      return updateObject(state, { loading: true });
-    case actionTypes.INITIALIZE_NOTIFICATIONS_SUCCESS:
+    case actionTypes.INITIALIZE_SETTINGS_START:
+      return state;
+    case actionTypes.INITIALIZE_SETTINGS_SUCCESS:
       return updateObject(state, {
         notificationSettings: action.payload.notificationSettings,
+        theme: action.payload.theme
+      });
+    case actionTypes.INITIALIZE_SETTINGS_FAIL:
+      return updateObject(state, {
+        error: action.payload.error
+      });
+    case actionTypes.SAVE_THEME_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.SAVE_THEME_SUCCESS:
+      return updateObject(state, {
+        theme: action.payload.theme,
         loading: false
       });
-    case actionTypes.INITIALIZE_NOTIFICATIONS_FAIL:
+    case actionTypes.SAVE_THEME_FAIL:
       return updateObject(state, {
-        error: action.payload.error,
-        loading: false
+        error: action.payload.error
       });
     default:
-      return initialState;
+      return state;
   }
 };
 

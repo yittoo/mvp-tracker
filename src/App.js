@@ -35,11 +35,15 @@ const AsyncTerms = asyncComponent(() => {
 });
 
 const notiSound = localStorage.getItem("notiSound")
-  ? { mode: localStorage.getItem("notiSound") === "true", volume: localStorage.getItem("notiVolume") }
+  ? {
+      mode: localStorage.getItem("notiSound") === "true",
+      volume: localStorage.getItem("notiVolume")
+    }
   : null;
 const notiMode = localStorage.getItem("notiMode")
   ? { mode: localStorage.getItem("notiMode") }
   : null;
+const theme = localStorage.getItem("currentTheme");
 const notiType =
   localStorage.getItem("notiTypeOnMax") &&
   localStorage.getItem("notiTypeOnMin") &&
@@ -66,14 +70,6 @@ class App extends Component {
     this.props.onTryAutoSignup();
   }
 
-  componentDidMount() {
-    this.props.initializeNotificationSettings(
-      this.props.userId,
-      this.props.token,
-      notiSettingsLocal
-    );
-  }
-
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -98,10 +94,11 @@ class App extends Component {
       prevProps.isAuthenticated !== this.props.isAuthenticated &&
       this.props.isAuthenticated
     ) {
-      this.props.initializeNotificationSettings(
+      this.props.initializeSettings(
         this.props.userId,
         this.props.token,
-        notiSettingsLocal
+        notiSettingsLocal,
+        theme
       );
     }
   }
@@ -156,7 +153,10 @@ class App extends Component {
       </Switch>
     );
     return (
-      <Layout onLegal={legalDocKey => this.toggleShowLegalHandler(legalDocKey)}>
+      <Layout
+        onLegal={legalDocKey => this.toggleShowLegalHandler(legalDocKey)}
+        theme={this.props.theme}
+      >
         {modalPrivacy}
         {modalService}
         {routes}
@@ -169,7 +169,8 @@ const mapStateToProps = state => {
   return {
     isAuthenticated: state.auth.token !== null,
     userId: state.mvp.userId || localStorage.getItem("userId"),
-    token: state.auth.token || localStorage.getItem("token")
+    token: state.auth.token || localStorage.getItem("token"),
+    theme: state.mvp.theme
   };
 };
 
@@ -177,9 +178,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onTryAutoSignup: () => dispatch(actions.authCheckState()),
     updateCurrentTime: () => dispatch(actions.updateCurrentTime()),
-    initializeNotificationSettings: (userId, token, notiSettingsLocal) =>
+    initializeSettings: (userId, token, notiSettingsLocal, theme) =>
       dispatch(
-        actions.initializeNotificationSettings(userId, token, notiSettingsLocal)
+        actions.initializeSettings(userId, token, notiSettingsLocal, theme)
       )
   };
 };
