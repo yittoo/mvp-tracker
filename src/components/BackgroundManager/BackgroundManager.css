@@ -5,6 +5,17 @@
   left: 0%;
   top: 0%;
   z-index: -100;
+  animation: init 5s ease-in-out;
+  opacity: 1;
+}
+
+@keyframes init {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .BackgroundManager .Left,

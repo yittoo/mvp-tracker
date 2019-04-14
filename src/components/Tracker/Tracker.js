@@ -104,7 +104,7 @@ class Tracker extends Component {
     if (this.props.notiSettings.notiSound.mode && !this.state.playedSound) {
       let audio = new Audio(noti_sound_url);
       audio.volume = this.props.notiSettings.notiSound.volume || 0.5;
-      audio.play();
+      audio.play().catch(err => {return})
     }
     this.setState(prevState => ({
       ...prevState,
