@@ -250,7 +250,8 @@ export const saveSingleMvpToDb = (
   token,
   trackerKey,
   mvp,
-  eventType
+  eventType,
+  note
 ) => {
   return dispatch => {
     let mvpToCast;
@@ -268,7 +269,7 @@ export const saveSingleMvpToDb = (
             )
           }
         : {};
-    } else if (eventType === "toggleNotification") {
+    } else if (eventType === "toggleNotification" || eventType === "saveNote") {
       mvpToCast = {
         id: mvp.id,
         name: mvp.name,
@@ -276,10 +277,10 @@ export const saveSingleMvpToDb = (
         maxSpawn: mvp.maxSpawn,
         minSpawn: mvp.minSpawn,
         notification: mvp.notification,
-        timeKilled: mvp.timeKilled
+        timeKilled: mvp.timeKilled,
+        note: note
       };
     }
-
     dispatch(saveSingleMvpStart());
     const url =
       "/users/" +
@@ -401,7 +402,7 @@ export const fetchUserKey = (userId, token) => {
         Object.keys(res.data).map(userKey => {
           const trackerObj = res.data[userKey].trackers;
           localStorage.setItem("userKey", userKey);
-          if(trackerObj){
+          if (trackerObj) {
             Object.keys(trackerObj).map(trackerKey => {
               allTrackerIdentifiers.push({
                 trackerName: trackerObj[trackerKey].trackerName,
@@ -409,8 +410,8 @@ export const fetchUserKey = (userId, token) => {
               });
             });
           }
-          if(allTrackerIdentifiers.length === 0){
-            allTrackerIdentifiers = null
+          if (allTrackerIdentifiers.length === 0) {
+            allTrackerIdentifiers = null;
           }
           dispatch(fetchUserKeySuccess(userKey));
           dispatch(storeAllTrackers(allTrackerIdentifiers));

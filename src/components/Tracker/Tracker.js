@@ -41,6 +41,12 @@ class Tracker extends Component {
     let fetchInterval = setInterval(() => this.fetchMvps(false), 60000);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.props.userKey) {
+      this.props.fetchUserKey(this.props.userId, this.props.token);
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.fetchInterval);
   }
@@ -104,7 +110,9 @@ class Tracker extends Component {
     if (this.props.notiSettings.notiSound.mode && !this.state.playedSound) {
       let audio = new Audio(noti_sound_url);
       audio.volume = this.props.notiSettings.notiSound.volume || 0.5;
-      audio.play().catch(err => {return})
+      audio.play().catch(err => {
+        return;
+      });
     }
     this.setState(prevState => ({
       ...prevState,
@@ -277,6 +285,12 @@ class Tracker extends Component {
           <Spinner />
         ) : (
           <React.Fragment>
+            <link
+              rel="stylesheet"
+              href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+              integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+              crossOrigin="anonymous"
+            />
             {mainContentToRender}
             {noMvpsPlaceholder}
             {newMvpForm}
@@ -356,7 +370,9 @@ const mapDispatchToProps = dispatch => {
           mvps,
           trackerName
         )
-      )
+      ),
+    fetchUserKey: (userId, token) =>
+      dispatch(actions.fetchUserKey(userId, token))
   };
 };
 

@@ -3,6 +3,7 @@
   border: 1px solid rgb(195, 195, 195);
   border-radius: 10px 10px 0 0;
   box-shadow: 1px 2px 10px #ccc;
+  box-sizing: border-box;
 }
 
 .DefaultPlaceholder {

@@ -123,5 +123,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.8.1"
   }
 }

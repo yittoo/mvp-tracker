@@ -37,8 +37,10 @@ class Profile extends Component {
     };
   }
 
-  componentDidMount() {
-    this.props.fetchUserKey(this.props.userId, this.props.token);
+  componentDidUpdate(){
+    if(!this.props.userKey){
+      this.props.fetchUserKey(this.props.userId, this.props.token);
+    }
   }
 
   handleChange = (event, area) => {

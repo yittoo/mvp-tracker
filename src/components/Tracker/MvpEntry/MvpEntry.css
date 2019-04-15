@@ -6,7 +6,8 @@
     ". . deathTimer"
     "name untilSpawn deathTimer"
     "fixedTimer untilSpawn killed"
-    "map untilSpawn killed";
+    "map untilSpawn killed"
+    "note note note";
   border-bottom: 1px solid #ccc;
   padding: 10px 5px;
   box-sizing: border-box;
@@ -18,6 +19,13 @@
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.MvpEntry i {
+  position: relative;
+  left: 5px;
+  top: 2px;
+  cursor: pointer;
 }
 
 .MvpEntry div span {
@@ -55,13 +63,71 @@
   grid-area: killed;
 }
 
-.Killed input{
+.Killed input {
   width: 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 2px 5px;
   margin: 0 5px;
   box-sizing: border-box;
+}
+
+.Note {
+  grid-area: note;
+  width: 100%;
+  box-sizing: border-box;
+  display: none;
+  max-height: 160px;
+  animation: slidein 1s linear;
+}
+
+.Note.Display {
+  display: block;
+}
+
+.Note p {
+  box-sizing: border-box;
+  width: 50%;
+  margin: 5px auto;
+  display: block;
+  border: 1px solid #eee;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.Note * {
+  animation: slideinChild 0.3s ease-out;
+}
+
+.Note textarea {
+  display: block;
+  width: 50%;
+  margin: 5px auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  text-align: center;
+  overflow-y: scroll;
+  font-family: sans-serif;
+}
+
+@keyframes slidein {
+  from {
+    max-height: 0px;
+  }
+  to {
+    max-height: 160px;
+  }
+}
+
+@keyframes slideinChild {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .MarginRight5px {
@@ -73,7 +139,11 @@
     grid-template-columns: 45% 55%;
     grid-template-areas:
       "name untilSpawn"
-      "map killed";
+      "map killed"
+      "note note";
+  }
+  .MvpEntry i {
+    top: 0px;
   }
   .Name {
     padding-bottom: 0;
@@ -100,5 +170,12 @@
   }
   .Killed button {
     height: 100%;
+  }
+  .Note p,
+  .Note textarea {
+    display: block;
+    height: 50px;
+    width: 100%;
+    padding: 10px;
   }
 }

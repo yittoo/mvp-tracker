@@ -8,15 +8,20 @@ import * as actions from "../../../store/actions";
 class MvpEntry extends Component {
   state = {
     minAgoValue: 0,
-    showModal: false,
     deleteMode: localStorage.getItem("mvpDeleteMode") === "true",
-    hasNotificated: false
+    hasNotificated: false,
+    showNote: false,
+    noteContentToSave: null,
+    noteEditMode: false
   };
 
   shouldComponentUpdate(nextProps, nextState) {
     if (
       nextProps.mvp !== this.props.mvp ||
-      nextState.minAgoValue !== this.state.minAgoValue
+      nextState.minAgoValue !== this.state.minAgoValue ||
+      nextState.showNote !== this.state.showNote ||
+      nextState.noteContentToSave !== this.state.noteContentToSave ||
+      nextState.noteEditMode !== this.state.noteEditMode
     ) {
       return true;
     } else {
@@ -33,51 +38,54 @@ class MvpEntry extends Component {
     }
   }
 
-  componentDidMount() {
-    // this.interval = setInterval(() => {
-    //   this.onShouldNotificate();
-    // }, 60000);
-  }
-
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
-  inputChangedHandler = event => {
-    const value =
-      event.target.value < 0 || isNaN(event.target.value)
-        ? 0
-        : event.target.value;
-    this.setState({
-      ...this.state,
-      minAgoValue: Number(value)
-    });
+  inputChangedHandler = (event, addressToUpdate) => {
+    if (addressToUpdate === "minAgoValue") {
+      const value =
+        event.target.value < 0 || isNaN(event.target.value)
+          ? 0
+          : event.target.value;
+      this.setState({
+        ...this.state,
+        minAgoValue: Number(value)
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        [addressToUpdate]: event.target.value
+      });
+    }
   };
 
   onMvpKilledBtn = (minAgo, mvpKey) => {
-    this.props.mvpKilledOrDeletedHandler(
+    this.props.saveSingleMvpToDb(
       minAgo,
       mvpKey,
       this.props.userKey,
       this.props.token,
       this.props.trackerKey,
       this.props.mvp,
-      "killed"
+      "killed",
+      null
     );
-    this.setState({ ...this.state, minAgoValue: 0 });
+    this.setState({ ...this.state, minAgoValue: 0, showNote: false, noteEditMode: false });
   };
 
   onMvpDeletedBtn = mvpKey => {
-    this.props.mvpKilledOrDeletedHandler(
+    this.props.saveSingleMvpToDb(
       null,
       mvpKey,
       this.props.userKey,
       this.props.token,
       this.props.trackerKey,
       null,
-      "delete"
+      "delete",
+      null
     );
-    this.setState({ ...this.state, minAgoValue: 0 });
+    this.setState({ ...this.state, minAgoValue: 0, showNote: false, noteEditMode: false });
   };
 
   onMvpNotiToggleBtn = mvpKey => {
@@ -85,16 +93,20 @@ class MvpEntry extends Component {
       ...this.props.mvp,
       notification: !this.props.mvp.notification
     };
-    this.props.mvpKilledOrDeletedHandler(
+    this.props.saveSingleMvpToDb(
       null,
       mvpKey,
       this.props.userKey,
       this.props.token,
       this.props.trackerKey,
       mvpToCast,
-      "toggleNotification"
+      "toggleNotification",
+      this.props.mvp.note
     );
-    this.setState({ ...this.state, minAgoValue: 0 });
+    this.setState({
+      ...this.state,
+      minAgoValue: 0
+    });
   };
 
   onShouldNotificate = () => {
@@ -131,6 +143,40 @@ class MvpEntry extends Component {
     }
   };
 
+  toggleShowNoteHandler = () => {
+    this.setState({
+      ...this.state,
+      showNote: !this.state.showNote,
+      noteEditMode: false
+    });
+  };
+
+  onSaveNoteBtn = () => {
+    this.props.saveSingleMvpToDb(
+      null,
+      this.props.id,
+      this.props.userKey,
+      this.props.token,
+      this.props.trackerKey,
+      this.props.mvp,
+      "saveNote",
+      this.state.noteContentToSave
+    );
+    this.setState({
+      ...this.state,
+      showNote: false,
+      noteEditMode: false
+    });
+  };
+
+  switchEditNoteModeToggler = () => {
+    this.setState({
+      ...this.state,
+      noteEditMode: !this.state.noteEditMode,
+      noteContentToSave: this.props.mvp.note
+    });
+  };
+
   render() {
     const nameClasses = [classes.Name, colors.Blue];
 
@@ -155,8 +201,11 @@ class MvpEntry extends Component {
         ? "Unknown"
         : this.props.mvp.minTillSpawn + " - " + this.props.mvp.maxTillSpawn;
 
-    if(Number(this.props.mvp.maxTillSpawn < 0)){
-      untilSpawnValue = Math.abs(this.props.mvp.minTillSpawn) + " - " + Math.abs(this.props.mvp.maxTillSpawn)
+    if (Number(this.props.mvp.maxTillSpawn < 0)) {
+      untilSpawnValue =
+        Math.abs(this.props.mvp.minTillSpawn) +
+        " - " +
+        Math.abs(this.props.mvp.maxTillSpawn);
     }
 
     const minuteInput = (
@@ -166,7 +215,7 @@ class MvpEntry extends Component {
         value={this.state.minAgoValue}
         min="0"
         placeholder="Killed ... minutes ago"
-        onChange={this.inputChangedHandler}
+        onChange={event => this.inputChangedHandler(event, "minAgoValue")}
       />
     );
 
@@ -185,9 +234,49 @@ class MvpEntry extends Component {
         </Button>
       ) : null;
 
+    const notesContent = this.state.noteEditMode ? (
+      <textarea
+        onChange={event => this.inputChangedHandler(event, "noteContentToSave")}
+        value={this.state.noteContentToSave}
+      >
+        
+      </textarea>
+    ) : (
+      <p>{this.props.mvp.note ? this.props.mvp.note : "No note to display."}</p>
+    );
+
+    const notesDiv = (
+      <div
+        className={
+          this.state.showNote
+            ? classes.Note + " " + classes.Display
+            : classes.Note
+        }
+      >
+        {notesContent}
+        <Button clicked={this.switchEditNoteModeToggler}>
+          {this.state.noteEditMode ? "Cancel" : "Edit"}
+        </Button>
+        <Button clicked={this.onSaveNoteBtn} disabled={!this.state.noteEditMode}>Save</Button>
+      </div>
+    );
+
     return (
       <div className={classes.MvpEntry}>
-        <div className={nameClasses.join(" ")}>{this.props.mvp.name}</div>
+        <div className={nameClasses.join(" ")}>
+          {this.props.mvp.name}
+          {this.props.mvp.note ? (
+            <i
+              className="fas fa-comment"
+              onClick={this.toggleShowNoteHandler}
+            />
+          ) : (
+            <i
+              className="far fa-comment"
+              onClick={this.toggleShowNoteHandler}
+            />
+          )}
+        </div>
         <div className={classes.FixedTimer}>
           {this.props.mvp.minSpawn} - {this.props.mvp.maxSpawn} minutes
         </div>
@@ -222,6 +311,7 @@ class MvpEntry extends Component {
           {mvpDeleteBtn}
           {mvpNotiToggleBtn}
         </div>
+        {notesDiv}
       </div>
     );
   }
@@ -255,14 +345,15 @@ const mapDispatchToProps = dispatch => {
           mvpId
         )
       ),
-    mvpKilledOrDeletedHandler: (
+    saveSingleMvpToDb: (
       minuteAgo,
       mvpKey,
       userKey,
       token,
       trackerKey,
       mvp,
-      eventType
+      eventType,
+      note
     ) => {
       return dispatch(
         actions.saveSingleMvpToDb(
@@ -272,7 +363,8 @@ const mapDispatchToProps = dispatch => {
           token,
           trackerKey,
           mvp,
-          eventType
+          eventType,
+          note
         )
       );
     }
