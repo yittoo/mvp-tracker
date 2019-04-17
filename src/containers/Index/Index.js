@@ -67,7 +67,7 @@ const Index = props => {
         <div className={classes.RightColumn}>
           <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
-          <p>15.04.2019 - Two themes added, change from Control Panel. Fixed a >major bug where newly created accounts' initial trackers were failed to be written to DB.</p>
+          <p>15.04.2019 - Two themes added, change from Control Panel. Fixed a major bug where newly created accounts' initial trackers were failed to be written to DB.</p>
           <p>13.04.2019 - Notifications (Beta) Implemented</p>
           <p>10.04.2019 - Initial (Beta) Launch</p>
           <hr />

@@ -15,6 +15,7 @@ import { clearInterval } from "timers";
 import LastUpdated from "./LastUpdated/LastUpdated";
 import Notification from "../Notification/Notification";
 import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
+import asyncMap from "../../hoc/asyncMap/asyncMap";
 
 const AsyncDefaultMvps = asyncComponent(() => {
   return import("./DefaultMvpListTool/DefaultMvpListTool");
@@ -25,11 +26,19 @@ class Tracker extends Component {
     defaultMvpListChosen: 0,
     showNewMvpForm: false,
     newMvpAdded: false,
-    notiArr: []
+    notiArr: [],
+    mapToRender: null
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps !== this.props || nextState !== this.state) {
+    if (
+      nextProps !== this.props ||
+      nextState.defaultMvpListChosen !== this.state.defaultMvpListChosen ||
+      nextState.showNewMvpForm !== this.state.showNewMvpForm ||
+      nextState.newMvpAdded !== this.state.newMvpAdded ||
+      nextState.notiArr !== this.state.notiArr ||
+      nextState.mapToRender !== this.state.mapToRender
+    ) {
       return true;
     } else {
       return false;
@@ -145,6 +154,48 @@ class Tracker extends Component {
     }
   };
 
+  toggleMapHandler = (mvp, mvpKey, mapName) => {
+    if (mapName) {
+      this.setState({
+        ...this.state,
+        mapToRender: asyncMap(mapName)
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        mapToRender: null
+      });
+    }
+  };
+
+  importCoordinatesFromChild = (childName, x, y, mouseX, mouseY) => {
+    if (childName === "Modal") {
+      this.setState({
+        ...this.state,
+        modalX: x,
+        modalY: y
+      });
+    } else if (childName === "Map") {
+      this.setState({
+        ...this.state,
+        mapX: x,
+        mapY: y,
+        mouseX: mouseX,
+        mouseY: mouseY
+      });
+    }
+  };
+
+  saveTombHandler = () => {
+    const height = 400,
+      width = 400;
+    const xPercent =
+      (this.state.mouseX - (this.state.modalX + this.state.mapX)) / width;
+    const yPercent =
+      (this.state.mouseY - (this.state.modalY + this.state.mapY)) / height;
+    console.log(xPercent, yPercent);
+  };
+
   render() {
     let sortableMvpArr = [];
     for (let mvpKey in this.props.mvps) {
@@ -169,6 +220,9 @@ class Tracker extends Component {
           key={orderedMvpPair[2]}
           id={orderedMvpPair[2]}
           mvp={orderedMvpPair[0]}
+          onMapOpen={(mvp, mvpKey, mapName) =>
+            this.toggleMapHandler(mvp, mvpKey, mapName)
+          }
         />
       );
     });
@@ -276,6 +330,28 @@ class Tracker extends Component {
       </Notification>
     );
 
+    const Map = this.state.mapToRender ? this.state.mapToRender : null;
+
+    const mapToRender = (
+      <Modal
+        onCoordChange={(x, y) => this.importCoordinatesFromChild("Modal", x, y)}
+        modalClosed={this.toggleMapHandler}
+        show={this.state.mapToRender}
+        id="modalOfMap"
+      >
+        {Map ? (
+          <Map
+            onCoordChange={(mapX, mapY, mouseX, mouseY) =>
+              this.importCoordinatesFromChild("Map", mapX, mapY, mouseX, mouseY)
+            }
+            mounted={this.state.mapToRender ? true : false}
+            id="mapImgInModal"
+            onSaveTomb={this.saveTombHandler}
+          />
+        ) : null}
+      </Modal>
+    );
+
     return (
       <div className={classes.Tracker}>
         <HeaderBar>
@@ -294,6 +370,7 @@ class Tracker extends Component {
             {mainContentToRender}
             {noMvpsPlaceholder}
             {newMvpForm}
+            {mapToRender}
             {routeToDefault}
             {newMvpButton}
             {notiArrToRender}

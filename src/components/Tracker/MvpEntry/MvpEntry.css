@@ -46,7 +46,9 @@
 .Map {
   grid-area: map;
   font-size: 0.8rem;
-  color: #ccc;
+  color: #2980b9;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .UntilSpawn {

@@ -71,7 +71,12 @@ class MvpEntry extends Component {
       "killed",
       null
     );
-    this.setState({ ...this.state, minAgoValue: 0, showNote: false, noteEditMode: false });
+    this.setState({
+      ...this.state,
+      minAgoValue: 0,
+      showNote: false,
+      noteEditMode: false
+    });
   };
 
   onMvpDeletedBtn = mvpKey => {
@@ -85,7 +90,12 @@ class MvpEntry extends Component {
       "delete",
       null
     );
-    this.setState({ ...this.state, minAgoValue: 0, showNote: false, noteEditMode: false });
+    this.setState({
+      ...this.state,
+      minAgoValue: 0,
+      showNote: false,
+      noteEditMode: false
+    });
   };
 
   onMvpNotiToggleBtn = mvpKey => {
@@ -238,9 +248,7 @@ class MvpEntry extends Component {
       <textarea
         onChange={event => this.inputChangedHandler(event, "noteContentToSave")}
         value={this.state.noteContentToSave}
-      >
-        
-      </textarea>
+      />
     ) : (
       <p>{this.props.mvp.note ? this.props.mvp.note : "No note to display."}</p>
     );
@@ -257,7 +265,12 @@ class MvpEntry extends Component {
         <Button clicked={this.switchEditNoteModeToggler}>
           {this.state.noteEditMode ? "Cancel" : "Edit"}
         </Button>
-        <Button clicked={this.onSaveNoteBtn} disabled={!this.state.noteEditMode}>Save</Button>
+        <Button
+          clicked={this.onSaveNoteBtn}
+          disabled={!this.state.noteEditMode}
+        >
+          Save
+        </Button>
       </div>
     );
 
@@ -280,7 +293,18 @@ class MvpEntry extends Component {
         <div className={classes.FixedTimer}>
           {this.props.mvp.minSpawn} - {this.props.mvp.maxSpawn} minutes
         </div>
-        <div className={classes.Map}>{this.props.mvp.map}</div>
+        <div
+          className={classes.Map}
+          onClick={() =>
+            this.props.onMapOpen(
+              this.props.mvp,
+              this.props.id,
+              this.props.mvp.map
+            )
+          }
+        >
+          {this.props.mvp.map}
+        </div>
         <div className={untilSpawnClasses.join(" ")}>
           {untilSpawnValue}
           <span>
