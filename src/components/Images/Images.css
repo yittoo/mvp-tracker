@@ -1,0 +1,10 @@
+.Tomb {
+  position: absolute;
+  transition: all 0.4s ease-out;
+  z-index: 150;
+}
+
+.Tomb img {
+  height: 20px;
+  width: 20px;
+}

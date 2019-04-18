@@ -37,7 +37,8 @@ class Tracker extends Component {
       nextState.showNewMvpForm !== this.state.showNewMvpForm ||
       nextState.newMvpAdded !== this.state.newMvpAdded ||
       nextState.notiArr !== this.state.notiArr ||
-      nextState.mapToRender !== this.state.mapToRender
+      nextState.mapToRender !== this.state.mapToRender ||
+      nextState.tombPositioningState !== this.state.tombPositioningState
     ) {
       return true;
     } else {
@@ -156,14 +157,34 @@ class Tracker extends Component {
 
   toggleMapHandler = (mvp, mvpKey, mapName) => {
     if (mapName) {
-      this.setState({
-        ...this.state,
-        mapToRender: asyncMap(mapName)
-      });
+      this.setState(
+        {
+          ...this.state,
+          mapToRender: asyncMap(mapName),
+          mvpKeyOfMap: mvpKey,
+          mvpOfMap: mvp
+        },
+        () => {
+          setTimeout(() => {
+            if (
+              this.state.mvpOfMap.tombRatioX &&
+              this.state.mvpOfMap.tombRatioY
+            ) {
+              this.setTombHandler(
+                this.state.mvpOfMap.tombRatioX,
+                this.state.mvpOfMap.tombRatioY
+              );
+            }
+          }, 340);
+        }
+      );
     } else {
       this.setState({
         ...this.state,
-        mapToRender: null
+        mapToRender: null,
+        mvpKeyOfMap: null,
+        mvpOfMap: null,
+        tombPositioningState: null
       });
     }
   };
@@ -187,13 +208,42 @@ class Tracker extends Component {
   };
 
   saveTombHandler = () => {
-    const height = 400,
-      width = 400;
-    const xPercent =
+    const height = 250,
+      width = 250;
+    const tombRatioX =
       (this.state.mouseX - (this.state.modalX + this.state.mapX)) / width;
-    const yPercent =
+    const tombRatioY =
       (this.state.mouseY - (this.state.modalY + this.state.mapY)) / height;
-    console.log(xPercent, yPercent);
+    const mvpToCast = {
+      ...this.state.mvpOfMap,
+      tombRatioX: tombRatioX,
+      tombRatioY: tombRatioY
+    };
+    this.props.saveSingleMvpToDb(
+      null,
+      this.state.mvpKeyOfMap,
+      this.props.userKey,
+      this.props.token,
+      this.props.trackerKey,
+      mvpToCast,
+      "saveTomb",
+      mvpToCast.note
+    );
+    this.setTombHandler(tombRatioX, tombRatioY);
+  };
+
+  setTombHandler = (tombRatioX, tombRatioY) => {
+    const tombPositioning =
+      this.state.mvpKeyOfMap && this.props.mvps && tombRatioX && tombRatioY
+        ? {
+            tombX: this.state.mapX + 250 * tombRatioX,
+            tombY: this.state.mapY + 250 * tombRatioY
+          }
+        : null;
+    this.setState({
+      ...this.state,
+      tombPositioningState: tombPositioning
+    });
   };
 
   render() {
@@ -344,9 +394,13 @@ class Tracker extends Component {
             onCoordChange={(mapX, mapY, mouseX, mouseY) =>
               this.importCoordinatesFromChild("Map", mapX, mapY, mouseX, mouseY)
             }
-            mounted={this.state.mapToRender ? true : false}
             id="mapImgInModal"
             onSaveTomb={this.saveTombHandler}
+            tombCoordinates={
+              this.state.tombPositioningState
+                ? this.state.tombPositioningState
+                : null
+            }
           />
         ) : null}
       </Modal>
@@ -449,7 +503,30 @@ const mapDispatchToProps = dispatch => {
         )
       ),
     fetchUserKey: (userId, token) =>
-      dispatch(actions.fetchUserKey(userId, token))
+      dispatch(actions.fetchUserKey(userId, token)),
+    saveSingleMvpToDb: (
+      minuteAgo,
+      mvpKey,
+      userKey,
+      token,
+      trackerKey,
+      mvp,
+      eventType,
+      note
+    ) => {
+      return dispatch(
+        actions.saveSingleMvpToDb(
+          minuteAgo,
+          mvpKey,
+          userKey,
+          token,
+          trackerKey,
+          mvp,
+          eventType,
+          note
+        )
+      );
+    }
   };
 };
 

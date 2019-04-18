@@ -269,7 +269,11 @@ export const saveSingleMvpToDb = (
             )
           }
         : {};
-    } else if (eventType === "toggleNotification" || eventType === "saveNote") {
+    } else if (
+      eventType === "toggleNotification" ||
+      eventType === "saveNote" ||
+      eventType === "saveTomb"
+    ) {
       mvpToCast = {
         id: mvp.id,
         name: mvp.name,
@@ -278,7 +282,9 @@ export const saveSingleMvpToDb = (
         minSpawn: mvp.minSpawn,
         notification: mvp.notification,
         timeKilled: mvp.timeKilled,
-        note: note
+        note: note,
+        tombRatioX: mvp.tombRatioX,
+        tombRatioY: mvp.tombRatioY,
       };
     }
     dispatch(saveSingleMvpStart());

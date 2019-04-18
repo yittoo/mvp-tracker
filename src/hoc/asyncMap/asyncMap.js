@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import classes from "./asyncMap.css";
+import Tomb from "../../components/Images/Tomb";
 
 const asyncComponent = mapName => {
   return class extends Component {
@@ -34,12 +35,23 @@ const asyncComponent = mapName => {
       });
     }
 
+    componentWillMount() {
+      setTimeout(() => {
+        const ele = document.getElementById("mapImgInModal");
+        this.setState({
+          ...this.state,
+          x: ele.offsetLeft,
+          y: ele.offsetTop
+        });
+      }, 310);
+    }
+
     componentWillUnmount() {
       window.removeEventListener("mousemove", this.listenerFunc);
     }
 
     componentDidUpdate(prevProps, prevState) {
-      if (prevState !== this.state) {
+      if (prevState !== this.state && this.state.x) {
         this.props.onCoordChange(
           this.state.x,
           this.state.y,
@@ -322,14 +334,27 @@ const asyncComponent = mapName => {
 
     render() {
       const url = this.state.url;
-      return url ? (
-        <img
-          className={classes.AsyncMap}
-          id={this.props.id}
-          src={this.state.url}
-          alt="map picture"
-          onClick={this.props.onSaveTomb}
+      const TombToRender = url ? (
+        <Tomb
+          x={
+            this.props.tombCoordinates ? this.props.tombCoordinates.tombX : 260
+          }
+          y={
+            this.props.tombCoordinates ? this.props.tombCoordinates.tombY : -500
+          }
         />
+      ) : null;
+      return url ? (
+        <React.Fragment>
+          <img
+            className={classes.AsyncMap}
+            id={this.props.id}
+            src={this.state.url}
+            alt="map picture"
+            onClick={this.props.onSaveTomb}
+          />
+          {TombToRender}
+        </React.Fragment>
       ) : null;
     }
   };
