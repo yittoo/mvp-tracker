@@ -83,6 +83,9 @@ class Modal extends Component {
     currentClass = this.props.isLegalModal
       ? currentClass + " " + classes.Legal
       : currentClass;
+    currentClass = this.props.isMapModal
+      ? currentClass + " " + classes.MapModal
+      : currentClass;
     return (
       <React.Fragment>
         <Backdrop show={this.props.show} clicked={this.props.modalClosed} />

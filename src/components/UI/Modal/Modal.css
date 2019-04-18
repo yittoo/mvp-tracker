@@ -33,3 +33,8 @@
   max-height: 80%;
   overflow-y: scroll;
 }
+
+.MapModal{
+  width: unset;
+  left: calc(50% - 142px)
+}

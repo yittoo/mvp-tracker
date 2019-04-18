@@ -337,7 +337,7 @@ const asyncComponent = mapName => {
       const TombToRender = url ? (
         <Tomb
           x={
-            this.props.tombCoordinates ? this.props.tombCoordinates.tombX : 260
+            this.props.tombCoordinates ? this.props.tombCoordinates.tombX : 142
           }
           y={
             this.props.tombCoordinates ? this.props.tombCoordinates.tombY : -500

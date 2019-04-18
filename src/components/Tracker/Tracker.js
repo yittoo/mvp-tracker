@@ -131,7 +131,7 @@ class Tracker extends Component {
         playedSound: true
       }));
       setTimeout(() => {
-        let notiArrToSplice = [this.state.notiArr];
+        let notiArrToSplice = [...this.state.notiArr];
         notiArrToSplice.splice(0, 1);
         this.setState(prevState => ({
           ...prevState,
@@ -139,7 +139,7 @@ class Tracker extends Component {
           playedSound: false
         }));
       }, 10000);
-    }, Math.random() * 200);
+    }, Math.random() * 300);
   };
 
   notificationHandler = notiObj => {
@@ -390,20 +390,39 @@ class Tracker extends Component {
         modalClosed={this.toggleMapHandler}
         show={this.state.mapToRender}
         id="modalOfMap"
+        isMapModal
       >
         {Map ? (
-          <Map
-            onCoordChange={(mapX, mapY, mouseX, mouseY) =>
-              this.importCoordinatesFromChild("Map", mapX, mapY, mouseX, mouseY)
-            }
-            id="mapImgInModal"
-            onSaveTomb={this.saveTombHandler}
-            tombCoordinates={
-              this.state.tombPositioningState
-                ? this.state.tombPositioningState
-                : null
-            }
-          />
+          <React.Fragment>
+            <h4
+              style={{
+                marginBottom: 10,
+                marginTop: 0,
+                textAlign: "center",
+                color: "#2980b9"
+              }}
+            >
+              Click map to add tomb
+            </h4>
+            <Map
+              onCoordChange={(mapX, mapY, mouseX, mouseY) =>
+                this.importCoordinatesFromChild(
+                  "Map",
+                  mapX,
+                  mapY,
+                  mouseX,
+                  mouseY
+                )
+              }
+              id="mapImgInModal"
+              onSaveTomb={this.saveTombHandler}
+              tombCoordinates={
+                this.state.tombPositioningState
+                  ? this.state.tombPositioningState
+                  : null
+              }
+            />
+          </React.Fragment>
         ) : null}
       </Modal>
     );
