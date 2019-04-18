@@ -115,29 +115,31 @@ class Tracker extends Component {
   };
 
   pushNotiToArr = notiObj => {
-    let notiArr = this.state.notiArr;
-    notiArr.push(notiObj);
-    if (this.props.notiSettings.notiSound.mode && !this.state.playedSound) {
-      let audio = new Audio(noti_sound_url);
-      audio.volume = this.props.notiSettings.notiSound.volume || 0.5;
-      audio.play().catch(err => {
-        return;
-      });
-    }
-    this.setState(prevState => ({
-      ...prevState,
-      notiArr: notiArr,
-      playedSound: true
-    }));
     setTimeout(() => {
-      let notiArrToSplice = this.state.notiArr;
-      notiArrToSplice.splice(0, 1);
+      let notiArr = [...this.state.notiArr];
+      notiArr.push(notiObj);
+      if (this.props.notiSettings.notiSound.mode && !this.state.playedSound) {
+        let audio = new Audio(noti_sound_url);
+        audio.volume = this.props.notiSettings.notiSound.volume || 0.5;
+        audio.play().catch(err => {
+          return;
+        });
+      }
       this.setState(prevState => ({
         ...prevState,
-        notiArr: notiArrToSplice,
-        playedSound: false
+        notiArr: notiArr,
+        playedSound: true
       }));
-    }, 10000);
+      setTimeout(() => {
+        let notiArrToSplice = [this.state.notiArr];
+        notiArrToSplice.splice(0, 1);
+        this.setState(prevState => ({
+          ...prevState,
+          notiArr: notiArrToSplice,
+          playedSound: false
+        }));
+      }, 10000);
+    }, Math.random() * 200);
   };
 
   notificationHandler = notiObj => {

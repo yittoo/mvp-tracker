@@ -33,28 +33,46 @@ class Modal extends Component {
     // }
   }
 
-  componentWillUnmount() {
-    // if (this.props.onCoordChange) {
-    //   window.removeEventListener("mousemove", this.listenerFunc);
+  // componentWillUnmount() {
+  //   // if (this.props.onCoordChange) {
+  //   //   window.removeEventListener("mousemove", this.listenerFunc);
+  //   // }
+  // }
+
+  componentDidMount() {
+    // if (this.props.onCoordChange && this.props.show) {
+    //   const ele = document.getElementById("modalOfMap");
+    //   if (ele) {
+    //     setTimeout(() => {
+    //       this.setState({
+    //         ...this.state,
+    //         x: ele.offsetLeft,
+    //         y: ele.offsetTop
+    //       });
+    //     }, 305);
+    //   }
     // }
   }
 
-  componentDidMount() {
-    const ele = document.getElementById("modalOfMap");
-    if (this.props.onCoordChange && ele) {
-      setTimeout(() => {
-        this.setState({
+  componentDidUpdate(prevProps, prevState) {
+    // if (
+    //   this.props.onCoordChange &&
+    //   (prevState !== this.state || prevProps !== this.props)
+    // ) {
+    //   this.props.onCoordChange(this.state.x, this.state.y);
+    // }
+    if (prevProps.show !== this.props.show && this.props.onCoordChange) {
+      const ele = document.getElementById("modalOfMap");
+      this.setState(
+        {
           ...this.state,
           x: ele.offsetLeft,
           y: ele.offsetTop
-        });
-      }, 305);
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState !== this.state) {
-      this.props.onCoordChange(this.state.x, this.state.y);
+        },
+        () => {
+          this.props.onCoordChange(this.state.x, this.state.y);
+        }
+      );
     }
   }
 
