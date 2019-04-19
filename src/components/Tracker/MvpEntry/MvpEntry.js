@@ -61,13 +61,17 @@ class MvpEntry extends Component {
   };
 
   onMvpKilledBtn = (minAgo, mvpKey) => {
+    const mvpToCast = {
+      ...this.props.mvp,
+      killedBy: localStorage.getItem("nickname")
+    };
     this.props.saveSingleMvpToDb(
       minAgo,
       mvpKey,
       this.props.userKey,
       this.props.token,
       this.props.trackerKey,
-      this.props.mvp,
+      mvpToCast,
       "killed",
       null
     );
@@ -248,9 +252,35 @@ class MvpEntry extends Component {
       <textarea
         onChange={event => this.inputChangedHandler(event, "noteContentToSave")}
         value={this.state.noteContentToSave}
+        className={classes.NoteChild}
       />
     ) : (
-      <p>{this.props.mvp.note ? this.props.mvp.note : "No note to display."}</p>
+      <p className={classes.NoteChild}>
+        {this.props.mvp.note ? this.props.mvp.note : "No note to display."}
+      </p>
+    );
+
+    const killedByDiv = (
+      <div
+        className={
+          this.state.showNote
+            ? classes.KilledBy + " " + classes.Display
+            : classes.KilledBy
+        }
+      >
+        <h3 className={colors.Gray}>
+          Killed by:{" "}
+          <span
+            className={
+              this.props.mvp.killedBy && this.props.mvp.killedBy !== "Unknown"
+                ? colors.Green
+                : colors.LightGray
+            }
+          >
+            {this.props.mvp.killedBy ? this.props.mvp.killedBy : "Unknown"}
+          </span>
+        </h3>
+      </div>
     );
 
     const notesDiv = (
@@ -262,6 +292,7 @@ class MvpEntry extends Component {
         }
       >
         {notesContent}
+        <br />
         <Button clicked={this.switchEditNoteModeToggler}>
           {this.state.noteEditMode ? "Cancel" : "Edit"}
         </Button>
@@ -335,6 +366,7 @@ class MvpEntry extends Component {
           {mvpDeleteBtn}
           {mvpNotiToggleBtn}
         </div>
+        {killedByDiv}
         {notesDiv}
       </div>
     );

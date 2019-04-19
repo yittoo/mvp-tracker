@@ -7,7 +7,7 @@
     "name untilSpawn deathTimer"
     "fixedTimer untilSpawn killed"
     "map untilSpawn killed"
-    "note note note";
+    "killedBy note note";
   border-bottom: 1px solid #ccc;
   padding: 10px 5px;
   box-sizing: border-box;
@@ -74,44 +74,55 @@
   box-sizing: border-box;
 }
 
+.Note, .KilledBy{
+  box-sizing: border-box;
+  display: none;
+  animation: slidein 1s linear;
+  background-color: #ffffffaa;
+  padding: 10px 20px;
+  margin: 10px 0;
+}
+
 .Note {
   grid-area: note;
   width: 100%;
-  box-sizing: border-box;
-  display: none;
   max-height: 160px;
-  animation: slidein 1s linear;
 }
 
-.Note.Display {
+.KilledBy {
+  grid-area: killedBy;
+  padding: 5px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.KilledBy h3 {
+  margin: 30px auto;
+}
+
+.Note.Display, .KilledBy.Display {
   display: block;
 }
 
-.Note p {
+.Note .NoteChild {
   box-sizing: border-box;
-  width: 50%;
-  margin: 5px auto;
-  display: block;
-  border: 1px solid #eee;
+  width: 100%;
+  display: inline-block;
+  position: relative;
   padding: 5px;
   border-radius: 5px;
 }
 
-.Note * {
+.Note *, .KilledBy * {
   animation: slideinChild 0.3s ease-out;
 }
 
 .Note textarea {
-  display: block;
   width: 50%;
-  margin: 5px auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
-  box-sizing: border-box;
   text-align: center;
   overflow-y: scroll;
   font-family: sans-serif;
+  background: inherit;
 }
 
 @keyframes slidein {
@@ -142,7 +153,7 @@
     grid-template-areas:
       "name untilSpawn"
       "map killed"
-      "note note";
+      "killedBy note";
   }
   .MvpEntry i {
     top: 0px;
@@ -173,11 +184,19 @@
   .Killed button {
     height: 100%;
   }
-  .Note p,
-  .Note textarea {
-    display: block;
-    height: 50px;
-    width: 100%;
-    padding: 10px;
+  div.KilledBy h3 span {
+    display: inline;
   }
+  .Note .NoteChild {
+    display: block;
+    max-height: 50px;
+    overflow: scroll;
+    width: 100%;
+    padding: 5px 10px;
+    margin: 5px 0;
+  }
+  .Note br {
+    display: none;
+  }
+  
 }

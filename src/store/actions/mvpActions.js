@@ -264,6 +264,7 @@ export const saveSingleMvpToDb = (
             maxSpawn: mvp.maxSpawn,
             minSpawn: mvp.minSpawn,
             notification: mvp.notification,
+            killedBy: localStorage.getItem("nickname"),
             timeKilled: new Date(
               new Date().getTime() - Number(minuteAgo) * 60000
             )
@@ -282,6 +283,7 @@ export const saveSingleMvpToDb = (
         minSpawn: mvp.minSpawn,
         notification: mvp.notification,
         timeKilled: mvp.timeKilled,
+        killedBy: mvp.killedBy || "Undefined",
         note: note,
         tombRatioX: mvp.tombRatioX,
         tombRatioY: mvp.tombRatioY,

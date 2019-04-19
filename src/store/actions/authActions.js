@@ -37,6 +37,7 @@ export const logout = () => {
   localStorage.removeItem("userKey");
   localStorage.removeItem("keepLogged");
   localStorage.removeItem("refreshToken");
+  localStorage.removeItem("nickname");
   return {
     type: actionTypes.AUTH_LOGOUT
   };
@@ -84,7 +85,7 @@ export const createNewUserEntry = (userId, token, username) => {
   });
 };
 
-export const auth = (email, password, isSignup, keepLogged) => {
+export const auth = (email, password, isSignup, keepLogged, nickname) => {
   return dispatch => {
     dispatch(authStart());
     const authData = {
@@ -108,6 +109,7 @@ export const auth = (email, password, isSignup, keepLogged) => {
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
         localStorage.setItem("loggedEmail", email);
+        localStorage.setItem("nickname", nickname)
         let refreshToken;
         if (keepLogged) {
           refreshToken = response.data.refreshToken;
@@ -137,7 +139,8 @@ export const auth = (email, password, isSignup, keepLogged) => {
 export const authCheckState = () => {
   return dispatch => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    const nickname = localStorage.getItem("nickname");
+    if (!token || !nickname) {
       dispatch(logout());
     } else {
       const expirationDate = new Date(localStorage.getItem("expirationDate"));

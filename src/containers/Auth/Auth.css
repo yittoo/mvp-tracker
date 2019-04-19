@@ -17,12 +17,24 @@
   display: block;
 }
 
+.Nickname {
+  outline: none;
+  border: 1px solid #ccc;
+  background-color: white;
+  font: inherit;
+  display: block;
+  width: calc(100% - 40px);
+  box-sizing: border-box;
+  padding: 6px 10px;
+  margin: 16px 20px;
+}
+
 .Legal {
   padding: 10px;
   color: #aaa;
 }
 
-.ForgotForm input{
+.ForgotForm input {
   width: 90%;
   padding: 10px 20px;
   outline: none;
@@ -43,4 +55,3 @@
     width: 500px;
   }
 }
-

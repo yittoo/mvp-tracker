@@ -43,6 +43,7 @@ class Auth extends Component {
     isSignup: false,
     isForgot: false,
     forgotValue: "",
+    nickname: "",
     message: null,
     keepLogged: false
   };
@@ -84,11 +85,16 @@ class Auth extends Component {
     if (this.state.keepLogged) {
       localStorage.setItem("keepLogged", true);
     }
+    let nickname = this.state.nickname;
+    if (nickname === "") {
+      nickname = "Undefined";
+    }
     this.props.onAuth(
       this.state.controls.email.value,
       this.state.controls.password.value,
       this.state.isSignup,
-      this.state.keepLogged
+      this.state.keepLogged,
+      nickname
     );
   };
 
@@ -108,6 +114,13 @@ class Auth extends Component {
     this.setState({
       ...this.state,
       forgotValue: event.target.value
+    });
+  };
+
+  nicknameChangedHandler = event => {
+    this.setState({
+      ...this.state,
+      nickname: event.target.value
     });
   };
 
@@ -149,10 +162,6 @@ class Auth extends Component {
       />
     ));
 
-    if (this.props.loading) {
-      form = <Spinner />;
-    }
-
     let errorMessage = null;
 
     if (this.props.error) {
@@ -182,10 +191,17 @@ class Auth extends Component {
       </form>
     );
 
-    const dataToRender = !this.state.isForgot ? (
+    let dataToRender = !this.state.isForgot ? (
       <React.Fragment>
         <form onSubmit={this.submitHandler}>
           {form}
+          <input
+            className={classes.Nickname}
+            type="text"
+            value={this.state.nickname}
+            onChange={this.nicknameChangedHandler}
+            placeholder="Nickname"
+          />
           <div className={classes.CheckboxContainer}>
             <label>Keep me signed in: </label>
             <input
@@ -212,6 +228,10 @@ class Auth extends Component {
       forgotForm
     );
 
+    if (this.props.loading) {
+      dataToRender = <Spinner />;
+    }
+
     return (
       <div className={classes.Auth}>
         <HeaderBar>Authentication</HeaderBar>
@@ -219,9 +239,11 @@ class Auth extends Component {
         {authRedirect}
         {dataToRender}
         <br />
-        <Button classes="ButtonAuth" clicked={this.switchForgotModeHandler}>
-          FORGOT MY PASSWORD
-        </Button>
+        {!this.props.loading ? (
+          <Button classes="ButtonAuth" clicked={this.switchForgotModeHandler}>
+            FORGOT MY PASSWORD
+          </Button>
+        ) : null}
       </div>
     );
   }
@@ -237,8 +259,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignup, keepLogged) =>
-      dispatch(actions.auth(email, password, isSignup, keepLogged)),
+    onAuth: (email, password, isSignup, keepLogged, nickname) =>
+      dispatch(actions.auth(email, password, isSignup, keepLogged, nickname)),
     resetPassword: email => dispatch(actions.sendPasswordReset(email))
   };
 };
