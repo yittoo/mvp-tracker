@@ -13,7 +13,8 @@ export {
   saveNotificationsLocal,
   initializeSettings,
   saveThemeSettings,
-  saveThemeLocal
+  saveThemeLocal,
+  deleteAccountDbData
 } from "./mvpActions";
 
 export {
@@ -22,4 +23,5 @@ export {
   authCheckState,
   sendPasswordReset,
   clearAuthMessage,
+  deleteAccountData
 } from "./authActions";

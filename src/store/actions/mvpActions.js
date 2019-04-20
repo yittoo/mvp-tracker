@@ -698,6 +698,43 @@ export const saveThemeSettingsFail = error => {
   };
 };
 
+//----- DELETE ACCOUNT DATA
+
+export const deleteAccountDbData = (token, userKey) => {
+  return dispatch => {
+    dispatch(saveThemeSettingsStart());
+    const url = "/users/" + userKey + ".json";
+    const queryParams = "?auth=" + token;
+    mainAxios.put(url+queryParams, {}).then(res => {
+      dispatch(deleteAccountSuccess())
+      localStorage.clear();
+    }).catch(err => {
+      dispatch(deleteAccountFail())
+    })
+  }
+}
+
+export const deleteAccountStart = () => {
+  return {
+    type: actionTypes.DELETE_ACCOUNT_START
+  }
+}
+
+export const deleteAccountSuccess = () => {
+  return {
+    type: actionTypes.DELETE_ACCOUNT_SUCCESS
+  }
+}
+
+export const deleteAccountFail = (error) => {
+  return {
+    type: actionTypes.DELETE_ACCOUNT_FAIL,
+    payload: {
+      error: error
+    }
+  }
+}
+
 //----- MISC
 
 export const updateCurrentTime = () => {

@@ -9,6 +9,7 @@ import colors from "../../components/UI/Colors/Colors.css";
 import xss from "xss";
 import Slider from "react-input-slider";
 import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
+import { red } from "ansi-colors";
 
 class Profile extends Component {
   constructor(props) {
@@ -33,12 +34,13 @@ class Profile extends Component {
       message: null,
       refreshComponent: 0,
       resetBtnDisabled: false,
-      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true"
+      mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true",
+      delSecondConfirm: false
     };
   }
 
-  componentDidUpdate(){
-    if(!this.props.userKey){
+  componentDidUpdate() {
+    if (!this.props.userKey) {
       this.props.fetchUserKey(this.props.userId, this.props.token);
     }
   }
@@ -112,7 +114,10 @@ class Profile extends Component {
 
   themeSubmitHandler = event => {
     event.preventDefault();
-    if (this.state.isForAllDevicesTheme !== "" && this.state.selectedTheme !== "") {
+    if (
+      this.state.isForAllDevicesTheme !== "" &&
+      this.state.selectedTheme !== ""
+    ) {
       if (this.state.isForAllDevicesTheme === "singleDevice") {
         localStorage.setItem("currentTheme", this.state.selectedTheme);
         this.props.saveThemeLocal(this.state.selectedTheme);
@@ -128,7 +133,8 @@ class Profile extends Component {
         ...this.state,
         isForAllDevicesTheme: "",
         selectedTheme: "",
-        message: "Theme mode has updated please refresh page for events to take effect."
+        message:
+          "Theme mode has updated please refresh page for events to take effect."
       });
     }
     if (this.state.isForAllDevicesTheme === "removeSettings") {
@@ -313,6 +319,18 @@ class Profile extends Component {
     });
   };
 
+  deleteAccBtn = () => {
+    if (this.state.delSecondConfirm) {
+      this.props.deleteAccountDbData(this.props.token, this.props.userKey);
+      this.props.deleteAccountData(this.props.token);
+    } else {
+      this.setState({
+        ...this.state,
+        delSecondConfirm: true
+      });
+    }
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps !== this.props || nextState !== this.state) {
       return true;
@@ -372,10 +390,14 @@ class Profile extends Component {
         <div className={classes.Left}>
           Current theme:{" "}
           <span className={colors.Yellow}>
-            {this.props.theme ? this.props.theme.charAt(0).toUpperCase() + this.props.theme.slice(1) : null}
+            {this.props.theme
+              ? this.props.theme.charAt(0).toUpperCase() +
+                this.props.theme.slice(1)
+              : null}
           </span>
           <span className={colors.LightGray}>
-            {" "}(Local settings overrides server)
+            {" "}
+            (Local settings overrides server)
           </span>
         </div>
         <div className={classes.Right + " " + classes.TextAlignRight}>
@@ -702,6 +724,24 @@ class Profile extends Component {
       </div>
     );
 
+    const deleteAccountBtnDiv = (
+      <div className={classes.Section}>
+        Delete Account{" "}
+        <div className={classes.FloatRight}>
+          <Button
+            clicked={this.deleteAccBtn}
+            style={
+              this.state.delSecondConfirm
+                ? { background: "#ff0000", color: "white" }
+                : null
+            }
+          >
+            {this.state.delSecondConfirm ? "ARE YOU SURE?" : "!DELETE!"}
+          </Button>
+        </div>
+      </div>
+    );
+
     const notiToRender = (
       <React.Fragment>
         {notiModeForm}
@@ -724,21 +764,7 @@ class Profile extends Component {
             {themeForm}
             {deleteTracker}
             {passwordReset}
-            <div className={classes.Section}>
-              Delete Account{" "}
-              <span
-                className={
-                  classes.FloatRight +
-                  " " +
-                  classes.LineBreakSpan +
-                  " " +
-                  colors.LightGray
-                }
-              >
-                Not implemented yet contact suggest@mvp-ro.com with your email
-                to delete your account
-              </span>
-            </div>
+            {deleteAccountBtnDiv}
           </div>
         </React.Fragment>
       );
@@ -795,7 +821,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.saveNotificationsLocal(notiTypeKey, itemToCast)),
     saveThemeLocal: theme => dispatch(actions.saveThemeLocal(theme)),
     saveThemeSettings: (token, userKey, theme) =>
-      dispatch(actions.saveThemeSettings(token, userKey, theme))
+      dispatch(actions.saveThemeSettings(token, userKey, theme)),
+    deleteAccountData: token => dispatch(actions.deleteAccountData(token)),
+    deleteAccountDbData: (token, userKey) =>
+      dispatch(actions.deleteAccountDbData(token, userKey))
   };
 };
 

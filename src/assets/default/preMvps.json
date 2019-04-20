@@ -4,489 +4,468 @@
     "name": "Amon Ra",
     "map": "moc_pryd06",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
+  },
+  "Angeling gGFEhmb": {
+    "id": 1096,
+    "name": "Angeling",
+    "map": "pay_fild04",
+    "minSpawn": 60,
+    "maxSpawn": 90
+  },
+  "Angeling gG43mb": {
+    "id": 1096,
+    "name": "Angeling",
+    "map": "xmas_dun01",
+    "minSpawn": 60,
+    "maxSpawn": 90
+  },
+  "Angeling gG37mb": {
+    "id": 1096,
+    "name": "Angeling",
+    "map": "yuno_fild03",
+    "minSpawn": 60,
+    "maxSpawn": 90
+  },
+  "Arcangeling g37mb": {
+    "id": 1388,
+    "name": "Arc Angeling",
+    "map": "yuno_fild05",
+    "minSpawn": 60,
+    "maxSpawn": 63
   },
   "Atroce gGFEhmb": {
     "id": 1785,
     "name": "Atroce",
     "map": "ra_fild02",
     "minSpawn": 240,
-    "maxSpawn": 250,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 250
   },
   "Atroce_2 gGFEhmb": {
     "id": 1785,
     "name": "Atroce",
     "map": "ra_fild03",
     "minSpawn": 180,
-    "maxSpawn": 190,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 190
   },
   "Atroce_3 gGFEhmb": {
     "id": 1785,
     "name": "Atroce",
     "map": "ra_fild04",
     "minSpawn": 300,
-    "maxSpawn": 310,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 310
   },
   "Atroce_4 gGFEhmb": {
     "id": 1785,
     "name": "Atroce",
     "map": "ve_fild01",
     "minSpawn": 180,
-    "maxSpawn": 190,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 190
   },
   "Atroce_5 gGFEhmb": {
     "id": 1785,
     "name": "Atroce",
     "map": "ve_fild02",
     "minSpawn": 360,
-    "maxSpawn": 370,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 370
   },
   "Bacsojin gGFEhmb": {
     "id": 1630,
     "name": "Bacsojin",
     "map": "lou_dun03",
     "minSpawn": 117,
-    "maxSpawn": 127,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 127
   },
   "Baphomet gGFEhmb": {
     "id": 1039,
     "name": "Baphomet",
     "map": "prt_maze03",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
+  },
+  "Beelzebub gGFEhmb": {
+    "id": 1873,
+    "name": "Beelzebub",
+    "map": "abbey03",
+    "minSpawn": 720,
+    "maxSpawn": 730
   },
   "Bio 3 gGFEhmb": {
     "id": null,
     "name": "Bio 3",
     "map": "lhz_dun03",
     "minSpawn": 100,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Boitata gGFEhmb": {
     "id": 2068,
     "name": "Boitata",
     "map": "bra_dun02",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Dark Lord gGFEhmb": {
     "id": 1272,
     "name": "Dark Lord",
     "map": "gld_dun04",
     "minSpawn": 480,
-    "maxSpawn": 490,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 490
   },
   "Dark Lord_2 gGFEhmb": {
     "id": 1272,
     "name": "Dark Lord",
     "map": "gl_chyard",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Detale gGFEhmb": {
     "id": 1719,
     "name": "Detale",
     "map": "abyss_03",
     "minSpawn": 180,
-    "maxSpawn": 190,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 190
+  },
+  "Deviling gGFEhmb": {
+    "id": 1582,
+    "name": "Deviling",
+    "map": "pay_fild04",
+    "minSpawn": 120,
+    "maxSpawn": 180
+  },
+  "Deviling gGeEhmb": {
+    "id": 1582,
+    "name": "Deviling",
+    "map": "yuno_fild03",
+    "minSpawn": 60,
+    "maxSpawn": 90
   },
   "Doppelganger gGFEhmb": {
     "id": 1046,
     "name": "Doppelganger",
     "map": "gef_dun02",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Doppelganger_2 gGFEhmb": {
     "id": 1046,
     "name": "Doppelganger",
     "map": "gld_dun02",
     "minSpawn": 480,
-    "maxSpawn": 490,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 490
   },
   "Dracula gGFEhmb": {
     "id": 1389,
     "name": "Dracula",
     "map": "gef_dun01",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Drake gGFEhmb": {
     "id": 1112,
     "name": "Drake",
     "map": "treasure02",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Eddga gGFEhmb": {
     "id": 1115,
     "name": "Eddga",
     "map": "gld_dun01",
     "minSpawn": 480,
-    "maxSpawn": 490,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 490
   },
   "Eddga_2 gGFEhmb": {
     "id": 1115,
     "name": "Eddga",
     "map": "pay_fild11",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Evil Snake Lord gGFEhmb": {
     "id": 1418,
     "name": "Evil Snake Lord",
     "map": "gon_dun03",
     "minSpawn": 94,
-    "maxSpawn": 104,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 104
   },
   "Fallen Bishop Hibram gGFEhmb": {
     "id": 1871,
     "name": "Fallen Bishop Hibram",
     "map": "abbey02",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Garm gGFEhmb": {
     "id": 1252,
     "name": "Garm",
     "map": "xmas_fild01",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
+  },
+  "Ghostring gGFEhmb": {
+    "id": 1120,
+    "name": "Ghostring",
+    "map": "gld_dun04",
+    "minSpawn": 240,
+    "maxSpawn": 360
+  },
+  "Ghostring gGjEhmb": {
+    "id": 1120,
+    "name": "Ghostring",
+    "map": "pay_fild04",
+    "minSpawn": 60,
+    "maxSpawn": 90
+  },
+  "Ghostring gqFEhmb": {
+    "id": 1120,
+    "name": "Ghostring",
+    "map": "prt_maze03",
+    "minSpawn": 113,
+    "maxSpawn": 170
+  },
+  "Ghostring gGFEhqb": {
+    "id": 1120,
+    "name": "Ghostring",
+    "map": "treasure02",
+    "minSpawn": 33,
+    "maxSpawn": 53
   },
   "Gloom Under Night gGFEhmb": {
     "id": 1768,
     "name": "Gloom Under Night",
     "map": "ra_san05",
     "minSpawn": 300,
-    "maxSpawn": 310,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 310
   },
   "Golden Thief Bug gGFEhmb": {
     "id": 1086,
     "name": "Golden Thief Bug",
     "map": "prt_sewb4",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Gopinich gGFEhmb": {
     "id": 1885,
     "name": "Gopinich",
     "map": "mosk_dun03",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
+  },
+  "Hardrock Mammoth gGFEhmb": {
+    "id": 1990,
+    "name": "Hardrock Mammoth",
+    "map": "man_fild03",
+    "minSpawn": 240,
+    "maxSpawn": 240
+  },
+  "Hydrolancer gGFEhmb": {
+    "id": 1720,
+    "name": "Hydrolancer",
+    "map": "abyss_03",
+    "minSpawn": 50,
+    "maxSpawn": 90
   },
   "Ifrit gGFEhmb": {
     "id": 1832,
     "name": "Ifrit",
     "map": "thor_v03",
     "minSpawn": 660,
-    "maxSpawn": 670,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 670
   },
   "Incantation Samurai gGFEhmb": {
     "id": 1492,
     "name": "Incantation Samurai",
     "map": "ama_dun03",
     "minSpawn": 91,
-    "maxSpawn": 101,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 101
   },
   "Kiel D-01 gGFEhmb": {
     "id": 1734,
     "name": "Kiel D-01",
     "map": "kh_dun02",
     "minSpawn": 120,
-    "maxSpawn": 180,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 180
   },
   "Stormy Knight gGFEhmb": {
     "id": 1251,
     "name": "Stormy Knight",
     "map": "xmas_dun02",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Lady Tanee gGFEhmb": {
     "id": 1688,
     "name": "Lady Tanee",
     "map": "ayo_dun02",
     "minSpawn": 420,
-    "maxSpawn": 430,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 430
   },
   "Lord of Death gGFEhmb": {
     "id": 1373,
     "name": "Lord of Death",
     "map": "niflheim",
     "minSpawn": 133,
-    "maxSpawn": 133,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 133
   },
   "Maya gGFEhmb": {
     "id": 1147,
     "name": "Maya",
     "map": "anthell02",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Maya_2 gGFEhmb": {
     "id": 1147,
     "name": "Maya",
     "map": "gld_dun03",
     "minSpawn": 480,
-    "maxSpawn": 490,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 490
+  },
+  "Maya Purple gGFEhmb": {
+    "id": 1289,
+    "name": "Maya Purple",
+    "map": "gld_dun03",
+    "minSpawn": 20,
+    "maxSpawn": 30
+  },
+  "Maya Purple gewhmb": {
+    "id": 1289,
+    "name": "Maya Purple",
+    "map": "anthell01",
+    "minSpawn": 120,
+    "maxSpawn": 180
   },
   "Mistress gGFEhmb": {
     "id": 1059,
     "name": "Mistress",
     "map": "mjolnir_04",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Moonlight Flower gGFEhmb": {
     "id": 1150,
     "name": "Moonlight Flower",
     "map": "pay_dun04",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Orc Hero gGFEhmb": {
     "id": 1087,
     "name": "Orc Hero",
     "map": "gef_fild02",
     "minSpawn": 1440,
-    "maxSpawn": 1450,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 1450
   },
   "Orc Hero_2 gGFEhmb": {
     "id": 1087,
     "name": "Orc Hero",
     "map": "gef_fild14",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Orc Lord gGFEhmb": {
     "id": 1190,
     "name": "Orc Lord",
     "map": "gef_fild10",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Osiris gGFEhmb": {
     "id": 1038,
     "name": "Osiris",
     "map": "moc_pryd04",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Pharaoh gGFEhmb": {
     "id": 1157,
     "name": "Pharaoh",
     "map": "in_sphinx5",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
   },
   "Phreeoni gGFEhmb": {
     "id": 1159,
     "name": "Phreeoni",
     "map": "moc_fild17",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "RSX 0806 gGFEhmb": {
     "id": 1623,
     "name": "RSX 0806",
     "map": "ein_dun02",
     "minSpawn": 125,
-    "maxSpawn": 135,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 135
   },
   "Tao Gunka gGFEhmb": {
     "id": 1583,
     "name": "Tao Gunka",
     "map": "beach_dun",
     "minSpawn": 300,
-    "maxSpawn": 310,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 310
+  },
+  "Tendrillion gGFEhmb": {
+    "id": 1991,
+    "name": "Tendrillion",
+    "map": "spl_fild03",
+    "minSpawn": 60,
+    "maxSpawn": 60
   },
   "Thanatos gGFEhmb": {
     "id": 1708,
     "name": "Thanatos",
     "map": "thana_boss",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Turtle General gGFEhmb": {
     "id": 1312,
     "name": "Turtle General",
     "map": "tur_dun04",
     "minSpawn": 60,
-    "maxSpawn": 70,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 70
+  },
+  "Valkyrie gGFEhmb": {
+    "id": 1765,
+    "name": "Valkyrie",
+    "map": "odin_tem02",
+    "minSpawn": 90,
+    "maxSpawn": 120
+  },
+  "Valkyrie gGFEwmb": {
+    "id": 1765,
+    "name": "Valkyrie",
+    "map": "odin_tem03",
+    "minSpawn": 30,
+    "maxSpawn": 50
   },
   "Valkyrie Randgris gGFEhmb": {
     "id": 1751,
     "name": "Valkyrie Randgris",
     "map": "odin_tem03",
     "minSpawn": 480,
-    "maxSpawn": 490,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 490
   },
   "Vesper gGFEhmb": {
     "id": 1685,
     "name": "Vesper",
     "map": "jupe_core",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   },
   "Wounded Morroc gGFEhmb": {
     "id": 1917,
     "name": "Wounded Morroc",
     "map": "moc_fild22",
     "minSpawn": 720,
-    "maxSpawn": 730,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 730
   },
   "Ygnizem gGFEhmb": {
     "id": 1658,
     "name": "Ygnizem",
     "map": "lhz_dun02",
     "minSpawn": 120,
-    "maxSpawn": 130,
-    "minTillSpawn": null,
-    "maxTillSpawn": null,
-    "timeKilled": null
+    "maxSpawn": 130
   }
 }

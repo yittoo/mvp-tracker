@@ -48,6 +48,15 @@ const reducer = (state = initialState, action) => {
       });
     case actionTypes.CLEAR_AUTH_MESSAGE:
       return updateObject(state, { message: null });
+    case actionTypes.DELETE_ACCOUNT_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.DELETE_ACCOUNT_SUCCESS:
+      return initialState;
+    case actionTypes.DELETE_ACCOUNT_FAIL:
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
     default:
       return state;
   }

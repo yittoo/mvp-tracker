@@ -67,6 +67,7 @@ const Index = props => {
         <div className={classes.RightColumn}>
           <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
+          <p>20.04.2019 - Minibosses added to default lists, account delete capability enabled in control panel.</p>
           <p>18.04.2019 - Tombstones with maps added. If your list is among defaults, click map name then click on map to drop a tombstone. Simple as that.</p>
           <p>15.04.2019 - Two themes added, change from Control Panel. Fixed a major bug where newly created accounts' initial trackers were failed to be written to DB.</p>
           <p>13.04.2019 - Notifications (Beta) Implemented</p>

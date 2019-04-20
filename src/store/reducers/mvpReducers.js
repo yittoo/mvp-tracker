@@ -176,6 +176,15 @@ const reducer = (state = initialState, action) => {
       return updateObject(state, {
         error: action.payload.error
       });
+    case actionTypes.DELETE_ACCOUNT_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.DELETE_ACCOUNT_SUCCESS:
+      return initialState;
+    case actionTypes.DELETE_ACCOUNT_FAIL:
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
     default:
       return state;
   }

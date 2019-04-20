@@ -109,7 +109,7 @@ export const auth = (email, password, isSignup, keepLogged, nickname) => {
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
         localStorage.setItem("loggedEmail", email);
-        localStorage.setItem("nickname", nickname)
+        localStorage.setItem("nickname", nickname);
         let refreshToken;
         if (keepLogged) {
           refreshToken = response.data.refreshToken;
@@ -236,5 +236,42 @@ export const sendPasswordResetSuccess = message => {
 export const clearAuthMessage = () => {
   return {
     type: actionTypes.CLEAR_AUTH_MESSAGE
+  };
+};
+
+export const deleteAccountData = token => {
+  return dispatch => {
+    dispatch(deleteAccountStart());
+    const accDelUrl =
+      "https://www.googleapis.com/identitytoolkit/v3/relyingparty/deleteAccount?key=AIzaSyD0Zeimu-WY9hXaPj5A93eo6naiB8OAnGw";
+    vanillaAxios
+      .post(accDelUrl, { idToken: token })
+      .then(res => {
+        dispatch(deleteAccountSuccess());
+      })
+      .catch(err => {
+        dispatch(deleteAccountFail(err));
+      });
+  };
+};
+
+export const deleteAccountStart = () => {
+  return {
+    type: actionTypes.DELETE_ACCOUNT_START
+  };
+};
+
+export const deleteAccountSuccess = () => {
+  return {
+    type: actionTypes.DELETE_ACCOUNT_SUCCESS
+  };
+};
+
+export const deleteAccountFail = error => {
+  return {
+    type: actionTypes.DELETE_ACCOUNT_FAIL,
+    payload: {
+      error: error
+    }
   };
 };
