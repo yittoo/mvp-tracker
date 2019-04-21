@@ -14,7 +14,8 @@ export {
   initializeSettings,
   saveThemeSettings,
   saveThemeLocal,
-  deleteAccountDbData
+  deleteAccountDbData,
+  undoMvpChange
 } from "./mvpActions";
 
 export {

@@ -83,6 +83,16 @@ class MvpEntry extends Component {
     });
   };
 
+  onMvpUndoBtn = () => {
+    this.props.undoMvpChange(
+      this.props.id,
+      this.props.userKey,
+      this.props.token,
+      this.props.mvp,
+      this.props.trackerKey
+    );
+  };
+
   onMvpDeletedBtn = mvpKey => {
     this.props.saveSingleMvpToDb(
       null,
@@ -222,6 +232,14 @@ class MvpEntry extends Component {
         Math.abs(this.props.mvp.maxTillSpawn);
     }
 
+    const untilSpawnAfter =
+      untilSpawnValue === "Unknown" ? null : (
+        <span>
+          <br />
+          minutes {agoOrMore}
+        </span>
+      );
+
     const minuteInput = (
       <input
         className={classes.HideOnSmall}
@@ -242,11 +260,36 @@ class MvpEntry extends Component {
     const mvpNotiToggleBtn =
       this.props.notiMode === "custom" ? (
         <Button clicked={() => this.onMvpNotiToggleBtn(this.props.id)}>
-          {this.props.mvp.notification
-            ? "Disable Notification"
-            : "Enable Notification"}
+          {this.props.mvp.notification ? "Set Alert Off" : "Set Alert On"}
         </Button>
       ) : null;
+
+    const killMvpDiv = (
+      <div className={classes.Killed}>
+        <span>Killed</span>
+        {minuteInput}
+        <span className={classes.MarginRight5px}>minutes ago</span>
+        <Button
+          classes="HideOnSmall"
+          clicked={() =>
+            this.onMvpKilledBtn(this.state.minAgoValue, this.props.id)
+          }
+        >
+          Submit
+        </Button>
+        <Button
+          classes="HideOnLarge"
+          clicked={() => {
+            this.onMvpKilledBtn(0, this.props.id);
+          }}
+        >
+          Killed Now
+        </Button>
+        <Button clicked={this.onMvpUndoBtn}>Undo</Button>
+        {mvpDeleteBtn}
+        {mvpNotiToggleBtn}
+      </div>
+    );
 
     const notesContent = this.state.noteEditMode ? (
       <textarea
@@ -306,7 +349,13 @@ class MvpEntry extends Component {
     );
 
     return (
-      <div className={classes.MvpEntry}>
+      <div
+        className={
+          this.props.mvpViewMode === "default"
+            ? classes.MvpEntry
+            : classes.MvpEntryCompact
+        }
+      >
         <div className={nameClasses.join(" ")}>
           {this.props.mvp.name}
           {this.props.mvp.note ? (
@@ -338,34 +387,9 @@ class MvpEntry extends Component {
         </div>
         <div className={untilSpawnClasses.join(" ")}>
           {untilSpawnValue}
-          <span>
-            <br />
-            minutes {agoOrMore}
-          </span>
+          {untilSpawnAfter}
         </div>
-        <div className={classes.Killed}>
-          <span>Killed</span>
-          {minuteInput}
-          <span className={classes.MarginRight5px}>minutes ago</span>
-          <Button
-            classes="HideOnSmall"
-            clicked={() =>
-              this.onMvpKilledBtn(this.state.minAgoValue, this.props.id)
-            }
-          >
-            Submit
-          </Button>
-          <Button
-            classes="HideOnLarge"
-            clicked={() => {
-              this.onMvpKilledBtn(0, this.props.id);
-            }}
-          >
-            Killed Now
-          </Button>
-          {mvpDeleteBtn}
-          {mvpNotiToggleBtn}
-        </div>
+        {killMvpDiv}
         {killedByDiv}
         {notesDiv}
       </div>
@@ -422,6 +446,11 @@ const mapDispatchToProps = dispatch => {
           eventType,
           note
         )
+      );
+    },
+    undoMvpChange: (mvpKey, userKey, token, mvp, trackerKey) => {
+      return dispatch(
+        actions.undoMvpChange(mvpKey, userKey, token, mvp, trackerKey)
       );
     }
   };

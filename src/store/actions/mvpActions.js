@@ -267,7 +267,8 @@ export const saveSingleMvpToDb = (
             killedBy: localStorage.getItem("nickname"),
             timeKilled: new Date(
               new Date().getTime() - Number(minuteAgo) * 60000
-            )
+            ),
+            timeKilledBeforeEdit: mvp.timeKilled
           }
         : {};
     } else if (
@@ -287,6 +288,7 @@ export const saveSingleMvpToDb = (
         note: note,
         tombRatioX: mvp.tombRatioX,
         tombRatioY: mvp.tombRatioY,
+        timeKilledBeforeEdit: mvp.timeKilledBeforeEdit
       };
     }
     dispatch(saveSingleMvpStart());
@@ -307,6 +309,43 @@ export const saveSingleMvpToDb = (
               ...res.data
             }
           : null;
+        dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
+        dispatch(
+          calculateTimeToSpawn(
+            mvpToUpdate.timeKilled,
+            mvpToUpdate.minSpawn,
+            mvpToUpdate.maxSpawn,
+            new Date(),
+            mvpKey
+          )
+        );
+      })
+      .catch(err => {
+        dispatch(saveSingleMvpFail(err));
+      });
+  };
+};
+
+export const undoMvpChange = (mvpKey, userKey, token, mvp, trackerKey) => {
+  return dispatch => {
+    dispatch(saveSingleMvpStart());
+    const mvpToCast = {
+      ...mvp,
+      timeKilled: mvp.timeKilledBeforeEdit || null
+    };
+    const url =
+      "/users/" +
+      userKey +
+      "/trackers/" +
+      trackerKey +
+      "/mvps/" +
+      mvpKey +
+      ".json";
+    const queryParams = "?auth=" + token;
+    mainAxios
+      .put(url + queryParams, mvpToCast)
+      .then(res => {
+        const mvpToUpdate = {...res.data};
         dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
         dispatch(
           calculateTimeToSpawn(
@@ -705,35 +744,38 @@ export const deleteAccountDbData = (token, userKey) => {
     dispatch(saveThemeSettingsStart());
     const url = "/users/" + userKey + ".json";
     const queryParams = "?auth=" + token;
-    mainAxios.put(url+queryParams, {}).then(res => {
-      dispatch(deleteAccountSuccess())
-      localStorage.clear();
-    }).catch(err => {
-      dispatch(deleteAccountFail())
-    })
-  }
-}
+    mainAxios
+      .put(url + queryParams, {})
+      .then(res => {
+        dispatch(deleteAccountSuccess());
+        localStorage.clear();
+      })
+      .catch(err => {
+        dispatch(deleteAccountFail());
+      });
+  };
+};
 
 export const deleteAccountStart = () => {
   return {
     type: actionTypes.DELETE_ACCOUNT_START
-  }
-}
+  };
+};
 
 export const deleteAccountSuccess = () => {
   return {
     type: actionTypes.DELETE_ACCOUNT_SUCCESS
-  }
-}
+  };
+};
 
-export const deleteAccountFail = (error) => {
+export const deleteAccountFail = error => {
   return {
     type: actionTypes.DELETE_ACCOUNT_FAIL,
     payload: {
       error: error
     }
-  }
-}
+  };
+};
 
 //----- MISC
 

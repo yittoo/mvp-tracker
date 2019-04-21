@@ -9,7 +9,6 @@ import colors from "../../components/UI/Colors/Colors.css";
 import xss from "xss";
 import Slider from "react-input-slider";
 import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
-import { red } from "ansi-colors";
 
 class Profile extends Component {
   constructor(props) {
@@ -35,7 +34,8 @@ class Profile extends Component {
       refreshComponent: 0,
       resetBtnDisabled: false,
       mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true",
-      delSecondConfirm: false
+      delSecondConfirm: false,
+      mvpViewMode: localStorage.getItem("mvpViewMode") || "default"
     };
   }
 
@@ -302,6 +302,22 @@ class Profile extends Component {
     }, 1000);
   };
 
+  mvpListViewModeHandler = () => {
+    if (this.state.mvpViewMode === "default") {
+      localStorage.setItem("mvpViewMode", "compact");
+      this.setState({
+        ...this.state,
+        mvpViewMode: "compact"
+      });
+    } else if (this.state.mvpViewMode === "compact") {
+      localStorage.setItem("mvpViewMode", "default");
+      this.setState({
+        ...this.state,
+        mvpViewMode: "default"
+      });
+    }
+  };
+
   mvpDeleteModeHandler = () => {
     localStorage.setItem("mvpDeleteMode", !this.state.mvpDeleteMode);
     this.setState({
@@ -357,6 +373,22 @@ class Profile extends Component {
           </span>
         </span>
       ) : null;
+
+    const mvpListViewTogglerDiv = (
+      <div className={classes.Section}>
+        Current MvP view mode:{" "}
+        <span className={colors.Green}>
+          {this.state.mvpViewMode === "default" ? "Default" : "Compact"}
+        </span>
+        <div className={classes.FloatRight}>
+          <Button clicked={this.mvpListViewModeHandler}>
+            {this.state.mvpViewMode === "default"
+              ? "Set Compact Mode"
+              : "Set Default Mode"}
+          </Button>
+        </div>
+      </div>
+    );
 
     const changeDefaultTrackerForm = this.props.allTrackers ? (
       <div className={classes.Section}>
@@ -415,6 +447,7 @@ class Profile extends Component {
                   <option value="">Select Theme</option>
                   <option value="default">Default</option>
                   <option value="Bio Labs">Bio Labs</option>
+                  <option value="Deviruchis">Deviruchis</option>
                 </React.Fragment>
               )}
             </select>
@@ -758,6 +791,7 @@ class Profile extends Component {
           <div className={classes.Profile}>
             {message}
             {changeDefaultTrackerForm}
+            {mvpListViewTogglerDiv}
             {mvpDeleteModeBtn}
             {addNewTracker}
             {notiToRender}

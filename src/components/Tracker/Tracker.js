@@ -27,7 +27,8 @@ class Tracker extends Component {
     showNewMvpForm: false,
     newMvpAdded: false,
     notiArr: [],
-    mapToRender: null
+    mapToRender: null,
+    mvpViewMode: localStorage.getItem("mvpViewMode") || "default"
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -268,6 +269,7 @@ class Tracker extends Component {
     sortableMvpArr.forEach(orderedMvpPair => {
       mvpsArrToRender.push(
         <MvpEntry
+          mvpViewMode={this.state.mvpViewMode}
           onNotificate={noti => this.notificationHandler(noti)}
           key={orderedMvpPair[2]}
           id={orderedMvpPair[2]}

@@ -81,14 +81,11 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 500px) {
   .Grid {
     grid-template-columns: 100%;
     grid-template-areas: "left" "right";
   }
-}
-
-@media (max-width: 500px) {
   .FloatRight {
     float: unset;
   }
