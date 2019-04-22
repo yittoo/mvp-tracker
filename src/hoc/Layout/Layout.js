@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import classes from "./Layout.css";
-import Ad from "../../components/Ad/Ad";
+// import Ad from "../../components/Ad/Ad";
 import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
 import Footer from "../../components/Footer/Footer";
@@ -42,9 +42,9 @@ class Layout extends Component {
   render() {
     let isAuth = false;
 
-    const bottomStyle = this.state.bottomAdFixed
-      ? { position: "fixed", bottom: "5%" }
-      : null;
+    // const bottomStyle = this.state.bottomAdFixed
+    //   ? { position: "fixed", bottom: "5%" }
+    //   : null;
 
     // const contentToShow = this.state.showSideAds ? (
     //   <React.Fragment>

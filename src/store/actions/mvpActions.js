@@ -18,6 +18,7 @@ export const fetchMvpsFromDb = (
     mainAxios
       .get("users.json" + queryParams)
       .then(res => {
+        // eslint-disable-next-line
         Object.keys(res.data).map(userKey => {
           const trackerObj = res.data[userKey].trackers;
           let trackersLength = Object.keys(trackerObj).length;
@@ -25,6 +26,7 @@ export const fetchMvpsFromDb = (
             return dispatch(fetchMvpsSuccess(null, userKey, null, null));
           } else {
             const allTrackerIdentifiers = [];
+            // eslint-disable-next-line
             Object.keys(trackerObj).map((trackerKey, index) => {
               allTrackerIdentifiers.push({
                 trackerName: trackerObj[trackerKey].trackerName,
@@ -446,10 +448,12 @@ export const fetchUserKey = (userId, token) => {
       .get("users.json" + queryParams)
       .then(res => {
         let allTrackerIdentifiers = [];
+        // eslint-disable-next-line
         Object.keys(res.data).map(userKey => {
           const trackerObj = res.data[userKey].trackers;
           localStorage.setItem("userKey", userKey);
           if (trackerObj) {
+            // eslint-disable-next-line
             Object.keys(trackerObj).map(trackerKey => {
               allTrackerIdentifiers.push({
                 trackerName: trackerObj[trackerKey].trackerName,
@@ -526,7 +530,7 @@ export const saveNotificationSettings = (
 export const addInitialNotificationSettings = (token, userKey) => {
   return dispatch => {
     dispatch(saveNotificationSettingsStart());
-    const url = "/users/" + userKey + "/settings" + ".json";
+    const url = "/users/" + userKey + "/settings.json";
     const queryParams = "?auth=" + token;
     const itemToCast = {
       notiMode: { mode: "all" },
@@ -602,6 +606,7 @@ export const initializeSettings = (
       mainAxios
         .get("users.json" + queryParams)
         .then(res => {
+          // eslint-disable-next-line
           Object.keys(res.data).map(userKey => {
             const settingsFromServer = res.data[userKey].settings
               ? { ...res.data[userKey].settings }
@@ -826,6 +831,7 @@ export const calculateTimeToSpawn = (
 
 export const calculateTimeToSpawnAllMvps = (currentTime, mvps) => {
   let mvpsToCast = {};
+  // eslint-disable-next-line
   Object.keys(mvps).map(mvpKey => {
     const mvp = { ...mvps[mvpKey] };
     const fixedKilledAt = mvp.timeKilled

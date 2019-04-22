@@ -3,10 +3,9 @@ import { makeId } from "../../utility/utility";
 import Input from "../UI/Input/Input";
 import Spinner from "../UI/Spinner/Spinner";
 import { connect } from "react-redux";
-import Button from '../UI/Button/Button';
-import classes from './NewMvpForm.css';
-import xss from 'xss';
-
+import Button from "../UI/Button/Button";
+import classes from "./NewMvpForm.css";
+import xss from "xss";
 
 class Form extends Component {
   state = {};
@@ -32,7 +31,7 @@ class Form extends Component {
           elementType: "input",
           elementConfig: {
             type: "text",
-            placeholder: 'Map Name'
+            placeholder: "Map Name"
           },
           value: "",
           validation: {
@@ -81,10 +80,10 @@ class Form extends Component {
         }
       },
       formIsValid: false
-    })
-  }
+    });
+  };
 
-  componentWillMount(){
+  componentWillMount() {
     this.setInitialStates();
   }
 
@@ -92,14 +91,14 @@ class Form extends Component {
     event.preventDefault();
     const formData = {};
     for (let formElementIdentifier in this.state.mvpForm) {
-      formData[formElementIdentifier] = xss(this.state.mvpForm[
-        formElementIdentifier
-      ].value);
+      formData[formElementIdentifier] = xss(
+        this.state.mvpForm[formElementIdentifier].value
+      );
     }
     formData.minTillSpawn = null;
     formData.maxTillSpawn = null;
     formData.timeKilled = null;
-    this.addMvpToDbHandler(formData, formData.name + " " + makeId(8))
+    this.addMvpToDbHandler(formData, formData.name + " " + makeId(8));
   };
 
   checkValidity(value, rules) {
@@ -125,8 +124,10 @@ class Form extends Component {
     );
     mvpFormChild.touched = true;
     mvpForm[key] = mvpFormChild;
-    if(key === "name"){
-      mvpForm[key].value = mvpForm[key].value.charAt(0).toUpperCase() + mvpForm[key].value.slice(1)
+    if (key === "name") {
+      mvpForm[key].value =
+        mvpForm[key].value.charAt(0).toUpperCase() +
+        mvpForm[key].value.slice(1);
     }
     let formIsValid = true;
     for (let inputIdentifier in mvpForm) {
@@ -136,11 +137,13 @@ class Form extends Component {
   };
 
   addMvpToDbHandler = (formData, hash) => {
-    let currentMvps = this.props.currentMvps ? {...this.props.currentMvps} : {};
+    let currentMvps = this.props.currentMvps
+      ? { ...this.props.currentMvps }
+      : {};
     currentMvps[hash] = formData;
     this.props.onNewMvpAdded(currentMvps);
     this.setInitialStates();
-  }
+  };
 
   render() {
     const formElementsArray = [];
@@ -183,9 +186,11 @@ class Form extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentMvps: state.mvp.mvps,
-    isPremium: state.auth.premium
-  }
-}
+    currentMvps: state.mvp.mvps
+  };
+};
 
-export default connect(mapStateToProps, null)(Form);
+export default connect(
+  mapStateToProps,
+  null
+)(Form);

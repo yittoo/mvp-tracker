@@ -65,10 +65,10 @@ class BackgroundManager extends Component {
     return (
       <div className={classes.BackgroundManager} style={{backgroundColor: this.state.backgroundColor}}>
         <div className={classes.Left}>
-          <img src={this.state.left} style={this.state.leftStyle} />
+          <img src={this.state.left} style={this.state.leftStyle} alt="left background" />
         </div>
         <div className={classes.Right}>
-          <img src={this.state.right} style={this.state.rightStyle} />
+          <img src={this.state.right} style={this.state.rightStyle} alt="right background" />
         </div>
       </div>
     );

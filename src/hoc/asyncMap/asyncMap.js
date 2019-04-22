@@ -350,7 +350,7 @@ const asyncComponent = mapName => {
             className={classes.AsyncMap}
             id={this.props.id}
             src={this.state.url}
-            alt="map picture"
+            alt="map"
             onClick={this.props.onSaveTomb}
           />
           {TombToRender}

@@ -11,7 +11,6 @@ import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
 import Modal from "../UI/Modal/Modal";
 import NewMvpForm from "../NewMvpForm/NewMvpForm";
 import Spinner from "../UI/Spinner/Spinner";
-import { clearInterval } from "timers";
 import LastUpdated from "./LastUpdated/LastUpdated";
 import Notification from "../Notification/Notification";
 import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
@@ -47,9 +46,10 @@ class Tracker extends Component {
     }
   }
 
-  componentDidMount() {
+  constructor(props){
+    super(props);
     this.fetchMvps(true);
-    let fetchInterval = setInterval(() => this.fetchMvps(false), 60000);
+    this.fetchAllMvpsInterval = window.setInterval(() => this.fetchMvps(false), 60000);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -59,7 +59,7 @@ class Tracker extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.fetchInterval);
+    window.clearInterval(this.fetchAllMvpsInterval);
   }
 
   fetchMvps = shouldSpinner => {
@@ -431,6 +431,7 @@ class Tracker extends Component {
 
     return (
       <div className={classes.Tracker}>
+        {this.props.mvpError ? <div className={classes.Error}>{this.props.mvpError}</div> : null}
         <HeaderBar>
           {this.props.trackerName ? this.props.trackerName : "MvP Tracker"}
         </HeaderBar>
@@ -462,7 +463,6 @@ const mapStateToProps = state => {
   return {
     mvps: state.mvp.mvps,
     isAuthenticated: state.auth.token !== null,
-    isPremium: state.auth.premium,
     userId: state.auth.userId,
     token: state.auth.token,
     loading: state.mvp.loading,
@@ -470,7 +470,8 @@ const mapStateToProps = state => {
     trackerKey: state.mvp.activeTrackerKey,
     userKey: state.mvp.userKey || localStorage.getItem("userKey"),
     lastUpdated: state.mvp.lastUpdated,
-    notiSettings: state.mvp.notificationSettings
+    notiSettings: state.mvp.notificationSettings,
+    mvpError: state.mvp.error
   };
 };
 

@@ -8,14 +8,12 @@ export const authStart = () => {
   };
 };
 
-export const authSuccess = (token, userId, userKey, isPremium) => {
+export const authSuccess = (token, userId) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     payload: {
       idToken: token,
-      userId: userId,
-      userKey: userKey,
-      isPremium: isPremium
+      userId: userId
     }
   };
 };
@@ -51,7 +49,7 @@ export const checkAuthTimeout = (expirationTime, refreshToken) => {
       } else {
         dispatch(logout());
       }
-    }, expirationTime * 1000);
+    }, expirationTime * 1000 - 60000);
   };
 };
 
@@ -116,10 +114,12 @@ export const auth = (email, password, isSignup, keepLogged, nickname) => {
           localStorage.setItem("refreshToken", refreshToken);
         }
         if (isSignup) {
-          let promise = createNewUserEntry(
-            response.data.localId,
-            response.data.idToken,
-            email
+          let promise = dispatch(
+            createNewUserEntry(
+              response.data.localId,
+              response.data.idToken,
+              email
+            )
           );
           promise.then(bool => {
             dispatch(authSuccess(response.data.idToken, response.data.localId));
@@ -153,8 +153,7 @@ export const authCheckState = () => {
         }
       } else {
         const userId = localStorage.getItem("userId");
-        const userKey = localStorage.getItem("userKey");
-        dispatch(authSuccess(token, userId, userKey));
+        dispatch(authSuccess(token, userId));
         dispatch(
           checkAuthTimeout(
             (expirationDate.getTime() - new Date().getTime()) / 1000,

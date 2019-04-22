@@ -1,7 +1,7 @@
 import React from "react";
 
 import hw_female from "../../assets/images/hw_female.png";
-import classes from "./Images.css";
+// import classes from "./Images.css";
 
 const HwFemale = (props) => {
   return (

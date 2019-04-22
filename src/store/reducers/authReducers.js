@@ -15,9 +15,7 @@ const authSuccess = (state, action) => {
     token: action.payload.idToken,
     userId: action.payload.userId,
     error: null,
-    loading: false,
-    premium: action.payload.isPremium,
-    userKey: action.payload.userKey
+    loading: false
   });
 };
 
