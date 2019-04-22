@@ -35,7 +35,7 @@ class Profile extends Component {
       resetBtnDisabled: false,
       mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true",
       delSecondConfirm: false,
-      mvpViewMode: localStorage.getItem("mvpViewMode") || "default"
+      mvpViewMode: localStorage.getItem("mvpViewMode") || "compact"
     };
   }
 
@@ -303,17 +303,17 @@ class Profile extends Component {
   };
 
   mvpListViewModeHandler = () => {
-    if (this.state.mvpViewMode === "default") {
+    if (this.state.mvpViewMode === "wide") {
       localStorage.setItem("mvpViewMode", "compact");
       this.setState({
         ...this.state,
         mvpViewMode: "compact"
       });
-    } else if (this.state.mvpViewMode === "compact") {
-      localStorage.setItem("mvpViewMode", "default");
+    } else {
+      localStorage.setItem("mvpViewMode", "wide");
       this.setState({
         ...this.state,
-        mvpViewMode: "default"
+        mvpViewMode: "wide"
       });
     }
   };
@@ -378,13 +378,13 @@ class Profile extends Component {
       <div className={classes.Section}>
         Current MvP view mode:{" "}
         <span className={colors.Green}>
-          {this.state.mvpViewMode === "default" ? "Default" : "Compact"}
+          {this.state.mvpViewMode === "wide" ? "Wide" : "Compact"}
         </span>
         <div className={classes.FloatRight}>
           <Button clicked={this.mvpListViewModeHandler}>
-            {this.state.mvpViewMode === "default"
+            {this.state.mvpViewMode === "wide"
               ? "Set Compact Mode"
-              : "Set Default Mode"}
+              : "Set Wide Mode"}
           </Button>
         </div>
       </div>

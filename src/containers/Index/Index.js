@@ -67,6 +67,7 @@ const Index = props => {
         <div className={classes.RightColumn}>
           <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
+          <p>22.04.2019 - Changed default list to "Compact" style, you can still revert to old "Wide" style from control panel, improved overall performance of app, added few missing maps.</p>
           <p>21.04.2019 - Added compact list view, it can now be changed through control panel for local machine also undoing last "Kill" action has been added that saves until specific MvP is killed again. New theme "Deviruchis" added.</p>
           <p>20.04.2019 - Minibosses added to default lists, account delete capability enabled in control panel.</p>
           <p>18.04.2019 - Tombstones with maps added. If your list is among defaults, click map name then click on map to drop a tombstone. Simple as that.</p>

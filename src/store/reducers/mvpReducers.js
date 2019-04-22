@@ -65,7 +65,6 @@ const saveSingleMvpSuccess = (state, action) => {
   return {
     ...state,
     loading: false,
-    lastUpdated: new Date(),
     mvps: {
       ...mvpsCopy
     }
@@ -80,10 +79,7 @@ const reducer = (state = initialState, action) => {
       return fetchMvpsSuccess(state, action);
     case actionTypes.FETCH_MVPS_FAIL:
       return updateObject(state, {
-        loading: false,
-        error:
-          "There has been an error while updating MvPs *please refresh the page* Error Message: " +
-          action.payload.error
+        loading: false
       });
     case actionTypes.CREATE_MVPS_START:
       return updateObject(state, { loading: true, mvps: action.payload.mvps });

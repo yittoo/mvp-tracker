@@ -351,7 +351,7 @@ class MvpEntry extends Component {
     return (
       <div
         className={
-          this.props.mvpViewMode === "default"
+          this.props.mvpViewMode === "wide"
             ? classes.MvpEntry
             : classes.MvpEntryCompact
         }

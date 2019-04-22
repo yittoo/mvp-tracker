@@ -27,7 +27,7 @@ class Tracker extends Component {
     newMvpAdded: false,
     notiArr: [],
     mapToRender: null,
-    mvpViewMode: localStorage.getItem("mvpViewMode") || "default"
+    mvpViewMode: localStorage.getItem("mvpViewMode") || "compact"
   };
 
   shouldComponentUpdate(nextProps, nextState) {

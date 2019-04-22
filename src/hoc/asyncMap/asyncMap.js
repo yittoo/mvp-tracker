@@ -65,6 +65,8 @@ const asyncComponent = mapName => {
       switch (mapName) {
         case "abbey02":
           return this.writeToState("https://i.postimg.cc/dVH1FW5K/abbey02.gif");
+        case "abbey03":
+          return this.writeToState("https://i.postimg.cc/XNdvkkWk/abbey03.gif");
         case "abyss_03":
           return this.writeToState(
             "https://i.postimg.cc/hGXGt9YQ/abyss-03.gif"
@@ -225,6 +227,10 @@ const asyncComponent = mapName => {
           return this.writeToState(
             "https://i.postimg.cc/cC9jC826/lou-dun03.gif"
           );
+        case "man_fild03":
+          return this.writeToState(
+            "https://i.postimg.cc/wTkTSx7t/man-fild03.gif"
+          );
         case "mjolnir_04":
           return this.writeToState(
             "https://i.postimg.cc/hGL5xY6k/mjolnir-04.gif"
@@ -292,6 +298,18 @@ const asyncComponent = mapName => {
         case "ra_san05":
           return this.writeToState(
             "https://i.postimg.cc/TPJthDWG/ra-san05.gif"
+          );
+        case "spl_fild03":
+          return this.writeToState(
+            "https://i.postimg.cc/BnQQsWKm/spl-fild03.gif"
+          );
+        case "teg_dun01":
+          return this.writeToState(
+            "https://i.postimg.cc/prfXVRC6/teg-dun01.gif"
+          );
+        case "teg_dun02":
+          return this.writeToState(
+            "https://i.postimg.cc/9F2Q8wF5/teg-dun02.gif"
           );
         case "thana_boss":
           return this.writeToState(
