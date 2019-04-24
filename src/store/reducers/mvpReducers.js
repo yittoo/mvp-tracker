@@ -183,6 +183,13 @@ const reducer = (state = initialState, action) => {
         loading: false,
         error: action.payload.error
       });
+    case actionTypes.AUTH_LOGOUT:
+      return updateObject(state, {
+        userKey: null,
+        activeTrackerKey: null,
+        activeTrackerName: null,
+        mvps: null
+      });
     default:
       return state;
   }

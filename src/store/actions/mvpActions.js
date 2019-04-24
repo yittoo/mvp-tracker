@@ -347,7 +347,7 @@ export const undoMvpChange = (mvpKey, userKey, token, mvp, trackerKey) => {
     mainAxios
       .put(url + queryParams, mvpToCast)
       .then(res => {
-        const mvpToUpdate = {...res.data};
+        const mvpToUpdate = { ...res.data };
         dispatch(saveSingleMvpSuccess(mvpToUpdate, mvpKey));
         dispatch(
           calculateTimeToSpawn(

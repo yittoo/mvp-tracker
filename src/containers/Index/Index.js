@@ -12,7 +12,8 @@ const Index = props => {
     <React.Fragment>
       <HeaderBar>Welcome</HeaderBar>
       <div className={classes.Index}>
-        <h1 className={classes.Header}>Hey everyone!</h1>
+        <h1 className={classes.Header}>MvP RO Tracker</h1>
+        <h2 className={classes.Header}>A boss time tracker for Ragnarok Online</h2>
         <div className={classes.LeftColumn}>
           <p className={classes.Paragraph}>
             Currently this website consists of a MvP TimeTracker that is in beta
