@@ -53,34 +53,41 @@ export const checkAuthTimeout = (expirationTime, refreshToken) => {
   };
 };
 
-export const createNewUserEntry = (userId, token, username) => {
-  const objToCast = {
-    userId: userId,
-    premium: false,
-    username: username,
-    settings: {
-      notiMode: {
-        mode: "all"
-      },
-      notiSound: {
-        mode: true,
-        volume: 0.5
-      },
-      notiType: {
-        onMax: false,
-        onMin: true,
-        tenTillMin: false
-      },
-      theme: {
-        name: "default"
+export const createNewUserEntry = (
+  userId,
+  token,
+  username,
+  expiresIn,
+  refreshToken
+) => {
+  return dispatch => {
+    const objToCast = {
+      userId: userId,
+      premium: false,
+      username: username,
+      settings: {
+        notiMode: {
+          mode: "all"
+        },
+        notiSound: {
+          mode: true,
+          volume: 0.5
+        },
+        notiType: {
+          onMax: false,
+          onMin: true,
+          tenTillMin: false
+        },
+        theme: {
+          name: "default"
+        }
       }
-    }
-  };
-  return new Promise((resolve, reject) => {
+    };
     mainAxios.post("/users.json?auth=" + token, objToCast).then(res => {
-      resolve(true);
+      dispatch(authSuccess(token, userId));
+      dispatch(checkAuthTimeout(expiresIn, refreshToken));
     });
-  });
+  };
 };
 
 export const auth = (email, password, isSignup, keepLogged, nickname) => {
@@ -114,24 +121,22 @@ export const auth = (email, password, isSignup, keepLogged, nickname) => {
           localStorage.setItem("refreshToken", refreshToken);
         }
         if (isSignup) {
-          let promise = dispatch(
+          dispatch(
             createNewUserEntry(
               response.data.localId,
               response.data.idToken,
-              email
+              email,
+              response.data.expiresIn,
+              refreshToken
             )
           );
-          promise.then(bool => {
-            dispatch(authSuccess(response.data.idToken, response.data.localId));
-            dispatch(checkAuthTimeout(response.data.expiresIn, refreshToken));
-          });
         } else {
           dispatch(authSuccess(response.data.idToken, response.data.localId));
           dispatch(checkAuthTimeout(response.data.expiresIn, refreshToken));
         }
       })
       .catch(err => {
-        dispatch(authFail(err.response.data.error));
+        dispatch(authFail(err));
       });
   };
 };
