@@ -5,6 +5,7 @@
   left: 0%;
   top: 0%;
   z-index: -100;
+  -webkit-animation: init 5s ease-in-out;
   animation: init 5s ease-in-out;
   opacity: 1;
 }

@@ -368,7 +368,19 @@ class MvpEntry extends Component {
               className="far fa-comment"
               onClick={this.toggleShowNoteHandler}
             />
-          )}
+          )}{" "}
+          {this.props.mvp.tombRatioX ? (
+            <i
+              className="fas fa-cross"
+              onClick={() =>
+                this.props.onMapOpen(
+                  this.props.mvp,
+                  this.props.id,
+                  this.props.mvp.map
+                )
+              }
+            />
+          ) : null}
         </div>
         <div className={classes.FixedTimer}>
           {this.props.mvp.minSpawn} - {this.props.mvp.maxSpawn} minutes

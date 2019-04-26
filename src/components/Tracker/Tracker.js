@@ -46,10 +46,13 @@ class Tracker extends Component {
     }
   }
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.fetchMvps(true);
-    this.fetchAllMvpsInterval = window.setInterval(() => this.fetchMvps(false), 60000);
+    this.fetchAllMvpsInterval = window.setInterval(
+      () => this.fetchMvps(false),
+      60000
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -192,6 +195,16 @@ class Tracker extends Component {
     }
   };
 
+  closeMapModal = () => {
+    this.setState({
+      ...this.setState,
+      mapToRender: null,
+      mvpKeyOfMap: null,
+      mvpOfMap: null,
+      tombPositioningState: null
+    });
+  };
+
   importCoordinatesFromChild = (childName, x, y, mouseX, mouseY) => {
     if (childName === "Modal") {
       this.setState({
@@ -327,6 +340,13 @@ class Tracker extends Component {
       );
     const mainContentToRender = mvpsArrToRender.length ? (
       <React.Fragment>
+        <div className={this.state.mvpViewMode === "compact" ? classes.LegendCompact : classes.LegendWide}>
+          <div className={classes.LegendMvpName}>MvP Name</div>
+          <div className={classes.LegendBaseTime}>Base Spawn</div>
+          <div className={classes.LegendMapName}>Map</div>
+          <div className={classes.LegendTillSpawn}>Till Spawn</div>
+          <div className={classes.LegendActions}>Actions</div>
+        </div>
         <LastUpdated
           lastTime={this.props.lastUpdated}
           trackerName={this.props.trackerName}
@@ -390,6 +410,7 @@ class Tracker extends Component {
       <Modal
         onCoordChange={(x, y) => this.importCoordinatesFromChild("Modal", x, y)}
         modalClosed={this.toggleMapHandler}
+        closeMapModal={this.closeMapModal}
         show={this.state.mapToRender}
         id="modalOfMap"
         isMapModal
@@ -431,7 +452,9 @@ class Tracker extends Component {
 
     return (
       <div className={classes.Tracker}>
-        {this.props.mvpError ? <div className={classes.Error}>{this.props.mvpError}</div> : null}
+        {this.props.mvpError ? (
+          <div className={classes.Error}>{this.props.mvpError}</div>
+        ) : null}
         <HeaderBar>
           {this.props.trackerName ? this.props.trackerName : "MvP Tracker"}
         </HeaderBar>

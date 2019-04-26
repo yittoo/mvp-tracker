@@ -12,55 +12,21 @@ class Modal extends Component {
     );
   }
 
-  // listenerFunc = event => {
-  //   if (this.props.onCoordChange && this.props.show) {
-  //     const ele = document.getElementById("modalOfMap");
-  //     if (ele.offsetLeft !== this.state.x || ele.offsetTop !== this.state.y) {
-  //       this.setState({
-  //         ...this.state,
-  //         x: ele.offsetLeft,
-  //         y: ele.offsetTop
-  //       });
-  //     }
-  //   }
-  // };
+  listenEsc = event => {
+    if (event.which === 27) {
+      this.props.modalClosed();
+    }
+  };
 
   constructor(props) {
     super(props);
     this.state = {};
-    // if (this.props.onCoordChange) {
-    //   window.addEventListener("mousemove", this.listenerFunc);
-    // }
-  }
-
-  // componentWillUnmount() {
-  //   // if (this.props.onCoordChange) {
-  //   //   window.removeEventListener("mousemove", this.listenerFunc);
-  //   // }
-  // }
-
-  componentDidMount() {
-    // if (this.props.onCoordChange && this.props.show) {
-    //   const ele = document.getElementById("modalOfMap");
-    //   if (ele) {
-    //     setTimeout(() => {
-    //       this.setState({
-    //         ...this.state,
-    //         x: ele.offsetLeft,
-    //         y: ele.offsetTop
-    //       });
-    //     }, 305);
-    //   }
-    // }
+    if (this.props.closeMapModal) {
+      window.addEventListener("keydown", this.listenEsc);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // if (
-    //   this.props.onCoordChange &&
-    //   (prevState !== this.state || prevProps !== this.props)
-    // ) {
-    //   this.props.onCoordChange(this.state.x, this.state.y);
-    // }
     if (prevProps.show !== this.props.show && this.props.onCoordChange) {
       const ele = document.getElementById("modalOfMap");
       this.setState(
@@ -73,6 +39,12 @@ class Modal extends Component {
           this.props.onCoordChange(this.state.x, this.state.y);
         }
       );
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.closeMapModal) {
+      window.removeEventListener("keydown", this.listenEsc);
     }
   }
 

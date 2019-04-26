@@ -9,10 +9,12 @@
 
 .Show {
   bottom: -4%;
+  -webkit-animation: slidein 0.6s cubic-bezier(0.47, 0.95, 1, 0.99);
   animation: slidein 0.6s cubic-bezier(0.47, 0.95, 1, 0.99);
 }
 
 .Hide {
+  -webkit-animation: slideout 1s linear;
   animation: slideout 1s linear;
   bottom: -50%;
 }

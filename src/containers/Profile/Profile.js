@@ -502,7 +502,7 @@ class Profile extends Component {
         </div>
         <div className={classes.Right + " " + classes.TextAlignRight}>
           <form onSubmit={this.mvpNotiModeHandler}>
-            <label>Notificate on:</label>
+            <label>Notify on:</label>
             <select
               value={this.state.selectNotificationMvps}
               onChange={event =>
@@ -578,7 +578,7 @@ class Profile extends Component {
       notiSettingsProp.notiMode.mode !== "none" ? (
         <div className={classes.Section + " " + classes.Grid}>
           <div className={classes.Left}>
-            Current when to notificate
+            When to notify
             {currentNotiMode}
           </div>
           <div className={classes.Right + " " + classes.TextAlignRight}>
@@ -644,7 +644,7 @@ class Profile extends Component {
           </div>
           <div className={classes.Right + " " + classes.TextAlignRight}>
             <form onSubmit={this.mvpNotiSoundHandler}>
-              <label>Notificate on:</label>
+              <label>Notify on:</label>
               <select
                 value={this.state.isForAllDevicesSound}
                 onChange={event =>

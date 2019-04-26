@@ -21,3 +21,91 @@
   font-size: 1.2rem;
   box-sizing: border-box;
 }
+
+.LegendCompact,
+.LegendWide {
+  display: grid;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.LegendCompact {
+  grid-template-columns: 25% 15% 6% 20% 34%;
+  grid-template-areas: "mvpName baseTime mapName tillSpawn actions";
+  padding: 5px;
+}
+
+.LegendCompact div {
+  font-weight: bold;
+  color: #2980b9;
+  overflow-x: visible;
+}
+
+.LegendWide {
+  padding: 5px;
+  grid-template-columns: 30% 40% 30%;
+  grid-template-areas:
+    "mvpName . ."
+    "baseTime tillSpawn actions"
+    "mapName . .";
+}
+
+.LegendWide div {
+  font-weight: bold;
+  color: #2980b9;
+  overflow-x: visible;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.LegendMvpName {
+  grid-area: mvpName;
+}
+.LegendBaseTime {
+  grid-area: baseTime;
+}
+.LegendMapName {
+  grid-area: mapName;
+  font-weight: normal;
+}
+.LegendTillSpawn {
+  grid-area: tillSpawn;
+}
+.LegendActions {
+  grid-area: actions;
+}
+
+.LegendTillSpawn,
+.LegendActions {
+  text-align: center;
+}
+
+.LegendWide .LegendTillSpawn,
+.LegendWide .LegendActions {
+  font-size: 1.6rem;
+}
+
+@media (max-width: 1000px) {
+  .LegendCompact,
+  .LegendWide {
+    grid-template-columns: 45% 55%;
+    grid-template-areas:
+      "mvpName tillSpawn"
+      "mapName actions";
+    text-align: center;
+  }
+
+  .LegendCompact .LegendMapName,
+  .LegendCompact .LegendTillSpawn,
+  .LegendCompact .LegendActions,
+  .LegendWide .LegendMapName,
+  .LegendWide .LegendTillSpawn,
+  .LegendWide .LegendActions {
+    font-size: 1.2rem;
+  }
+
+  .LegendBaseTime {
+    display: none;
+  }
+}

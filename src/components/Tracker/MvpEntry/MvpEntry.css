@@ -111,7 +111,8 @@
 .KilledBy {
   box-sizing: border-box;
   display: none;
-  animation: slidein 1s linear;
+  -webkit-animation: slideIn 0.3s linear;
+  animation: slidein 0.3s linear;
   background-color: #ffffffaa;
   padding: 10px 20px;
   margin: 10px 0;
@@ -127,7 +128,6 @@
 .MvpEntryCompact .Note {
   text-align: center;
   height: 120px;
-  overflow: auto;
 }
 
 .KilledBy {
@@ -157,6 +157,7 @@
 
 .Note *,
 .KilledBy * {
+  -webkit-animation: slideinChild 0.3s ease-out;
   animation: slideinChild 0.3s ease-out;
 }
 
@@ -169,10 +170,10 @@
 }
 
 @keyframes slidein {
-  from {
+  0% {
     max-height: 0px;
   }
-  to {
+  100% {
     max-height: 160px;
   }
 }
