@@ -100,15 +100,16 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      (prevProps.isAuthenticated !== this.props.isAuthenticated &&
-        this.props.isAuthenticated) ||
-      prevProps.theme !== this.props.theme
+      prevProps.isAuthenticated !== this.props.isAuthenticated &&
+      this.props.isAuthenticated
+      // || prevProps.theme !== this.props.theme
     ) {
       this.props.initializeSettings(
         this.props.userId,
         this.props.token,
         notiSettingsLocal,
-        theme
+        theme,
+        localStorage.getItem("userKey")
       );
     }
     if (
@@ -152,7 +153,7 @@ class App extends Component {
 
     let routes = this.props.isAuthenticated ? (
       <Switch>
-        <Redirect path="/auth" to="/" />
+        <Redirect path="/auth" to="/tracker" />
         <Route path="/tracker" component={asyncTracker} />
         <Route path="/profile" component={asyncProfile} />
         <Route path="/logout" component={asyncLogout} />
@@ -202,9 +203,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onTryAutoSignup: () => dispatch(actions.authCheckState()),
     updateCurrentTime: () => dispatch(actions.updateCurrentTime()),
-    initializeSettings: (userId, token, notiSettingsLocal, theme) =>
+    initializeSettings: (userId, token, notiSettingsLocal, theme, userKey) =>
       dispatch(
-        actions.initializeSettings(userId, token, notiSettingsLocal, theme)
+        actions.initializeSettings(userId, token, notiSettingsLocal, theme, userKey)
       )
   };
 };

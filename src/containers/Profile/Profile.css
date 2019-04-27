@@ -97,7 +97,7 @@
     display: block;
   }
   .Section label {
-    display: block;
+    /* display: block; */
     margin: 8px 0;
   }
   .Section form {

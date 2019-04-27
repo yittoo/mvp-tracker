@@ -7,73 +7,109 @@ export const fetchMvpsFromDb = (
   userId,
   trackerName,
   isLoader,
-  inputTrackerKey
+  inputTrackerKey,
+  inputUserKey
 ) => {
   return dispatch => {
     if (isLoader) {
       dispatch(fetchMvpsStart());
     }
-    const queryParams =
-      "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
-    mainAxios
-      .get("users.json" + queryParams)
-      .then(res => {
-        // eslint-disable-next-line
-        Object.keys(res.data).map(userKey => {
-          const trackerObj = res.data[userKey].trackers;
-          let trackersLength = Object.keys(trackerObj).length;
-          if (!trackerObj) {
-            return dispatch(fetchMvpsSuccess(null, userKey, null, null));
-          } else {
-            const allTrackerIdentifiers = [];
-            // eslint-disable-next-line
-            Object.keys(trackerObj).map((trackerKey, index) => {
-              allTrackerIdentifiers.push({
-                trackerName: trackerObj[trackerKey].trackerName,
-                trackerKey: trackerKey
+    if (!inputTrackerKey || !inputUserKey) {
+      const queryParams =
+        "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
+      mainAxios
+        .get("users.json" + queryParams)
+        .then(res => {
+          // eslint-disable-next-line
+          Object.keys(res.data).map(userKey => {
+            const trackerObj = res.data[userKey].trackers;
+            let trackersLength = Object.keys(trackerObj).length;
+            if (!trackerObj) {
+              return dispatch(fetchMvpsSuccess(null, userKey, null, null));
+            } else {
+              const allTrackerIdentifiers = [];
+              // eslint-disable-next-line
+              Object.keys(trackerObj).map((trackerKey, index) => {
+                allTrackerIdentifiers.push({
+                  trackerName: trackerObj[trackerKey].trackerName,
+                  trackerKey: trackerKey
+                });
+                if (
+                  !inputTrackerKey ||
+                  inputTrackerKey === trackerKey ||
+                  trackersLength === index + 1
+                ) {
+                  trackersLength = null;
+                  const liveTrackerName = trackerObj[trackerKey].trackerName;
+                  const logs = trackerObj[trackerKey].logs;
+                  localStorage.setItem("activeTrackerName", liveTrackerName);
+                  localStorage.setItem("activeTrackerKey", trackerKey);
+                  localStorage.setItem("userKey", userKey);
+                  dispatch(
+                    fetchMvpsSuccess(
+                      trackerObj[trackerKey].mvps,
+                      userKey,
+                      trackerKey,
+                      liveTrackerName,
+                      logs
+                    )
+                  );
+                  dispatch(
+                    calculateTimeToSpawnAllMvps(
+                      new Date(),
+                      trackerObj[trackerKey].mvps
+                    )
+                  );
+                }
               });
-              if (
-                !inputTrackerKey ||
-                inputTrackerKey === trackerKey ||
-                trackersLength === index + 1
-              ) {
-                trackersLength = null;
-                const liveTrackerName = trackerObj[trackerKey].trackerName;
-                localStorage.setItem("activeTrackerName", liveTrackerName);
-                localStorage.setItem("activeTrackerKey", trackerKey);
-                localStorage.setItem("userKey", userKey);
-                dispatch(
-                  fetchMvpsSuccess(
-                    trackerObj[trackerKey].mvps,
-                    userKey,
-                    trackerKey,
-                    liveTrackerName
-                  )
-                );
-                dispatch(
-                  calculateTimeToSpawnAllMvps(
-                    new Date(),
-                    trackerObj[trackerKey].mvps
-                  )
-                );
-              }
-            });
-            dispatch(storeAllTrackers(allTrackerIdentifiers));
-          }
+              dispatch(fetchAllTrackersSuccess(allTrackerIdentifiers));
+            }
+          });
+        })
+        .catch(error => {
+          return dispatch(fetchMvpsFailed(error));
         });
-      })
-      .catch(error => {
-        return dispatch(fetchMvpsFailed(error));
-      });
+    } else {
+      const url =
+        "/users/" + inputUserKey + "/trackers/" + inputTrackerKey + ".json";
+      const queryParams = "?auth=" + token;
+      mainAxios
+        .get(url + queryParams)
+        .then(res => {
+          localStorage.setItem("activeTrackerName", res.data.trackerName);
+          localStorage.setItem("activeTrackerKey", inputTrackerKey);
+          localStorage.setItem("userKey", inputUserKey);
+          dispatch(
+            fetchMvpsSuccess(
+              res.data.mvps,
+              inputUserKey,
+              inputTrackerKey,
+              res.data.trackerName,
+              res.data.logs
+            )
+          );
+          dispatch(calculateTimeToSpawnAllMvps(new Date(), res.data.mvps));
+        })
+        .catch(err => {
+          dispatch(fetchMvpsFailed(err));
+        });
+    }
   };
 };
 
-export const fetchMvpsSuccess = (mvps, userKey, trackerKey, trackerName) => {
+export const fetchMvpsSuccess = (
+  mvps,
+  userKey,
+  trackerKey,
+  trackerName,
+  logs
+) => {
   return {
     type: actionTypes.FETCH_MVPS_SUCCESS,
     payload: {
       mvps: mvps,
       userKey: userKey,
+      logs: logs || {},
       trackerKey: trackerKey,
       trackerName: trackerName,
       lastUpdated: new Date()
@@ -104,12 +140,13 @@ export const createNewMvpTracker = (
   trackerName,
   userKey,
   mvps,
-  trackerKey
+  trackerKey,
+  allTrackers
 ) => {
   return dispatch => {
     dispatch(createMvpsStart(mvps));
     const queryParams = "?auth=" + token;
-    const objToCast = { mvps: mvps, trackerName: trackerName };
+    const objToCast = { mvps: mvps, trackerName: trackerName, logs: {} };
     if (trackerKey) {
       mainAxios
         .put(
@@ -126,6 +163,14 @@ export const createNewMvpTracker = (
           dispatch(
             fetchMvpsFromDb(token, userId, trackerName, true, res.data.name)
           );
+          if (allTrackers) {
+            let allTrackersToCast = [...allTrackers];
+            allTrackersToCast.push({
+              trackerName: trackerName,
+              trackerKey: trackerKey
+            });
+            dispatch(fetchAllTrackersSuccess(allTrackersToCast));
+          }
         })
         .catch(errorCaught => {
           dispatch(createMvpsFailed(errorCaught));
@@ -138,6 +183,14 @@ export const createNewMvpTracker = (
           dispatch(
             fetchMvpsFromDb(token, userId, trackerName, true, res.data.name)
           );
+          if (allTrackers) {
+            let allTrackersToCast = [...allTrackers];
+            allTrackersToCast.push({
+              trackerName: trackerName,
+              trackerKey: res.data.name
+            });
+            dispatch(fetchAllTrackersSuccess(allTrackersToCast));
+          }
         })
         .catch(errorCaught => {
           dispatch(createMvpsFailed(errorCaught));
@@ -199,19 +252,26 @@ export const saveMvpsToDbAndFetch = (
   token,
   trackerKey,
   mvps,
-  trackerName
+  trackerName,
+  logs,
+  newLog
 ) => {
   return dispatch => {
     dispatch(saveMvpsStart());
     const url = "/users/" + userKey + "/trackers/" + trackerKey + ".json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, { mvps: mvps, trackerName: trackerName })
+      .put(url + queryParams, {
+        mvps: mvps,
+        trackerName: trackerName,
+        logs: logs
+      })
       .then(res => {
         dispatch(saveMvpsSuccess(null));
         dispatch(
           fetchMvpsFromDb(token, userId, trackerName, false, trackerKey)
         );
+        dispatch(saveLogs(userKey, token, trackerKey, logs, newLog))
       })
       .catch(err => {
         dispatch(saveMvpsFail(err));
@@ -272,7 +332,7 @@ export const saveSingleMvpToDb = (
             ),
             timeKilledBeforeEdit: mvp.timeKilled
           }
-        : {};
+        : null;
     } else if (
       eventType === "toggleNotification" ||
       eventType === "saveNote" ||
@@ -304,7 +364,7 @@ export const saveSingleMvpToDb = (
       ".json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, mvpToCast)
+      .put(url + queryParams, mvpToCast || {})
       .then(res => {
         let mvpToUpdate = res.data
           ? {
@@ -392,14 +452,25 @@ export const saveSingleMvpFail = err => {
 
 //----- DELETE TRACKER
 
-export const deleteTracker = (userKey, trackerKey, token, userId) => {
+export const deleteTracker = (
+  userKey,
+  trackerKey,
+  token,
+  userId,
+  allTrackers
+) => {
   return dispatch => {
     dispatch(deleteTrackerStart);
     const url = "/users/" + userKey + "/trackers/" + trackerKey + ".json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, { mvps: null, trackerName: null })
+      .put(url + queryParams, { mvps: null, trackerName: null, logs: null })
       .then(res => {
+        let allTrackersToFilter = [...allTrackers];
+        let filteredTrackers = allTrackersToFilter.filter(trackerObj => {
+          return trackerObj.trackerKey !== trackerKey;
+        });
+        dispatch(fetchAllTrackersSuccess(filteredTrackers));
         dispatch(deleteTrackerSuccess("Tracker has been successfully deleted"));
         localStorage.removeItem("activeTrackerKey");
         localStorage.removeItem("activeTrackerName");
@@ -465,7 +536,7 @@ export const fetchUserKey = (userId, token) => {
             allTrackerIdentifiers = null;
           }
           dispatch(fetchUserKeySuccess(userKey));
-          dispatch(storeAllTrackers(allTrackerIdentifiers));
+          dispatch(fetchAllTrackersSuccess(allTrackerIdentifiers));
         });
       })
       .catch(error => {
@@ -550,7 +621,8 @@ export const addInitialNotificationSettings = (token, userKey) => {
         dispatch(
           saveNotificationSettingsSuccess("notiSound", itemToCast.notiSound)
         );
-        dispatch(saveThemeSettings("default"));
+        dispatch(fetchUserKeySuccess(userKey));
+        dispatch(saveThemeLocal("default"));
       })
       .catch(err => {
         dispatch(saveNotificationSettingsFail(err));
@@ -589,28 +661,102 @@ export const initializeSettings = (
   userId,
   token,
   notiSettingsLocal,
-  themeLocal
+  themeLocal,
+  inputUserKey
 ) => {
   return dispatch => {
     dispatch(initializeSettingsStart());
-    const queryParams =
-      "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
     if (
       notiSettingsLocal.notiSound !== null &&
       notiSettingsLocal.notiMode !== null &&
       notiSettingsLocal.notiType !== null &&
-      themeLocal
+      themeLocal &&
+      (inputUserKey || localStorage.getItem("userKey"))
     ) {
-      dispatch(initializeSettingsSuccess(notiSettingsLocal, themeLocal));
+      dispatch(
+        initializeSettingsSuccess(
+          notiSettingsLocal,
+          themeLocal,
+          inputUserKey || localStorage.getItem("userKey")
+        )
+      );
     } else {
-      mainAxios
-        .get("users.json" + queryParams)
-        .then(res => {
-          // eslint-disable-next-line
-          Object.keys(res.data).map(userKey => {
-            const settingsFromServer = res.data[userKey].settings
-              ? { ...res.data[userKey].settings }
-              : null;
+      if (!inputUserKey) {
+        const queryParams =
+          "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
+        mainAxios
+          .get("users.json" + queryParams)
+          .then(res => {
+            // eslint-disable-next-line
+            Object.keys(res.data).map(userKey => {
+              const settingsFromServer = res.data[userKey].settings
+                ? { ...res.data[userKey].settings }
+                : null;
+              const castedSettings =
+                settingsFromServer && settingsFromServer.theme
+                  ? {
+                      notiSound: {
+                        mode: settingsFromServer.notiSound.mode,
+                        volume: settingsFromServer.notiSound.volume || 0.5
+                      },
+                      notiMode: {
+                        mode: settingsFromServer.notiMode.mode
+                      },
+                      notiType: {
+                        onMax: settingsFromServer.notiType.onMax,
+                        onMin: settingsFromServer.notiType.onMin,
+                        tenTillMin: settingsFromServer.notiType.tenTillMin
+                      },
+                      theme: {
+                        name: settingsFromServer.theme
+                          ? settingsFromServer.theme.name
+                          : null
+                      }
+                    }
+                  : null;
+              if (castedSettings && castedSettings.theme.name) {
+                const notiSoundToCast =
+                  notiSettingsLocal.notiSound !== null
+                    ? notiSettingsLocal.notiSound
+                    : castedSettings.notiSound;
+                const notiModeToCast =
+                  notiSettingsLocal.notiMode !== null
+                    ? notiSettingsLocal.notiMode
+                    : castedSettings.notiMode;
+                const notiTypeToCast =
+                  notiSettingsLocal.notiType !== null
+                    ? notiSettingsLocal.notiType
+                    : castedSettings.notiType;
+                const themeToCast = themeLocal
+                  ? themeLocal
+                  : castedSettings.theme.name;
+                const finalNotiSettToCast = {
+                  notiSound: notiSoundToCast,
+                  notiMode: notiModeToCast,
+                  notiType: notiTypeToCast
+                };
+                dispatch(
+                  initializeSettingsSuccess(
+                    finalNotiSettToCast,
+                    themeToCast,
+                    userKey
+                  )
+                );
+              } else {
+                dispatch(addInitialNotificationSettings(token, userKey));
+              }
+            });
+          })
+          .catch(error => {
+            return dispatch(initializeSettingsFail(error));
+          });
+      } else {
+        const url = "/users/" + inputUserKey + "/settings.json";
+        const queryParams = "?auth=" + token;
+        mainAxios
+          .get(url + queryParams)
+          .then(res => {
+            const settingsFromServer = res.data ? { ...res.data } : null;
             const castedSettings =
               settingsFromServer && settingsFromServer.theme
                 ? {
@@ -655,16 +801,20 @@ export const initializeSettings = (
                 notiType: notiTypeToCast
               };
               dispatch(
-                initializeSettingsSuccess(finalNotiSettToCast, themeToCast)
+                initializeSettingsSuccess(
+                  finalNotiSettToCast,
+                  themeToCast,
+                  inputUserKey
+                )
               );
             } else {
-              dispatch(addInitialNotificationSettings(token, userKey));
+              dispatch(addInitialNotificationSettings(token, inputUserKey));
             }
+          })
+          .catch(error => {
+            return dispatch(initializeSettingsFail(error));
           });
-        })
-        .catch(error => {
-          return dispatch(initializeSettingsFail(error));
-        });
+      }
     }
   };
 };
@@ -675,12 +825,17 @@ export const initializeSettingsStart = () => {
   };
 };
 
-export const initializeSettingsSuccess = (notificationSettings, theme) => {
+export const initializeSettingsSuccess = (
+  notificationSettings,
+  theme,
+  userKey
+) => {
   return {
     type: actionTypes.INITIALIZE_SETTINGS_SUCCESS,
     payload: {
       notificationSettings: notificationSettings,
-      theme: theme
+      theme: theme,
+      userKey: userKey
     }
   };
 };
@@ -742,6 +897,52 @@ export const saveThemeSettingsFail = error => {
   };
 };
 
+//----- LOGS
+
+export const saveLogs = (userKey, token, trackerKey, logs, newLog) => {
+  return dispatch => {
+    dispatch(saveLogsStart());
+    const postUrl =
+      "/users/" + userKey + "/trackers/" + trackerKey + "/logs.json";
+    const queryParams = "?auth=" + token;
+    mainAxios
+      .post(postUrl + queryParams, { ...newLog })
+      .then(res => {
+        const newLogKey = res.data.name;
+        const logsToCast = { ...logs, [newLogKey]: newLog };
+        // handle logs length and splice/remove element if necessary on element that is oldest and repeat until length <50
+        dispatch(saveLogsSuccess(logsToCast));
+      })
+      .catch(err => {
+        dispatch(saveLogsFail(err));
+      });
+  };
+};
+
+export const saveLogsStart = () => {
+  return {
+    type: actionTypes.SAVE_LOGS_START
+  };
+};
+
+export const saveLogsSuccess = logs => {
+  return {
+    type: actionTypes.SAVE_LOGS_SUCCESS,
+    payload: {
+      logs
+    }
+  };
+};
+
+export const saveLogsFail = err => {
+  return {
+    type: actionTypes.SAVE_LOGS_FAIL,
+    payload: {
+      error: err
+    }
+  };
+};
+
 //----- DELETE ACCOUNT DATA
 
 export const deleteAccountDbData = (token, userKey) => {
@@ -782,6 +983,75 @@ export const deleteAccountFail = error => {
   };
 };
 
+//----- FETCH ALL TRACKERS
+
+export const fetchAllTrackers = (token, userKey, userId) => {
+  return dispatch => {
+    dispatch(fetchAllTrackersStart());
+    if (!userKey) {
+      const queryParams =
+        "?auth=" + token + '&orderBy="userId"&equalTo="' + userId + '"';
+      mainAxios
+        .get("users.json" + queryParams)
+        .then(res => {
+          let allTrackerIdentifiers = [];
+          Object.keys(res.data.trackers).map(trackerKey => {
+            allTrackerIdentifiers.push({
+              trackerName: res.data.trackers[trackerKey].trackerName,
+              trackerKey: trackerKey
+            });
+          });
+          dispatch(fetchAllTrackersSuccess(allTrackerIdentifiers));
+        })
+        .catch(err => {
+          dispatch(fetchAllTrackersFail(err));
+        });
+    } else {
+      const url = "/users/" + userKey + "/trackers.json";
+      const queryParams = "?auth=" + token;
+      mainAxios
+        .get(url + queryParams)
+        .then(res => {
+          let allTrackerIdentifiers = [];
+          Object.keys(res.data).map(trackerKey => {
+            allTrackerIdentifiers.push({
+              trackerName: res.data[trackerKey].trackerName,
+              trackerKey: trackerKey
+            });
+          });
+          dispatch(fetchAllTrackersSuccess(allTrackerIdentifiers));
+        })
+        .catch(err => {
+          dispatch(fetchAllTrackersFail(err));
+        });
+    }
+  };
+};
+
+export const fetchAllTrackersStart = () => {
+  return {
+    type: actionTypes.FETCH_ALL_TRACKERS_START
+  };
+};
+
+export const fetchAllTrackersSuccess = trackerArr => {
+  return {
+    type: actionTypes.FETCH_ALL_TRACKERS_SUCCESS,
+    payload: {
+      trackers: trackerArr
+    }
+  };
+};
+
+export const fetchAllTrackersFail = error => {
+  return {
+    type: actionTypes.FETCH_ALL_TRACKERS_FAIL,
+    payload: {
+      error
+    }
+  };
+};
+
 //----- MISC
 
 export const updateCurrentTime = () => {
@@ -793,11 +1063,12 @@ export const updateCurrentTime = () => {
   };
 };
 
-export const storeAllTrackers = trackerArr => {
+export const changeDefaultTracker = (trackerKey, trackerName) => {
   return {
-    type: actionTypes.STORE_ALL_TRACKERS,
+    type: actionTypes.CHANGE_DEFAULT_TRACKER,
     payload: {
-      trackers: trackerArr
+      trackerKey,
+      trackerName
     }
   };
 };

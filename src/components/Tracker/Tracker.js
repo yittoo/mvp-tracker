@@ -55,12 +55,6 @@ class Tracker extends Component {
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!this.props.userKey) {
-      this.props.fetchUserKey(this.props.userId, this.props.token);
-    }
-  }
-
   componentWillUnmount() {
     window.clearInterval(this.fetchAllMvpsInterval);
   }
@@ -72,7 +66,8 @@ class Tracker extends Component {
         this.props.userId,
         localStorage.getItem("activeTrackerName"),
         shouldSpinner,
-        localStorage.getItem("activeTrackerKey")
+        localStorage.getItem("activeTrackerKey"),
+        localStorage.getItem("userKey") || this.props.userKey
       );
     }
   };
@@ -91,20 +86,28 @@ class Tracker extends Component {
     });
   };
 
-  newMvpAddedHandler = updatedMvps => {
+  newMvpAddedHandler = (updatedMvps, mvpName) => {
     this.setState({
       ...this.state,
       newMvpAdded: true,
       showNewMvpForm: false
     });
     if (this.props.trackerName && this.props.trackerKey) {
+      const newLog = {
+        date: new Date(),
+        payload: mvpName,
+        nickname: localStorage.getItem("nickname"),
+        type: "A"
+      };
       this.props.saveMvpsToDbAndFetch(
         this.props.userId,
         this.props.userKey,
         this.props.token,
         this.props.trackerKey,
         updatedMvps,
-        this.props.trackerName
+        this.props.trackerName,
+        this.props.logs,
+        newLog
       );
     } else {
       this.props.createNewTracker(
@@ -113,6 +116,7 @@ class Tracker extends Component {
         "My Tracker",
         this.props.userKey,
         updatedMvps,
+        null,
         null
       );
     }
@@ -245,6 +249,7 @@ class Tracker extends Component {
       "saveTomb",
       mvpToCast.note
     );
+    this.saveLogsHandler("T", mvpToCast.name);
     this.setTombHandler(tombRatioX, tombRatioY);
   };
 
@@ -260,6 +265,23 @@ class Tracker extends Component {
       ...this.state,
       tombPositioningState: tombPositioning
     });
+  };
+
+  // type equals "M" for message sent, "A" for mvp added, "L" for mvpKilled log or undo log, "D" for mvp deleted
+  saveLogsHandler = (type, payload) => {
+    const newLog = {
+      date: new Date(),
+      payload: payload,
+      nickname: localStorage.getItem("nickname"),
+      type: type
+    };
+    this.props.saveLogs(
+      this.props.userKey,
+      this.props.token,
+      this.props.trackerKey,
+      this.props.logs,
+      newLog
+    );
   };
 
   render() {
@@ -287,6 +309,7 @@ class Tracker extends Component {
           key={orderedMvpPair[2]}
           id={orderedMvpPair[2]}
           mvp={orderedMvpPair[0]}
+          onSaveLogs={(type, payload) => this.saveLogsHandler(type, payload)}
           onMapOpen={(mvp, mvpKey, mapName) =>
             this.toggleMapHandler(mvp, mvpKey, mapName)
           }
@@ -328,7 +351,8 @@ class Tracker extends Component {
                   this.props.trackerName || "My Tracker",
                   this.props.userKey,
                   mvps,
-                  this.props.trackerKey
+                  this.props.trackerKey,
+                  null
                 )
               }
               isPremium={this.props.isPremium}
@@ -340,7 +364,13 @@ class Tracker extends Component {
       );
     const mainContentToRender = mvpsArrToRender.length ? (
       <React.Fragment>
-        <div className={this.state.mvpViewMode === "compact" ? classes.LegendCompact : classes.LegendWide}>
+        <div
+          className={
+            this.state.mvpViewMode === "compact"
+              ? classes.LegendCompact
+              : classes.LegendWide
+          }
+        >
           <div className={classes.LegendMvpName}>MvP Name</div>
           <div className={classes.LegendBaseTime}>Base Spawn</div>
           <div className={classes.LegendMapName}>Map</div>
@@ -361,7 +391,9 @@ class Tracker extends Component {
         modalClosed={() => this.toggleFormHandler("showNewMvpForm")}
       >
         <NewMvpForm
-          onNewMvpAdded={updatedMvps => this.newMvpAddedHandler(updatedMvps)}
+          onNewMvpAdded={(updatedMvps, mvpName) =>
+            this.newMvpAddedHandler(updatedMvps, mvpName)
+          }
           onRefreshed={this.onRefreshHandler}
         />
       </Modal>
@@ -452,9 +484,9 @@ class Tracker extends Component {
 
     return (
       <div className={classes.Tracker}>
-        {this.props.mvpError ? (
-          <div className={classes.Error}>{this.props.mvpError}</div>
-        ) : null}
+        {/* {this.props.mvpError ? (
+          <div className={classes.Error}>{this.props.mvpError.response.data.error}</div>
+        ) : null} */}
         <HeaderBar>
           {this.props.trackerName ? this.props.trackerName : "MvP Tracker"}
         </HeaderBar>
@@ -494,23 +526,41 @@ const mapStateToProps = state => {
     userKey: state.mvp.userKey || localStorage.getItem("userKey"),
     lastUpdated: state.mvp.lastUpdated,
     notiSettings: state.mvp.notificationSettings,
-    mvpError: state.mvp.error
+    mvpError: state.mvp.error,
+    logs: state.mvp.logs,
+    logsLoading: state.mvp.logsLoading
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchMvpsFromDb: (token, userId, trackerName, isLoader, trackerKey) =>
+    fetchMvpsFromDb: (
+      token,
+      userId,
+      trackerName,
+      isLoader,
+      trackerKey,
+      userKey
+    ) =>
       dispatch(
         actions.fetchMvpsFromDb(
           token,
           userId,
           trackerName,
           isLoader,
-          trackerKey
+          trackerKey,
+          userKey
         )
       ),
-    createNewTracker: (userId, token, trackerName, userKey, mvps, trackerKey) =>
+    createNewTracker: (
+      userId,
+      token,
+      trackerName,
+      userKey,
+      mvps,
+      trackerKey,
+      allTrackers
+    ) =>
       dispatch(
         actions.createNewMvpTracker(
           userId,
@@ -518,7 +568,8 @@ const mapDispatchToProps = dispatch => {
           trackerName,
           userKey,
           mvps,
-          trackerKey
+          trackerKey,
+          allTrackers
         )
       ),
     saveMvpsToDbAndFetch: (
@@ -527,7 +578,9 @@ const mapDispatchToProps = dispatch => {
       token,
       trackerKey,
       mvps,
-      trackerName
+      trackerName,
+      logs,
+      newLog
     ) =>
       dispatch(
         actions.saveMvpsToDbAndFetch(
@@ -536,7 +589,31 @@ const mapDispatchToProps = dispatch => {
           token,
           trackerKey,
           mvps,
-          trackerName
+          trackerName,
+          logs,
+          newLog
+        )
+      ),
+    saveSingleMvpToDb: (
+      minuteAgo,
+      mvpKey,
+      userKey,
+      token,
+      trackerKey,
+      mvp,
+      eventType,
+      note
+    ) =>
+      dispatch(
+        actions.saveSingleMvpToDb(
+          minuteAgo,
+          mvpKey,
+          userKey,
+          token,
+          trackerKey,
+          mvp,
+          eventType,
+          note
         )
       ),
     saveAllMvpsHandler: (userKey, token, trackerKey, mvps, trackerName) =>
@@ -549,31 +626,8 @@ const mapDispatchToProps = dispatch => {
           trackerName
         )
       ),
-    fetchUserKey: (userId, token) =>
-      dispatch(actions.fetchUserKey(userId, token)),
-    saveSingleMvpToDb: (
-      minuteAgo,
-      mvpKey,
-      userKey,
-      token,
-      trackerKey,
-      mvp,
-      eventType,
-      note
-    ) => {
-      return dispatch(
-        actions.saveSingleMvpToDb(
-          minuteAgo,
-          mvpKey,
-          userKey,
-          token,
-          trackerKey,
-          mvp,
-          eventType,
-          note
-        )
-      );
-    }
+    saveLogs: (userKey, token, trackerKey, logs, newLog) =>
+      dispatch(actions.saveLogs(userKey, token, trackerKey, logs, newLog))
   };
 };
 

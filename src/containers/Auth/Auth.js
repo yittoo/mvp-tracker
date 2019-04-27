@@ -43,7 +43,7 @@ class Auth extends Component {
     isSignup: false,
     isForgot: false,
     forgotValue: "",
-    nickname: "",
+    nickname: localStorage.getItem("nickname") || "",
     message: null,
     keepLogged: false
   };
@@ -169,7 +169,7 @@ class Auth extends Component {
     }
 
     const authRedirect = this.props.isAuthenticated ? (
-      <Redirect to={"/"} />
+      <Redirect to={"/tracker"} />
     ) : null;
 
     const forgotForm = (

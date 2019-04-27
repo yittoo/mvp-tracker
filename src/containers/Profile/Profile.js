@@ -35,13 +35,41 @@ class Profile extends Component {
       resetBtnDisabled: false,
       mvpDeleteMode: localStorage.getItem("mvpDeleteMode") === "true",
       delSecondConfirm: false,
-      mvpViewMode: localStorage.getItem("mvpViewMode") || "compact"
+      mvpViewMode: localStorage.getItem("mvpViewMode") || "compact",
+      fetchTrackerRequestSent: false
     };
   }
 
-  componentDidUpdate() {
-    if (!this.props.userKey) {
+  componentDidMount() {
+    if (!this.props.allTrackers && !this.state.fetchTrackerRequestSent) {
+      this.setState({
+        ...this.state,
+        fetchTrackerRequestSent: true
+      });
+      this.props.fetchAllTrackers(
+        this.props.token || localStorage.getItem("token"),
+        // null,
+        this.props.userKey || localStorage.getItem("userKey"),
+        this.props.userId || localStorage.getItem("userId")
+      );
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.props.userKey && !localStorage.getItem("userKey")) {
       this.props.fetchUserKey(this.props.userId, this.props.token);
+    }
+    if (!this.props.allTrackers && !this.state.fetchTrackerRequestSent) {
+      this.setState({
+        ...this.state,
+        fetchTrackerRequestSent: true
+      });
+      this.props.fetchAllTrackers(
+        this.props.token || localStorage.getItem("token"),
+        // null,
+        this.props.userKey || localStorage.getItem("userKey"),
+        this.props.userId || localStorage.getItem("userId")
+      );
     }
   }
 
@@ -65,6 +93,10 @@ class Profile extends Component {
         message: "Default Tracker Changed",
         selectDefaultTrackerKey: ""
       });
+      this.props.changeDefaultTracker(
+        this.state.selectDefaultTrackerKey,
+        "Default Tracker Changed"
+      );
     }
   };
 
@@ -82,8 +114,10 @@ class Profile extends Component {
           this.props.userId,
           this.props.token,
           xss(this.state.trackerName),
-          this.props.userKey,
-          null
+          this.props.userKey || localStorage.getItem("userKey"),
+          null,
+          null,
+          this.props.allTrackers
         );
         this.setState({
           ...this.state,
@@ -107,7 +141,8 @@ class Profile extends Component {
         this.props.userKey,
         this.state.deleteValue,
         this.props.token,
-        this.props.userId
+        this.props.userId,
+        this.props.allTrackers
       );
     }
   };
@@ -134,7 +169,7 @@ class Profile extends Component {
         isForAllDevicesTheme: "",
         selectedTheme: "",
         message:
-          "Theme mode has updated please refresh page for events to take effect."
+          "Theme mode has updated, you might need to refresh page to see differences."
       });
     }
     if (this.state.isForAllDevicesTheme === "removeSettings") {
@@ -832,15 +867,33 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     resetPassword: email => dispatch(actions.sendPasswordReset(email)),
-    deleteTracker: (userKey, trackerKey, token, userId) =>
-      dispatch(actions.deleteTracker(userKey, trackerKey, token, userId)),
+    deleteTracker: (userKey, trackerKey, token, userId, allTrackers) =>
+      dispatch(
+        actions.deleteTracker(userKey, trackerKey, token, userId, allTrackers)
+      ),
     clearAuthMessage: () => dispatch(actions.clearAuthMessage()),
     clearMvpMessage: () => dispatch(actions.clearMvpMessage()),
     fetchUserKey: (userId, token) =>
       dispatch(actions.fetchUserKey(userId, token)),
-    createNewTracker: (userId, token, trackerName, userKey, mvps) =>
+    createNewTracker: (
+      userId,
+      token,
+      trackerName,
+      userKey,
+      mvps,
+      trackerKey,
+      allTrackers
+    ) =>
       dispatch(
-        actions.createNewMvpTracker(userId, token, trackerName, userKey, mvps)
+        actions.createNewMvpTracker(
+          userId,
+          token,
+          trackerName,
+          userKey,
+          mvps,
+          trackerKey,
+          allTrackers
+        )
       ),
     saveNotificationSettingsServer: (token, userKey, notiTypeKey, itemToCast) =>
       dispatch(
@@ -858,7 +911,11 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.saveThemeSettings(token, userKey, theme)),
     deleteAccountData: token => dispatch(actions.deleteAccountData(token)),
     deleteAccountDbData: (token, userKey) =>
-      dispatch(actions.deleteAccountDbData(token, userKey))
+      dispatch(actions.deleteAccountDbData(token, userKey)),
+    fetchAllTrackers: (token, userKey, userId) =>
+      dispatch(actions.fetchAllTrackers(token, userKey, userId)),
+    changeDefaultTracker: (trackerKey, trackerName) =>
+      dispatch(actions.changeDefaultTracker(trackerKey, trackerName))
   };
 };
 

@@ -65,6 +65,7 @@ class MvpEntry extends Component {
       ...this.props.mvp,
       killedBy: localStorage.getItem("nickname")
     };
+    this.props.onSaveLogs("L", mvpToCast.name)
     this.props.saveSingleMvpToDb(
       minAgo,
       mvpKey,
@@ -84,6 +85,7 @@ class MvpEntry extends Component {
   };
 
   onMvpUndoBtn = () => {
+    this.props.onSaveLogs("U", this.props.mvp.name)
     this.props.undoMvpChange(
       this.props.id,
       this.props.userKey,
@@ -94,6 +96,7 @@ class MvpEntry extends Component {
   };
 
   onMvpDeletedBtn = mvpKey => {
+    this.props.onSaveLogs("D", this.props.mvp.name)
     this.props.saveSingleMvpToDb(
       null,
       mvpKey,
@@ -186,6 +189,7 @@ class MvpEntry extends Component {
       "saveNote",
       this.state.noteContentToSave
     );
+    this.props.onSaveLogs("N", this.props.mvp.name);
     this.setState({
       ...this.state,
       showNote: false,

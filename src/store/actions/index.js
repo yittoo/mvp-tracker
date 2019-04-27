@@ -15,7 +15,10 @@ export {
   saveThemeSettings,
   saveThemeLocal,
   deleteAccountDbData,
-  undoMvpChange
+  undoMvpChange,
+  saveLogs,
+  fetchAllTrackers,
+  changeDefaultTracker
 } from "./mvpActions";
 
 export {

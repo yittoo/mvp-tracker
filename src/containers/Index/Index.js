@@ -16,7 +16,7 @@ const Index = props => {
         <h2 className={classes.Header}>A boss time tracker for Ragnarok Online</h2>
         <div className={classes.LeftColumn}>
           <p className={classes.Paragraph}>
-            Currently this website consists of a MvP TimeTracker that is in beta
+            Currently this website consists of a MvP tracker that is in beta
             testing phase. All you have to do is register with an email(used in
             case you forget your password), and that's it no activation
             required.

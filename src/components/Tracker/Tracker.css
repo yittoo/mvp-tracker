@@ -26,20 +26,24 @@
 .LegendWide {
   display: grid;
   align-items: center;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 2px solid #ccc;
   box-sizing: border-box;
 }
 
 .LegendCompact {
   grid-template-columns: 25% 15% 6% 20% 34%;
   grid-template-areas: "mvpName baseTime mapName tillSpawn actions";
-  padding: 5px;
+  padding: 7px 2px 5px 2px;
 }
 
 .LegendCompact div {
   font-weight: bold;
   color: #2980b9;
   overflow-x: visible;
+}
+
+.LegendCompact .LegendMvpName{
+  padding-left: 5px;
 }
 
 .LegendWide {
@@ -95,7 +99,9 @@
       "mapName actions";
     text-align: center;
   }
-
+  .LegendCompact .LegendMvpName{
+    font-size: 1.3rem;
+  }
   .LegendCompact .LegendMapName,
   .LegendCompact .LegendTillSpawn,
   .LegendCompact .LegendActions,

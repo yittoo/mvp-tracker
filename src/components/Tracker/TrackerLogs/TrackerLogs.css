@@ -1,0 +1,19 @@
+.TrackerLogs {
+    width: 100%;
+    background-color: aqua;
+    margin-bottom: 20px;
+    overflow: auto;
+    max-height: 200px;
+    height: 200px;
+}
+
+.TrackerLogs ul {
+    list-style: none;
+    margin: 0;
+}
+
+.Date {
+    width: 50px;
+    display: inline-block;
+    text-align: center;
+}

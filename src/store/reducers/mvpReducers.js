@@ -3,7 +3,9 @@ import { updateObject } from "../../utility/utility";
 
 const initialState = {
   mvps: null,
+  logs: {},
   loading: false,
+  logsLoading: false,
   error: null,
   currentTime: new Date(),
   userKey: null,
@@ -45,7 +47,8 @@ const fetchMvpsSuccess = (state, action) => {
     activeTrackerName: action.payload.trackerName,
     mvps: action.payload.mvps,
     loading: false,
-    lastUpdated: action.payload.lastUpdated
+    lastUpdated: action.payload.lastUpdated,
+    logs: action.payload.logs
   });
 };
 
@@ -112,6 +115,11 @@ const reducer = (state = initialState, action) => {
         loading: false,
         message: action.payload.message
       });
+    case actionTypes.CHANGE_DEFAULT_TRACKER:
+      return updateObject(state, {
+        activeTrackerKey: action.payload.trackerKey,
+        activeTrackerName: action.payload.trackerName
+      });
     case actionTypes.DELETE_TRACKER_FAIL:
       return updateObject(state, { loading: false });
     case actionTypes.UPDATE_CURRENT_TIME:
@@ -120,8 +128,6 @@ const reducer = (state = initialState, action) => {
       return calculateTimeTillSpawn(state, action);
     case actionTypes.CALCULATE_TIME_ALL_MVPS:
       return updateObject(state, { mvps: action.payload.mvps });
-    case actionTypes.STORE_ALL_TRACKERS:
-      return updateObject(state, { allTrackers: action.payload.trackers });
     case actionTypes.CLEAR_MVP_MESSAGE:
       return updateObject(state, { message: null });
     case actionTypes.FETCH_USER_KEY_START:
@@ -157,7 +163,8 @@ const reducer = (state = initialState, action) => {
     case actionTypes.INITIALIZE_SETTINGS_SUCCESS:
       return updateObject(state, {
         notificationSettings: action.payload.notificationSettings,
-        theme: action.payload.theme
+        theme: action.payload.theme,
+        userKey: action.payload.userKey
       });
     case actionTypes.INITIALIZE_SETTINGS_FAIL:
       return updateObject(state, {
@@ -179,6 +186,24 @@ const reducer = (state = initialState, action) => {
     case actionTypes.DELETE_ACCOUNT_SUCCESS:
       return initialState;
     case actionTypes.DELETE_ACCOUNT_FAIL:
+      return updateObject(state, {
+        loading: false,
+        error: action.payload.error
+      });
+    case actionTypes.SAVE_LOGS_START:
+      return state;
+    case actionTypes.SAVE_LOGS_SUCCESS:
+      return updateObject(state, { logs: action.payload.logs });
+    case actionTypes.SAVE_LOGS_FAIL:
+      return updateObject(state, { error: action.payload.error });
+    case actionTypes.FETCH_ALL_TRACKERS_START:
+      return updateObject(state, { loading: true });
+    case actionTypes.FETCH_ALL_TRACKERS_SUCCESS:
+      return updateObject(state, {
+        loading: false,
+        allTrackers: action.payload.trackers
+      });
+    case actionTypes.FETCH_ALL_TRACKERS_FAIL:
       return updateObject(state, {
         loading: false,
         error: action.payload.error
