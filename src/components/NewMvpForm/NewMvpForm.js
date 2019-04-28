@@ -92,7 +92,7 @@ class Form extends Component {
     const formData = {};
     for (let formElementIdentifier in this.state.mvpForm) {
       formData[formElementIdentifier] = xss(
-        this.state.mvpForm[formElementIdentifier].value
+        this.state.mvpForm[formElementIdentifier].value.toString().substring(0, 48)
       );
     }
     formData.minTillSpawn = null;
@@ -140,7 +140,7 @@ class Form extends Component {
     let currentMvps = this.props.currentMvps
       ? { ...this.props.currentMvps }
       : {};
-    const hash = mvpName + " " + makeId(8)
+    const hash = mvpName + " " + makeId(8);
     currentMvps[hash] = formData;
     this.props.onNewMvpAdded(currentMvps, mvpName);
     this.setInitialStates();

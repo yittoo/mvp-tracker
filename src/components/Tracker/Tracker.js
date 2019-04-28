@@ -96,7 +96,7 @@ class Tracker extends Component {
       const newLog = {
         date: new Date(),
         payload: mvpName,
-        nickname: localStorage.getItem("nickname"),
+        nickname: localStorage.getItem("nickname").substring(0,36),
         type: "A"
       };
       this.props.saveMvpsToDbAndFetch(
@@ -272,7 +272,7 @@ class Tracker extends Component {
     const newLog = {
       date: new Date(),
       payload: payload,
-      nickname: localStorage.getItem("nickname"),
+      nickname: localStorage.getItem("nickname").substring(0,36),
       type: type
     };
     this.props.saveLogs(

@@ -63,7 +63,7 @@ class MvpEntry extends Component {
   onMvpKilledBtn = (minAgo, mvpKey) => {
     const mvpToCast = {
       ...this.props.mvp,
-      killedBy: localStorage.getItem("nickname")
+      killedBy: localStorage.getItem("nickname").substring(0,36)
     };
     this.props.onSaveLogs("L", mvpToCast.name)
     this.props.saveSingleMvpToDb(
@@ -300,6 +300,7 @@ class MvpEntry extends Component {
         onChange={event => this.inputChangedHandler(event, "noteContentToSave")}
         value={this.state.noteContentToSave}
         className={classes.NoteChild}
+        placeholder="Max 250 chars"
       />
     ) : (
       <p className={classes.NoteChild}>

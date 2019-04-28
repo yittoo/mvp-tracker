@@ -146,9 +146,8 @@ export const createNewMvpTracker = (
   return dispatch => {
     dispatch(createMvpsStart(mvps));
     const queryParams = "?auth=" + token;
-    const objToCast = { mvps: mvps, trackerName: trackerName, logs: {} };
+    const objToCast = { mvps: mvps, trackerName: trackerName.substring(0,36), logs: {} };
     if (trackerKey) {
-      console.log(trackerKey)
       mainAxios
         .put(
           "/users/" +
@@ -162,7 +161,7 @@ export const createNewMvpTracker = (
         .then(res => {
           dispatch(createMvpsSuccess());
           dispatch(
-            fetchMvpsFromDb(token, userId, trackerName, true, trackerKey, userKey)
+            fetchMvpsFromDb(token, userId, trackerName.substring(0,36), true, trackerKey, userKey)
           );
           if (allTrackers) {
             let allTrackersToCast = [...allTrackers];
@@ -237,7 +236,7 @@ export const saveAllMvpsHandler = (
     const url = "/users/" + userKey + "/trackers/" + trackerKey + ".json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, { mvps: mvps, trackerName: trackerName })
+      .put(url + queryParams, { mvps: mvps, trackerName: trackerName.substring(0,36) })
       .then(res => {
         dispatch(saveMvpsSuccess(mvps));
       })
@@ -264,13 +263,13 @@ export const saveMvpsToDbAndFetch = (
     mainAxios
       .put(url + queryParams, {
         mvps: mvps,
-        trackerName: trackerName,
+        trackerName: trackerName.substring(0,36),
         logs: logs
-      })
+        })
       .then(res => {
         dispatch(saveMvpsSuccess(null));
         dispatch(
-          fetchMvpsFromDb(token, userId, trackerName, false, trackerKey, userKey)
+          fetchMvpsFromDb(token, userId, trackerName.substring(0,36), false, trackerKey, userKey)
         );
         dispatch(saveLogs(userKey, token, trackerKey, logs, newLog));
       })
@@ -321,15 +320,15 @@ export const saveSingleMvpToDb = (
     if (eventType === "killed" || eventType === "delete") {
       mvpToCast = mvp
         ? {
-            id: mvp.id,
-            name: mvp.name,
-            map: mvp.map,
-            maxSpawn: mvp.maxSpawn,
-            minSpawn: mvp.minSpawn,
+            id: mvp.id.toString().substring(0,6),
+            name: mvp.name.substring(0,48),
+            map: mvp.map.substring(0,24),
+            maxSpawn: mvp.maxSpawn.toString().substring(0,8),
+            minSpawn: mvp.minSpawn.toString().substring(0,8),
             notification: mvp.notification,
-            killedBy: localStorage.getItem("nickname"),
+            killedBy: localStorage.getItem("nickname").substring(0,36),
             timeKilled: new Date(
-              new Date().getTime() - Number(minuteAgo) * 60000
+              new Date().getTime() - Number(minuteAgo.toString().substring(0,6)) * 60000
             ),
             timeKilledBeforeEdit: mvp.timeKilled
           }
@@ -340,15 +339,15 @@ export const saveSingleMvpToDb = (
       eventType === "saveTomb"
     ) {
       mvpToCast = {
-        id: mvp.id,
-        name: mvp.name,
-        map: mvp.map,
-        maxSpawn: mvp.maxSpawn,
-        minSpawn: mvp.minSpawn,
+        id: mvp.id.toString().substring(0,6),
+        name: mvp.name.substring(0,48),
+        map: mvp.map.substring(0,24),
+        maxSpawn: mvp.maxSpawn.toString().substring(0,8),
+        minSpawn: mvp.minSpawn.toString().substring(0,8),
         notification: mvp.notification,
         timeKilled: mvp.timeKilled,
         killedBy: mvp.killedBy || "Undefined",
-        note: note,
+        note: note.substring(0,250),
         tombRatioX: mvp.tombRatioX,
         tombRatioY: mvp.tombRatioY,
         timeKilledBeforeEdit: mvp.timeKilledBeforeEdit
@@ -864,9 +863,9 @@ export const saveThemeSettings = (token, userKey, theme) => {
     const url = "/users/" + userKey + "/settings/theme.json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, { name: theme })
+      .put(url + queryParams, { name: theme.substring(0,48) })
       .then(res => {
-        dispatch(saveThemeSettingsSuccess(theme));
+        dispatch(saveThemeSettingsSuccess(theme.substring(0,48)));
       })
       .catch(err => {
         dispatch(saveThemeSettingsFail(err));

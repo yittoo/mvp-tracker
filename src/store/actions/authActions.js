@@ -63,7 +63,7 @@ export const createNewUserEntry = (
     const objToCast = {
       userId: userId,
       premium: false,
-      username: username,
+      username: username.substring(0,100),
       settings: {
         notiMode: {
           mode: "all"
@@ -93,8 +93,8 @@ export const auth = (email, password, isSignup, keepLogged, nickname) => {
   return dispatch => {
     dispatch(authStart());
     const authData = {
-      email: email,
-      password: password,
+      email: email.substring(0,100),
+      password: password.toString().substring(0,32),
       returnSecureToken: true
     };
     let url =
@@ -112,7 +112,7 @@ export const auth = (email, password, isSignup, keepLogged, nickname) => {
         localStorage.setItem("token", response.data.idToken);
         localStorage.setItem("userId", response.data.localId);
         localStorage.setItem("expirationDate", expirationDate);
-        localStorage.setItem("loggedEmail", email);
+        localStorage.setItem("loggedEmail", email.substring(0,100));
         localStorage.setItem("nickname", nickname);
         let refreshToken;
         if (keepLogged) {
@@ -124,7 +124,7 @@ export const auth = (email, password, isSignup, keepLogged, nickname) => {
             createNewUserEntry(
               response.data.localId,
               response.data.idToken,
-              email,
+              email.substring(0,100),
               response.data.expiresIn,
               refreshToken
             )
@@ -198,7 +198,7 @@ export const sendPasswordReset = email => {
     vanillaAxios
       .post(url, {
         requestType: "PASSWORD_RESET",
-        email: email
+        email: email.substring(0,100)
       })
       .then(res => {
         dispatch(
