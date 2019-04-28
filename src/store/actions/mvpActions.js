@@ -320,7 +320,7 @@ export const saveSingleMvpToDb = (
     if (eventType === "killed" || eventType === "delete") {
       mvpToCast = mvp
         ? {
-            id: mvp.id.toString().substring(0,6),
+            id: mvp.id ? mvp.id.toString().substring(0,6) : null,
             name: mvp.name.substring(0,48),
             map: mvp.map.substring(0,24),
             maxSpawn: mvp.maxSpawn.toString().substring(0,8),
@@ -339,7 +339,7 @@ export const saveSingleMvpToDb = (
       eventType === "saveTomb"
     ) {
       mvpToCast = {
-        id: mvp.id.toString().substring(0,6),
+        id: mvp.id ? mvp.id.toString().substring(0,6) : null,
         name: mvp.name.substring(0,48),
         map: mvp.map.substring(0,24),
         maxSpawn: mvp.maxSpawn.toString().substring(0,8),
@@ -347,7 +347,7 @@ export const saveSingleMvpToDb = (
         notification: mvp.notification,
         timeKilled: mvp.timeKilled,
         killedBy: mvp.killedBy || "Undefined",
-        note: note.substring(0,250),
+        note: note ? note.substring(0,250) : null,
         tombRatioX: mvp.tombRatioX,
         tombRatioY: mvp.tombRatioY,
         timeKilledBeforeEdit: mvp.timeKilledBeforeEdit
