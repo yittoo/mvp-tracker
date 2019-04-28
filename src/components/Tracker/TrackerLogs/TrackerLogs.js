@@ -1,12 +1,73 @@
 import React, { Component } from "react";
-import classes from './TrackerLogs.css';
-import colors from '../../UI/Colors/Colors.css';
+import classes from "./TrackerLogs.css";
+import colors from "../../UI/Colors/Colors.css";
 
 class TrackerLogs extends Component {
   state = {
-    showLogs: false
+    touched: false
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props !== nextProps || this.state !== nextState;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.show && !this.state.touched) {
+      this.setState({
+        ...this.state,
+        touched: true
+      });
+    }
+  }
+
+  stringifyDate = dateAsMiliSec => {
+    let d = new Date(dateAsMiliSec);
+    const minutes =
+        d.getMinutes().toString().length === 1
+          ? "0" + d.getMinutes()
+          : d.getMinutes(),
+      hours =
+        d.getHours().toString().length === 1
+          ? "0" + d.getHours()
+          : d.getHours(),
+      months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      date =
+        d.getDate().toString().length === 1 ? "0" + d.getDate() : d.getDate();
+    return (
+      date +
+      " " +
+      months[d.getMonth()] +
+      " " +
+      d.getFullYear() +
+      " - " +
+      hours +
+      ":" +
+      minutes +
+      " | "
+    );
+  };
+
   render() {
+    let TrackerLogsClasses = [classes.TrackerLogs];
+    if (this.props.show && this.state.touched) {
+      TrackerLogsClasses.push(classes.Show);
+    } else if (this.state.touched) {
+      TrackerLogsClasses.push(classes.Hide);
+    }
+
     let sortableLogsArr = [];
     for (let logKey in this.props.currentLogs) {
       sortableLogsArr.push([
@@ -27,35 +88,57 @@ class TrackerLogs extends Component {
         case "A":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span>{" "}
-              <span className={colors.Blue}>{orderedLogPair[0].payload}</span> has been added by{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}</span> to tracker
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
+              has been added by{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}
+              </span>{" "}
+              to tracker
             </li>
           );
           break;
         case "D":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span>{" "}
-              <span className={colors.Blue}>{orderedLogPair[0].payload}</span> has been deleted by{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}</span> from tracker
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
+              has been deleted by{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}
+              </span>{" "}
+              from tracker
             </li>
           );
           break;
         case "L":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span> Timer of{" "}
-              <span className={colors.Blue}>{orderedLogPair[0].payload}</span> has been changed by{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}</span>
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              Timer of{" "}
+              <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
+              has been changed by{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}
+              </span>
             </li>
           );
           break;
         case "M":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span>{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}:</span>
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}:
+              </span>
               <span className={colors.Blue}>{orderedLogPair[0].payload}</span>
             </li>
           );
@@ -63,27 +146,45 @@ class TrackerLogs extends Component {
         case "T":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span> Tombstone of{" "}
-              <span className={colors.Blue}>{orderedLogPair[0].payload}</span> has been changed by{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}</span>
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              Tombstone of{" "}
+              <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
+              has been changed by{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}
+              </span>
             </li>
           );
           break;
         case "N":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span> Note of{" "}
-              <span className={colors.Blue}>{orderedLogPair[0].payload}</span> has been changed by{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}</span>
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              Note of{" "}
+              <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
+              has been changed by{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}
+              </span>
             </li>
           );
           break;
         case "U":
           eleToPush = (
             <li key={orderedLogPair[2]}>
-              <span className={colors.Gray + " " + classes.Date}>{Math.floor((new Date() - orderedLogPair[1])/60000)}</span> Timer change of{" "}
-              <span className={colors.Blue}>{orderedLogPair[0].payload}</span> has been undone by{" "}
-              <span className={colors.Purple}>{orderedLogPair[0].nickname}</span>
+              <span className={colors.Gray + " " + classes.Date}>
+                {this.stringifyDate(orderedLogPair[1])}
+              </span>{" "}
+              Timer change of{" "}
+              <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
+              undone by{" "}
+              <span className={colors.Purple}>
+                {orderedLogPair[0].nickname}
+              </span>
             </li>
           );
           break;
@@ -92,8 +193,15 @@ class TrackerLogs extends Component {
       }
       logArrToRender.push(eleToPush);
     });
+
+    const trackerLogElement = document.querySelector(`.${classes.TrackerLogs}`);
+
+    if (trackerLogElement && trackerLogElement.scrollHeight > 200) {
+      trackerLogElement.scrollTop = trackerLogElement.scrollHeight - 200;
+    }
+
     return (
-      <div className={classes.TrackerLogs}>
+      <div className={TrackerLogsClasses.join(" ")}>
         <ul>{logArrToRender}</ul>
       </div>
     );

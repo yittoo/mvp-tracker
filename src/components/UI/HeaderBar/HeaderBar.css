@@ -6,6 +6,19 @@
   text-shadow: 2px 2px 1px #ffffff77;
 }
 
-.MarginTop {
-  margin-top: 10px;
+.FlippedAndCentered {
+  border-radius: 0 0 10px 10px;
+  text-align: center;
+}
+
+.MarginTop{
+  margin-top: 20px;
+}
+
+.MarginBottom{
+  margin-bottom: 20px;
+}
+
+.HasClicked{
+  cursor: pointer;
 }

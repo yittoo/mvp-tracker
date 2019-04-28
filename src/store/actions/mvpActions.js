@@ -148,6 +148,7 @@ export const createNewMvpTracker = (
     const queryParams = "?auth=" + token;
     const objToCast = { mvps: mvps, trackerName: trackerName, logs: {} };
     if (trackerKey) {
+      console.log(trackerKey)
       mainAxios
         .put(
           "/users/" +
@@ -161,7 +162,7 @@ export const createNewMvpTracker = (
         .then(res => {
           dispatch(createMvpsSuccess());
           dispatch(
-            fetchMvpsFromDb(token, userId, trackerName, true, res.data.name)
+            fetchMvpsFromDb(token, userId, trackerName, true, trackerKey, userKey)
           );
           if (allTrackers) {
             let allTrackersToCast = [...allTrackers];
@@ -181,7 +182,7 @@ export const createNewMvpTracker = (
         .then(res => {
           dispatch(createMvpsSuccess());
           dispatch(
-            fetchMvpsFromDb(token, userId, trackerName, true, res.data.name)
+            fetchMvpsFromDb(token, userId, trackerName, true, res.data.name, userKey)
           );
           if (allTrackers) {
             let allTrackersToCast = [...allTrackers];
@@ -269,9 +270,9 @@ export const saveMvpsToDbAndFetch = (
       .then(res => {
         dispatch(saveMvpsSuccess(null));
         dispatch(
-          fetchMvpsFromDb(token, userId, trackerName, false, trackerKey)
+          fetchMvpsFromDb(token, userId, trackerName, false, trackerKey, userKey)
         );
-        dispatch(saveLogs(userKey, token, trackerKey, logs, newLog))
+        dispatch(saveLogs(userKey, token, trackerKey, logs, newLog));
       })
       .catch(err => {
         dispatch(saveMvpsFail(err));
@@ -474,7 +475,7 @@ export const deleteTracker = (
         dispatch(deleteTrackerSuccess("Tracker has been successfully deleted"));
         localStorage.removeItem("activeTrackerKey");
         localStorage.removeItem("activeTrackerName");
-        dispatch(fetchMvpsFromDb(token, userId, null, false, null));
+        dispatch(fetchMvpsFromDb(token, userId, null, false, null, null));
       })
       .catch(err => {
         dispatch(saveMvpsFail(err));
@@ -909,9 +910,60 @@ export const saveLogs = (userKey, token, trackerKey, logs, newLog) => {
       .post(postUrl + queryParams, { ...newLog })
       .then(res => {
         const newLogKey = res.data.name;
-        const logsToCast = { ...logs, [newLogKey]: newLog };
-        // handle logs length and splice/remove element if necessary on element that is oldest and repeat until length <50
-        dispatch(saveLogsSuccess(logsToCast));
+        let logsToCast = { ...logs, [newLogKey]: newLog };
+        let logsKeysAsArr = Object.keys(logsToCast);
+        if (logsKeysAsArr.length < 100) {
+          dispatch(saveLogsSuccess(logsToCast));
+        } else {
+          const timesToLoop = logsKeysAsArr.length - 100;
+          for (let i = 0; i < timesToLoop; i++) {
+            let oldestTimeInMilisecObj = {
+              key: "",
+              value: 999999999999999,
+              index: null
+            };
+            logsKeysAsArr.map((logKey, index) => {
+              if (
+                oldestTimeInMilisecObj.value >
+                new Date(logsToCast[logKey].date).getTime()
+              ) {
+                oldestTimeInMilisecObj = {
+                  key: logKey,
+                  value: new Date(logsToCast[logKey].date).getTime(),
+                  index: index
+                };
+              }
+              if (index === logsKeysAsArr.length - 1) {
+                const objToCast = { ...oldestTimeInMilisecObj };
+                oldestTimeInMilisecObj = {
+                  key: "",
+                  value: 999999999999999,
+                  index: null
+                };
+                logsKeysAsArr.splice(objToCast.index, 1);
+                delete logsToCast[objToCast.key];
+                const delUrl =
+                  "/users/" +
+                  userKey +
+                  "/trackers/" +
+                  trackerKey +
+                  "/logs/" +
+                  objToCast.key +
+                  ".json";
+                mainAxios
+                  .put(delUrl + queryParams, {})
+                  .then(res => {
+                  })
+                  .catch(err => {
+                    dispatch(saveLogsFail(err));
+                  });
+              }
+            });
+            if (i + 1 === timesToLoop) {
+              dispatch(saveLogsSuccess(logsToCast));
+            }
+          }
+        }
       })
       .catch(err => {
         dispatch(saveLogsFail(err));
@@ -995,6 +1047,7 @@ export const fetchAllTrackers = (token, userKey, userId) => {
         .get("users.json" + queryParams)
         .then(res => {
           let allTrackerIdentifiers = [];
+          // eslint-disable-next-line
           Object.keys(res.data.trackers).map(trackerKey => {
             allTrackerIdentifiers.push({
               trackerName: res.data.trackers[trackerKey].trackerName,
@@ -1013,6 +1066,7 @@ export const fetchAllTrackers = (token, userKey, userId) => {
         .get(url + queryParams)
         .then(res => {
           let allTrackerIdentifiers = [];
+          // eslint-disable-next-line
           Object.keys(res.data).map(trackerKey => {
             allTrackerIdentifiers.push({
               trackerName: res.data[trackerKey].trackerName,

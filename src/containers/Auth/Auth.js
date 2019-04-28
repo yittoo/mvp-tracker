@@ -43,7 +43,10 @@ class Auth extends Component {
     isSignup: false,
     isForgot: false,
     forgotValue: "",
-    nickname: localStorage.getItem("nickname") || "",
+    nickname:
+      localStorage.getItem("nickname") !== "Undefined"
+        ? localStorage.getItem("nickname")
+        : "",
     message: null,
     keepLogged: false
   };

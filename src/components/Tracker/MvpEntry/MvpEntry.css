@@ -16,7 +16,7 @@
 
 .MvpEntryCompact {
   display: grid;
-  grid-template-columns: 25% 15% 6% 20% 34%;
+  grid-template-columns: 25% 15% 6% 24% 30%;
   grid-template-rows: auto;
   grid-template-areas:
     "name fixedTimer map untilSpawn killed"
@@ -62,6 +62,7 @@
 
 .FixedTimer {
   grid-area: fixedTimer;
+  color: #555;
 }
 
 .Map {
@@ -92,6 +93,7 @@
 
 .Killed {
   grid-area: killed;
+  color: #555;
 }
 
 .MvpEntryCompact .UntilSpawn, .MvpEntryCompact .Killed{

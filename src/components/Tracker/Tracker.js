@@ -373,7 +373,7 @@ class Tracker extends Component {
         >
           <div className={classes.LegendMvpName}>MvP Name</div>
           <div className={classes.LegendBaseTime}>Base Spawn</div>
-          <div className={classes.LegendMapName}>Map</div>
+          <div className={classes.LegendMapName}>Map<span className={classes.LegendMapGuideline}>[?]</span></div>
           <div className={classes.LegendTillSpawn}>Till Spawn</div>
           <div className={classes.LegendActions}>Actions</div>
         </div>

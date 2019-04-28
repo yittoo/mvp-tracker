@@ -841,7 +841,7 @@ class Profile extends Component {
     return (
       <React.Fragment>
         <div className={classes.Container}>
-          <HeaderBar>Profile Section</HeaderBar>
+          <HeaderBar marginTop>Profile Section</HeaderBar>
           {contentToRender}
         </div>
       </React.Fragment>
