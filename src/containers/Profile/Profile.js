@@ -455,16 +455,12 @@ class Profile extends Component {
     const themeForm = (
       <div className={classes.Section + " " + classes.Grid}>
         <div className={classes.Left}>
-          Current theme:{" "}
+          Current theme <span className={classes.PriorityGuideline}>[?]</span> :{" "}
           <span className={colors.Yellow}>
             {this.props.theme
               ? this.props.theme.charAt(0).toUpperCase() +
                 this.props.theme.slice(1)
               : null}
-          </span>
-          <span className={colors.LightGray}>
-            {" "}
-            (Local settings overrides server)
           </span>
         </div>
         <div className={classes.Right + " " + classes.TextAlignRight}>
@@ -519,7 +515,8 @@ class Profile extends Component {
     const notiModeForm = (
       <div className={classes.Section + " " + classes.Grid}>
         <div className={classes.Left}>
-          Current notification mode:{" "}
+          Current notification mode{" "}
+          <span className={classes.PriorityGuideline}>[?]</span> :{" "}
           <span
             className={
               currentNotiData.mode === "All MvPs"
@@ -530,9 +527,6 @@ class Profile extends Component {
             }
           >
             {currentNotiData.mode}{" "}
-          </span>
-          <span className={colors.LightGray}>
-            (Local settings overrides server)
           </span>
         </div>
         <div className={classes.Right + " " + classes.TextAlignRight}>
@@ -613,7 +607,8 @@ class Profile extends Component {
       notiSettingsProp.notiMode.mode !== "none" ? (
         <div className={classes.Section + " " + classes.Grid}>
           <div className={classes.Left}>
-            When to notify
+            When to notify{" "}
+            <span className={classes.PriorityGuideline}>[?]</span>
             {currentNotiMode}
           </div>
           <div className={classes.Right + " " + classes.TextAlignRight}>
@@ -667,7 +662,8 @@ class Profile extends Component {
       notiSettingsProp.notiMode.mode !== "none" ? (
         <div className={classes.Section + " " + classes.Grid}>
           <div className={classes.Left}>
-            Play sound with notification:{" "}
+            Play sound with notification{" "}
+            <span className={classes.PriorityGuideline}>[?]</span> :{" "}
             <span
               className={
                 currentNotiData.sound === "On" ? colors.Green : colors.Red
@@ -769,7 +765,7 @@ class Profile extends Component {
 
     const mvpDeleteModeBtn = (
       <div className={classes.Section}>
-        Enable/Disable MvP Deleting Mode{" "}
+        MvP Deleting Mode <span className={classes.DeleteGuideline}>[?]</span> : <span className={colors.Yellow}>{this.state.mvpDeleteMode ? "Enabled" : "Disabled"}</span>
         <div className={classes.FloatRight}>
           <Button clicked={this.mvpDeleteModeHandler}>
             {this.state.mvpDeleteMode ? "Disable" : "Enable"}
@@ -841,7 +837,7 @@ class Profile extends Component {
     return (
       <React.Fragment>
         <div className={classes.Container}>
-          <HeaderBar marginTop>Profile Section</HeaderBar>
+          <HeaderBar marginTop customClass="Profile">Profile Section</HeaderBar>
           {contentToRender}
         </div>
       </React.Fragment>

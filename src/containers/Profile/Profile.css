@@ -1,6 +1,7 @@
 .Profile {
   padding: 20px;
-  width: 100%;
+  width: 80%;
+  margin: 0 10%;
   box-sizing: border-box;
   border: 1px solid #ccc;
   background-color: #ffffffee;
@@ -8,6 +9,22 @@
   border-radius: 0 0 20px 20px;
   color: #555;
 }
+
+@media (max-width: 1400px){
+  .Profile{
+    width: 90%;
+    margin: 0 5%;
+  }
+}
+
+@media (max-width: 1000px){
+  .Profile{
+    width: 100%;
+    margin: 0;
+  }
+}
+
+
 
 .Section {
   padding: 10px;
@@ -82,7 +99,44 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 500px) {
+.PriorityGuideline, .DeleteGuideline {
+  color: #2980b9;
+}
+
+.PriorityGuideline::after, .DeleteGuideline::after {
+  content: "";
+  font-weight: normal;
+  background-color: #eeeeee;
+  color: #2980b9;
+  position: absolute;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #2980b9;
+  margin-top: 10px;
+  margin-left: -130px;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  z-index: 100;
+}
+
+.PriorityGuideline:hover::after, .DeleteGuideline:hover::after {
+  width: 200px;
+  margin-top: 20px;
+  height: auto;
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+.PriorityGuideline:hover::after {
+  content: "Local settings override account settings to allow custom preferences for each individual using same account.";
+}
+
+.DeleteGuideline:hover::after {
+  content: "Once activated MvPs have delete option near them in the tracker.";
+}
+
+@media (max-width: 1000px) {
   .Grid {
     grid-template-columns: 100%;
     grid-template-areas: "left" "right";
@@ -136,5 +190,8 @@
   }
   .TextAlignRight{
     text-align: center;
+  }
+  .PriorityGuideline, .DeleteGuideline {
+    display: none;
   }
 }

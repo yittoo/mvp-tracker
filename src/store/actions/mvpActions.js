@@ -146,7 +146,11 @@ export const createNewMvpTracker = (
   return dispatch => {
     dispatch(createMvpsStart(mvps));
     const queryParams = "?auth=" + token;
-    const objToCast = { mvps: mvps, trackerName: trackerName.substring(0,36), logs: {} };
+    const objToCast = {
+      mvps: mvps,
+      trackerName: trackerName.substring(0, 36),
+      logs: {}
+    };
     if (trackerKey) {
       mainAxios
         .put(
@@ -161,7 +165,14 @@ export const createNewMvpTracker = (
         .then(res => {
           dispatch(createMvpsSuccess());
           dispatch(
-            fetchMvpsFromDb(token, userId, trackerName.substring(0,36), true, trackerKey, userKey)
+            fetchMvpsFromDb(
+              token,
+              userId,
+              trackerName.substring(0, 36),
+              true,
+              trackerKey,
+              userKey
+            )
           );
           if (allTrackers) {
             let allTrackersToCast = [...allTrackers];
@@ -181,7 +192,14 @@ export const createNewMvpTracker = (
         .then(res => {
           dispatch(createMvpsSuccess());
           dispatch(
-            fetchMvpsFromDb(token, userId, trackerName, true, res.data.name, userKey)
+            fetchMvpsFromDb(
+              token,
+              userId,
+              trackerName,
+              true,
+              res.data.name,
+              userKey
+            )
           );
           if (allTrackers) {
             let allTrackersToCast = [...allTrackers];
@@ -236,7 +254,10 @@ export const saveAllMvpsHandler = (
     const url = "/users/" + userKey + "/trackers/" + trackerKey + ".json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, { mvps: mvps, trackerName: trackerName.substring(0,36) })
+      .put(url + queryParams, {
+        mvps: mvps,
+        trackerName: trackerName.substring(0, 36)
+      })
       .then(res => {
         dispatch(saveMvpsSuccess(mvps));
       })
@@ -263,13 +284,20 @@ export const saveMvpsToDbAndFetch = (
     mainAxios
       .put(url + queryParams, {
         mvps: mvps,
-        trackerName: trackerName.substring(0,36),
+        trackerName: trackerName.substring(0, 36),
         logs: logs
-        })
+      })
       .then(res => {
         dispatch(saveMvpsSuccess(null));
         dispatch(
-          fetchMvpsFromDb(token, userId, trackerName.substring(0,36), false, trackerKey, userKey)
+          fetchMvpsFromDb(
+            token,
+            userId,
+            trackerName.substring(0, 36),
+            false,
+            trackerKey,
+            userKey
+          )
         );
         dispatch(saveLogs(userKey, token, trackerKey, logs, newLog));
       })
@@ -320,15 +348,16 @@ export const saveSingleMvpToDb = (
     if (eventType === "killed" || eventType === "delete") {
       mvpToCast = mvp
         ? {
-            id: mvp.id ? mvp.id.toString().substring(0,6) : null,
-            name: mvp.name.substring(0,48),
-            map: mvp.map.substring(0,24),
-            maxSpawn: mvp.maxSpawn.toString().substring(0,8),
-            minSpawn: mvp.minSpawn.toString().substring(0,8),
+            id: mvp.id ? mvp.id.toString().substring(0, 6) : null,
+            name: mvp.name.substring(0, 48),
+            map: mvp.map.substring(0, 24),
+            maxSpawn: mvp.maxSpawn.toString().substring(0, 8),
+            minSpawn: mvp.minSpawn.toString().substring(0, 8),
             notification: mvp.notification,
-            killedBy: localStorage.getItem("nickname").substring(0,36),
+            killedBy: localStorage.getItem("nickname").substring(0, 36),
             timeKilled: new Date(
-              new Date().getTime() - Number(minuteAgo.toString().substring(0,6)) * 60000
+              new Date().getTime() -
+                Number(minuteAgo.toString().substring(0, 6)) * 60000
             ),
             timeKilledBeforeEdit: mvp.timeKilled
           }
@@ -339,15 +368,15 @@ export const saveSingleMvpToDb = (
       eventType === "saveTomb"
     ) {
       mvpToCast = {
-        id: mvp.id ? mvp.id.toString().substring(0,6) : null,
-        name: mvp.name.substring(0,48),
-        map: mvp.map.substring(0,24),
-        maxSpawn: mvp.maxSpawn.toString().substring(0,8),
-        minSpawn: mvp.minSpawn.toString().substring(0,8),
+        id: mvp.id ? mvp.id.toString().substring(0, 6) : null,
+        name: mvp.name.substring(0, 48),
+        map: mvp.map.substring(0, 24),
+        maxSpawn: mvp.maxSpawn.toString().substring(0, 8),
+        minSpawn: mvp.minSpawn.toString().substring(0, 8),
         notification: mvp.notification,
         timeKilled: mvp.timeKilled,
         killedBy: mvp.killedBy || "Undefined",
-        note: note ? note.substring(0,250) : null,
+        note: note ? note.substring(0, 250) : null,
         tombRatioX: mvp.tombRatioX,
         tombRatioY: mvp.tombRatioY,
         timeKilledBeforeEdit: mvp.timeKilledBeforeEdit
@@ -863,9 +892,9 @@ export const saveThemeSettings = (token, userKey, theme) => {
     const url = "/users/" + userKey + "/settings/theme.json";
     const queryParams = "?auth=" + token;
     mainAxios
-      .put(url + queryParams, { name: theme.substring(0,48) })
+      .put(url + queryParams, { name: theme.substring(0, 48) })
       .then(res => {
-        dispatch(saveThemeSettingsSuccess(theme.substring(0,48)));
+        dispatch(saveThemeSettingsSuccess(theme.substring(0, 48)));
       })
       .catch(err => {
         dispatch(saveThemeSettingsFail(err));
@@ -921,6 +950,7 @@ export const saveLogs = (userKey, token, trackerKey, logs, newLog) => {
               value: 999999999999999,
               index: null
             };
+            // eslint-disable-next-line
             logsKeysAsArr.map((logKey, index) => {
               if (
                 oldestTimeInMilisecObj.value >
@@ -951,8 +981,7 @@ export const saveLogs = (userKey, token, trackerKey, logs, newLog) => {
                   ".json";
                 mainAxios
                   .put(delUrl + queryParams, {})
-                  .then(res => {
-                  })
+                  .then(res => {})
                   .catch(err => {
                     dispatch(saveLogsFail(err));
                   });

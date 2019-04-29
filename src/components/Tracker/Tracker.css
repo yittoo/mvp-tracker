@@ -43,7 +43,7 @@
   overflow-x: visible;
 }
 
-.LegendCompact .LegendMvpName{
+.LegendCompact .LegendMvpName {
   padding-left: 5px;
 }
 
@@ -75,8 +75,9 @@
   font-weight: normal;
 }
 
-.LegendMapGuideline::after{
-  content: "Click map name then click on the map to drop tombstone, hit esc or click gray area to exit map";
+.LegendNameGuideline::after,
+.LegendMapGuideline::after {
+  content: "";
   font-weight: normal;
   background-color: #eeeeee;
   position: absolute;
@@ -92,7 +93,15 @@
   z-index: 100;
 }
 
-.LegendMapGuideline:hover::after{
+.LegendNameGuideline:hover::after {
+  content: "Click dialogue box to add notes or view further details about MvP";
+}
+.LegendMapGuideline:hover::after {
+  content: "Click map name then click on the map to drop tombstone, hit esc or click gray area to exit map";
+}
+
+.LegendNameGuideline:hover::after,
+.LegendMapGuideline:hover::after {
   width: 200px;
   margin-top: 20px;
   height: auto;
@@ -117,11 +126,11 @@
   font-size: 1.6rem;
 }
 
-@media (max-width: 1400px){
-  .LegendMvpName{
+@media (max-width: 1400px) {
+  .LegendMvpName {
     text-align: center;
   }
-  .LegendBaseTime{
+  .LegendBaseTime {
     margin-left: 2px;
   }
 }
@@ -135,7 +144,7 @@
       "mapName actions";
     text-align: center;
   }
-  .LegendCompact .LegendMvpName{
+  .LegendCompact .LegendMvpName {
     font-size: 1.3rem;
   }
   .LegendCompact .LegendMapName,
@@ -147,7 +156,9 @@
     font-size: 1.2rem;
   }
 
-  .LegendBaseTime, .LegendMapGuideline {
+  .LegendBaseTime,
+  .LegendNameGuideline,
+  .LegendMapGuideline {
     display: none;
   }
 }

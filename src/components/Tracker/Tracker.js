@@ -371,9 +371,9 @@ class Tracker extends Component {
               : classes.LegendWide
           }
         >
-          <div className={classes.LegendMvpName}>MvP Name</div>
+          <div className={classes.LegendMvpName}>MvP Name<span className={classes.LegendNameGuideline}> [?]</span></div>
           <div className={classes.LegendBaseTime}>Base Spawn</div>
-          <div className={classes.LegendMapName}>Map<span className={classes.LegendMapGuideline}>[?]</span></div>
+          <div className={classes.LegendMapName}>Map<span className={classes.LegendMapGuideline}> [?]</span></div>
           <div className={classes.LegendTillSpawn}>Till Spawn</div>
           <div className={classes.LegendActions}>Actions</div>
         </div>

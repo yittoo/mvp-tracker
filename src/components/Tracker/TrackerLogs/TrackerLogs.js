@@ -92,7 +92,7 @@ class TrackerLogs extends Component {
                 {this.stringifyDate(orderedLogPair[1])}
               </span>{" "}
               <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
-              has been added by{" "}
+              added by{" "}
               <span className={colors.Purple}>
                 {orderedLogPair[0].nickname}
               </span>{" "}
@@ -107,7 +107,7 @@ class TrackerLogs extends Component {
                 {this.stringifyDate(orderedLogPair[1])}
               </span>{" "}
               <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
-              has been deleted by{" "}
+              deleted by{" "}
               <span className={colors.Purple}>
                 {orderedLogPair[0].nickname}
               </span>{" "}
@@ -123,7 +123,7 @@ class TrackerLogs extends Component {
               </span>{" "}
               Timer of{" "}
               <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
-              has been changed by{" "}
+              changed by{" "}
               <span className={colors.Purple}>
                 {orderedLogPair[0].nickname}
               </span>
@@ -151,7 +151,7 @@ class TrackerLogs extends Component {
               </span>{" "}
               Tombstone of{" "}
               <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
-              has been changed by{" "}
+              changed by{" "}
               <span className={colors.Purple}>
                 {orderedLogPair[0].nickname}
               </span>
@@ -166,7 +166,7 @@ class TrackerLogs extends Component {
               </span>{" "}
               Note of{" "}
               <span className={colors.Blue}>{orderedLogPair[0].payload}</span>{" "}
-              has been changed by{" "}
+              changed by{" "}
               <span className={colors.Purple}>
                 {orderedLogPair[0].nickname}
               </span>
