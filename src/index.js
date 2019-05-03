@@ -12,7 +12,7 @@ import { createStore, compose, applyMiddleware, combineReducers } from "redux";
 import mvpReducers from "./store/reducers/mvpReducers";
 import authReducers from './store/reducers/authReducers';
 
-const composeEnhancers = process.env.NODE_ENV === "development" ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
+const composeEnhancers = process.env.NODE_ENV === "development" ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose : null || compose;
 
 const rootReducer = combineReducers({
   mvp: mvpReducers,

@@ -7,7 +7,8 @@ import classes from './MvpTracker.css'
 
 class MvPTracker extends Component {
   state = {
-    showTrackerLogs: false
+    showTrackerLogs: false,
+    trackerLogsTouched: false
   };
 
   toggleTrackerLogsHandler = () => {
@@ -16,15 +17,29 @@ class MvPTracker extends Component {
       showTrackerLogs: !this.state.showTrackerLogs
     });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.showTrackerLogs && !this.state.trackerLogsTouched) {
+      this.setState({
+        ...this.state,
+        trackerLogsTouched: true
+      });
+    }
+  }
   render() {
+    let TrackerLogsClasses = [classes.TrackerLogs];
+    if (this.state.showTrackerLogs && this.state.trackerLogsTouched) {
+      TrackerLogsClasses.push(classes.Show);
+    } else if (this.state.trackerLogsTouched) {
+      TrackerLogsClasses.push(classes.Hide);
+    }
     return (
       <div>
         {this.props.hasMvps ? (
-          <div className={classes.TrackerLogs}>
+          <div className={TrackerLogsClasses.join(' ')}>
             <TrackerLogs
               currentLogs={this.props.logs}
               logsLoading={this.props.logsLoading}
-              show={this.state.showTrackerLogs}
             />
             <HeaderBar
               clicked={this.toggleTrackerLogsHandler}

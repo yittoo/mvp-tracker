@@ -3,22 +3,12 @@ import classes from "./TrackerLogs.css";
 import colors from "../../UI/Colors/Colors.css";
 
 class TrackerLogs extends Component {
-  state = {
-    touched: false
-  };
 
   shouldComponentUpdate(nextProps, nextState) {
     return this.props !== nextProps || this.state !== nextState;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.show && !this.state.touched) {
-      this.setState({
-        ...this.state,
-        touched: true
-      });
-    }
-  }
+  
 
   stringifyDate = dateAsMiliSec => {
     let d = new Date(dateAsMiliSec);
@@ -61,13 +51,6 @@ class TrackerLogs extends Component {
   };
 
   render() {
-    let TrackerLogsClasses = [classes.TrackerLogs];
-    if (this.props.show && this.state.touched) {
-      TrackerLogsClasses.push(classes.Show);
-    } else if (this.state.touched) {
-      TrackerLogsClasses.push(classes.Hide);
-    }
-
     let sortableLogsArr = [];
     for (let logKey in this.props.currentLogs) {
       sortableLogsArr.push([
@@ -201,7 +184,7 @@ class TrackerLogs extends Component {
     }
 
     return (
-      <div className={TrackerLogsClasses.join(" ")}>
+      <div className={classes.TrackerLogs}>
         <ul>{logArrToRender}</ul>
       </div>
     );

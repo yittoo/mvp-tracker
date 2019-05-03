@@ -2,46 +2,15 @@
   width: 100%;
   border-left: 1px solid #eee;
   border-right: 1px solid #eee;
-  background-color: #ffffffee;
+  background-color: white;
   box-sizing: border-box;
-  height: 0px;
-  overflow-y: auto;
-}
-
-.Show {
-  -webkit-animation: slidein 0.4s cubic-bezier(0.47, 0.95, 1, 0.99);
-  animation: slidein 0.4s cubic-bezier(0.47, 0.95, 1, 0.99);
   height: 200px;
-}
-
-.Hide {
-  -webkit-animation: slideout 0.4s linear;
-  animation: slideout 0.4s linear;
-  height: 0;
-}
-
-@keyframes slidein {
-  0% {
-    height: 0;
-  }
-  100% {
-    height: 200px;
-  }
-}
-
-@keyframes slideout {
-  0% {
-    height: 200px;
-  }
-  100% {
-    height: 0;
-  }
+  overflow-y: auto;
 }
 
 .TrackerLogs ul {
   list-style: none;
   position: relative;
-  /* bottom: 100%; */
   margin: 0;
   padding: 5px 20px;
   color: #555;
@@ -49,5 +18,6 @@
 
 .Date {
   display: inline-block;
-  text-align: center;
+  text-align: right;
+  width: 160px
 }

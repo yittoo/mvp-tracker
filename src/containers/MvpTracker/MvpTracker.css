@@ -1,18 +1,52 @@
 .TrackerLogs {
   width: 60%;
-  margin: 0 20%;
+  position: fixed;
+  left: 20%;
+  top: -144px;
+  z-index: 10;
 }
 
 @media (max-width: 1400px) {
   .TrackerLogs {
     width: 80%;
-    margin: 0 10%;
+    left: 10%;
   }
 }
 
 @media (max-width: 1000px) {
   .TrackerLogs {
     width: 100%;
-    margin: 0;
+    left: 0;
+  }
+}
+
+
+.Show {
+  -webkit-animation: slidein 0.4s cubic-bezier(0.47, 0.95, 1, 0.99);
+  animation: slidein 0.4s cubic-bezier(0.47, 0.95, 1, 0.99);
+  top: 56px;
+}
+
+.Hide {
+  -webkit-animation: slideout 0.4s linear;
+  animation: slideout 0.4s linear;
+  top: -144px;
+}
+
+@keyframes slidein {
+  0% {
+    top: -144px;
+  }
+  100% {
+    top: 56px;
+  }
+}
+
+@keyframes slideout {
+  0% {
+    top: 56px;
+  }
+  100% {
+    top: -144px;
   }
 }
