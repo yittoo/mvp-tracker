@@ -1,15 +1,15 @@
 .TrackerLogs {
-  width: 60%;
+  width: 40%;
   position: fixed;
-  left: 20%;
+  left: 30%;
   top: -144px;
   z-index: 10;
 }
 
 @media (max-width: 1400px) {
   .TrackerLogs {
-    width: 80%;
-    left: 10%;
+    width: 60%;
+    left: 20%;
   }
 }
 
