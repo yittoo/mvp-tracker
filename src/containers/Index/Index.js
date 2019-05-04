@@ -18,20 +18,16 @@ const Index = props => {
         </h2>
         <div className={classes.LeftColumn}>
           <p className={classes.Paragraph}>
-            Currently this website consists of a MvP tracker that is in beta
-            testing phase. All you have to do is register with an email(used in
-            case you forget your password), and that's it no activation
-            required.
-          </p>
-          <p className={classes.Paragraph}>
-            If you are a server owner and want a customized tracker for your
-            players contact me on suggest@mvp-ro.com with details.
+            Currently this website consists of a MvP tracker for Ragnarok
+            Online. All you have to do is register with an email(used in case
+            you forget your password), and that's it no activation required.
           </p>
           <p className={classes.Paragraph}>
             Our website is fully responsive so that you are capable of using
             wherever you like whether it's on laptop, tablet or phone. It always
             syncronizes itself so you are able to share it even among your guild
-            mates and friends.
+            mates and friends. It keeps track of last 100 actions with your
+            given nickname.
           </p>
           <p className={classes.Paragraph}>
             Edit your notification settings, decide whether to be warned 10
@@ -41,6 +37,24 @@ const Index = props => {
             also choose specific MvPs that you want to recieve notifications
             from. All in click of a button in your control panel.
           </p>
+          <p className={classes.Paragraph}>
+            Like my work and want to support me? (Server costs are next to
+            nothing so, it is not necessary to keep this site running. But being
+            supported really feels appreciated.)
+            <br />
+            <a
+              className={classes["bmc-button"]}
+              target="_blank"
+              href="https://www.buymeacoffee.com/yigitsozer"
+            >
+              <span style={{ marginRight: 5 }}>Buy me a</span>
+              <img
+                src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg"
+                alt="Buy me a coffee"
+              />
+            </a>
+          </p>
+
           <div className={classes.HeadBanner}>
             <img
               src="https://i.postimg.cc/ZRdhpDVZ/detaletrans.png"
@@ -70,6 +84,12 @@ const Index = props => {
         <div className={classes.RightColumn}>
           <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
+          <p>
+            04.05.2019 - Full release, We are officially out of beta. Thanks for
+            all the feedback, we are little over 100 users and keep growing
+            every day.
+          </p>
+          <p>03.05.2019 - Fixed Firefox compatibility issues</p>
           <p>
             28.04.2019 - Action logs brought for each tracker. Increased width
             of tracker window for desktop, laptop and tablets. Overall
@@ -121,10 +141,7 @@ const Index = props => {
           </p>
           <hr />
           <h4 className={classes.MiniHeader}>Known issues:</h4>
-          <p>
-            Some animations on Mozilla Firefox browser are laggy. It will be
-            fixed later, sorry for inconvenience.
-          </p>
+          <p>All known issues are fixed.</p>
         </div>
       </div>
     </React.Fragment>
