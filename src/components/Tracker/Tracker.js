@@ -96,7 +96,7 @@ class Tracker extends Component {
       const newLog = {
         date: new Date(),
         payload: mvpName,
-        nickname: localStorage.getItem("nickname").substring(0,36),
+        nickname: localStorage.getItem("nickname").substring(0, 36),
         type: "A"
       };
       this.props.saveMvpsToDbAndFetch(
@@ -272,7 +272,7 @@ class Tracker extends Component {
     const newLog = {
       date: new Date(),
       payload: payload,
-      nickname: localStorage.getItem("nickname").substring(0,36),
+      nickname: localStorage.getItem("nickname").substring(0, 36),
       type: type
     };
     this.props.saveLogs(
@@ -290,13 +290,18 @@ class Tracker extends Component {
       sortableMvpArr.push([
         this.props.mvps[mvpKey],
         this.props.mvps[mvpKey].minTillSpawn,
-        mvpKey
+        mvpKey,
+        this.props.mvps[mvpKey].timeKilled
       ]);
     }
 
     sortableMvpArr.sort(function(a, b) {
-      const compare1 = isNaN(a[1]) ? 99999999 : a[1];
-      const compare2 = isNaN(b[1]) ? 99999999 : b[1];
+      const hoursSinceActionA =
+        (Date.now() - new Date(a[3]).getTime()) / (1000 * 60 * 60);
+      const hoursSinceActionB =
+        (Date.now() - new Date(b[3]).getTime()) / (1000 * 60 * 60);
+      const compare1 = isNaN(a[1]) || hoursSinceActionA > 4 ? 99999999 : a[1];
+      const compare2 = isNaN(b[1]) || hoursSinceActionB > 4 ? 99999999 : b[1];
       return compare1 - compare2;
     });
 
@@ -371,9 +376,13 @@ class Tracker extends Component {
               : classes.LegendWide
           }
         >
-          <div className={classes.LegendMvpName}>MvP Name<span className={classes.LegendNameGuideline}> [?]</span></div>
+          <div className={classes.LegendMvpName}>
+            MvP Name<span className={classes.LegendNameGuideline}> [?]</span>
+          </div>
           <div className={classes.LegendBaseTime}>Base Spawn</div>
-          <div className={classes.LegendMapName}>Map<span className={classes.LegendMapGuideline}> [?]</span></div>
+          <div className={classes.LegendMapName}>
+            Map<span className={classes.LegendMapGuideline}> [?]</span>
+          </div>
           <div className={classes.LegendTillSpawn}>Till Spawn</div>
           <div className={classes.LegendActions}>Actions</div>
         </div>
