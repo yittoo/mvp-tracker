@@ -46,6 +46,7 @@ const Index = props => {
               className={classes["bmc-button"]}
               target="_blank"
               href="https://www.buymeacoffee.com/yigitsozer"
+              rel="noopener noreferrer"
             >
               <span style={{ marginRight: 5 }}>Buy me a</span>
               <img
@@ -84,6 +85,10 @@ const Index = props => {
         <div className={classes.RightColumn}>
           <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
+          <p>
+            21.05.2019 - Performance improvements. Should run better on older
+            smartphones. Other minor update.
+          </p>
           <p>
             11.05.2019 - With the feedback, the way MvPs are ordered got changed
             a little bit. Some other minor improvements added.

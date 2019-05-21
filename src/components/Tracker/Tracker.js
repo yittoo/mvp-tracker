@@ -291,17 +291,15 @@ class Tracker extends Component {
         this.props.mvps[mvpKey],
         this.props.mvps[mvpKey].minTillSpawn,
         mvpKey,
-        this.props.mvps[mvpKey].timeKilled
+        this.props.mvps[mvpKey].maxTillSpawn
       ]);
     }
 
     sortableMvpArr.sort(function(a, b) {
-      const hoursSinceActionA =
-        (Date.now() - new Date(a[3]).getTime()) / (1000 * 60 * 60);
-      const hoursSinceActionB =
-        (Date.now() - new Date(b[3]).getTime()) / (1000 * 60 * 60);
-      const compare1 = isNaN(a[1]) || hoursSinceActionA > 4 ? 99999999 : a[1];
-      const compare2 = isNaN(b[1]) || hoursSinceActionB > 4 ? 99999999 : b[1];
+      const hoursSinceMaxTimeA = a[3] / 60;
+      const hoursSinceMaxTimeB = b[3] / 60;
+      const compare1 = isNaN(a[1]) || isNaN(hoursSinceMaxTimeA) || hoursSinceMaxTimeA <= -2 ? 99999999 : a[1];
+      const compare2 = isNaN(b[1]) || isNaN(hoursSinceMaxTimeB) || hoursSinceMaxTimeB <= -2 ? 99999999 : b[1];
       return compare1 - compare2;
     });
 
