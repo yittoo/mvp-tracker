@@ -343,6 +343,18 @@ const asyncComponent = mapName => {
           return this.writeToState(
             "https://i.postimg.cc/FHjZnLpc/xmas-fild01.gif"
           );
+        case "pay_fild10":
+          return this.writeToState(
+            "https://i.postimg.cc/yYcR8HT4/pay-fild10.gif"
+          );
+        case "yuno_fild03":
+          return this.writeToState(
+            "https://i.postimg.cc/x1PbL376/yuno-fild03.gif"
+          );
+        case "xmas_dun01":
+          return this.writeToState(
+            "https://i.postimg.cc/dVFy7xW7/xmas-dun01.gif"
+          );
         default:
           return this.writeToState(
             "https://i.postimg.cc/nz0jsHkC/mapnotfound.gif"
