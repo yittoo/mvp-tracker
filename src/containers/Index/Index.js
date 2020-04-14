@@ -5,7 +5,7 @@ import HeaderBar from "../../components/UI/HeaderBar/HeaderBar";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import colors from "../../components/UI/Colors/Colors.css";
 
-const Index = props => {
+const Index = (props) => {
   const dataToRender = props.authLoading ? (
     <Spinner />
   ) : (
@@ -17,6 +17,23 @@ const Index = props => {
           A boss time tracker for Ragnarok Online
         </h2>
         <div className={classes.LeftColumn}>
+          <p className={classes.Paragraph}>
+            <span className={classes.Announcement}>Announcement:</span> I hope
+            everyone is safe from Covid-19. I am glad that the usage of this
+            site I made going up even though it is for a sad reason which is the
+            lockdown. I try to focus on the positive which is people like what I
+            built. We have alot of users using this tracker now especially this
+            month that I have to disable the auto updater that syncronizes every
+            60 second with what your guildies might have done. I'm doing this
+            because the traffic increased <strong>4 times this month</strong>{" "}
+            and I do not want to spend alot of money for server costs. I hope
+            you guys are safe and well, I'm not expecting an outage in this site
+            but if it does, it is because the limit we have is reached. It will
+            reset 1st of May. I'm sorry I had to cut the autoupdate feature, I'm
+            also working full time so will try to make time to optimize network
+            usage next month and enable it again. If you want to force refresh
+            the MvP timers on tracker you can always refresh the page.
+          </p>
           <p className={classes.Paragraph}>
             Currently this website consists of a MvP tracker for Ragnarok
             Online. All you have to do is register with an email(used in case
@@ -37,7 +54,7 @@ const Index = props => {
             also choose specific MvPs that you want to recieve notifications
             from. All in click of a button in your control panel.
           </p>
-          <p className={classes.Paragraph}>
+          {/* <p className={classes.Paragraph}>
             Like my work and want to support me? (Server costs are next to
             nothing so, it is not necessary to keep this site running. But being
             supported really feels appreciated.)
@@ -54,8 +71,7 @@ const Index = props => {
                 alt="Buy me a coffee"
               />
             </a>
-          </p>
-
+          </p> */}
           <div className={classes.HeadBanner}>
             <img
               src="https://i.postimg.cc/ZRdhpDVZ/detaletrans.png"
@@ -86,6 +102,10 @@ const Index = props => {
           <h3 className={classes.MiniHeader}>Change Log:</h3>
           <hr />
           <p>
+            14.04.2020 - Removed auto updator due to high traffic that recently
+            begun to happen due to Covid quarentene.
+          </p>
+          <p>
             21.05.2019 - Performance improvements. Should run better on older
             smartphones. Other minor update.
           </p>
@@ -109,9 +129,9 @@ const Index = props => {
   return <React.Fragment>{dataToRender}</React.Fragment>;
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    authLoading: state.auth.loading
+    authLoading: state.auth.loading,
   };
 };
 

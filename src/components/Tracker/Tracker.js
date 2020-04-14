@@ -11,7 +11,7 @@ import asyncComponent from "../../hoc/asyncComponent/asyncComponent";
 import Modal from "../UI/Modal/Modal";
 import NewMvpForm from "../NewMvpForm/NewMvpForm";
 import Spinner from "../UI/Spinner/Spinner";
-import LastUpdated from "./LastUpdated/LastUpdated";
+// import LastUpdated from "./LastUpdated/LastUpdated";
 import Notification from "../Notification/Notification";
 import noti_sound_url from "../../assets/sounds/noti_initial.mp3";
 import asyncMap from "../../hoc/asyncMap/asyncMap";
@@ -27,7 +27,7 @@ class Tracker extends Component {
     newMvpAdded: false,
     notiArr: [],
     mapToRender: null,
-    mvpViewMode: localStorage.getItem("mvpViewMode") || "compact"
+    mvpViewMode: localStorage.getItem("mvpViewMode") || "compact",
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -49,17 +49,17 @@ class Tracker extends Component {
   constructor(props) {
     super(props);
     this.fetchMvps(true);
-    this.fetchAllMvpsInterval = window.setInterval(
-      () => this.fetchMvps(false),
-      60000
-    );
+    // this.fetchAllMvpsInterval = window.setInterval(
+    //   () => this.fetchMvps(false),
+    //   60000
+    // );
   }
 
   componentWillUnmount() {
-    window.clearInterval(this.fetchAllMvpsInterval);
+    // window.clearInterval(this.fetchAllMvpsInterval);
   }
 
-  fetchMvps = shouldSpinner => {
+  fetchMvps = (shouldSpinner) => {
     if (this.props.isAuthenticated) {
       this.props.fetchMvpsFromDb(
         this.props.token,
@@ -75,14 +75,14 @@ class Tracker extends Component {
   onRefreshHandler = () => {
     this.setState({
       ...this.state,
-      defaultMvpListChosen: this.state.defaultMvpListChosen + 1
+      defaultMvpListChosen: this.state.defaultMvpListChosen + 1,
     });
   };
 
-  toggleFormHandler = formStateName => {
+  toggleFormHandler = (formStateName) => {
     this.setState({
       ...this.state,
-      [formStateName]: !this.state[formStateName]
+      [formStateName]: !this.state[formStateName],
     });
   };
 
@@ -90,14 +90,14 @@ class Tracker extends Component {
     this.setState({
       ...this.state,
       newMvpAdded: true,
-      showNewMvpForm: false
+      showNewMvpForm: false,
     });
     if (this.props.trackerName && this.props.trackerKey) {
       const newLog = {
         date: new Date(),
         payload: mvpName,
         nickname: localStorage.getItem("nickname").substring(0, 36),
-        type: "A"
+        type: "A",
       };
       this.props.saveMvpsToDbAndFetch(
         this.props.userId,
@@ -122,35 +122,35 @@ class Tracker extends Component {
     }
   };
 
-  pushNotiToArr = notiObj => {
+  pushNotiToArr = (notiObj) => {
     setTimeout(() => {
       let notiArr = [...this.state.notiArr];
       notiArr.push(notiObj);
       if (this.props.notiSettings.notiSound.mode && !this.state.playedSound) {
         let audio = new Audio(noti_sound_url);
         audio.volume = this.props.notiSettings.notiSound.volume || 0.5;
-        audio.play().catch(err => {
+        audio.play().catch((err) => {
           return;
         });
       }
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         ...prevState,
         notiArr: notiArr,
-        playedSound: true
+        playedSound: true,
       }));
       setTimeout(() => {
         let notiArrToSplice = [...this.state.notiArr];
         notiArrToSplice.splice(0, 1);
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
           ...prevState,
           notiArr: notiArrToSplice,
-          playedSound: false
+          playedSound: false,
         }));
       }, 10000);
     }, Math.random() * 300);
   };
 
-  notificationHandler = notiObj => {
+  notificationHandler = (notiObj) => {
     if (notiObj.type === "onMax" && this.props.notiSettings.notiType.onMax) {
       this.pushNotiToArr(notiObj);
     }
@@ -172,7 +172,7 @@ class Tracker extends Component {
           ...this.state,
           mapToRender: asyncMap(mapName),
           mvpKeyOfMap: mvpKey,
-          mvpOfMap: mvp
+          mvpOfMap: mvp,
         },
         () => {
           setTimeout(() => {
@@ -194,7 +194,7 @@ class Tracker extends Component {
         mapToRender: null,
         mvpKeyOfMap: null,
         mvpOfMap: null,
-        tombPositioningState: null
+        tombPositioningState: null,
       });
     }
   };
@@ -205,7 +205,7 @@ class Tracker extends Component {
       mapToRender: null,
       mvpKeyOfMap: null,
       mvpOfMap: null,
-      tombPositioningState: null
+      tombPositioningState: null,
     });
   };
 
@@ -214,7 +214,7 @@ class Tracker extends Component {
       this.setState({
         ...this.state,
         modalX: x,
-        modalY: y
+        modalY: y,
       });
     } else if (childName === "Map") {
       this.setState({
@@ -222,7 +222,7 @@ class Tracker extends Component {
         mapX: x,
         mapY: y,
         mouseX: mouseX,
-        mouseY: mouseY
+        mouseY: mouseY,
       });
     }
   };
@@ -237,7 +237,7 @@ class Tracker extends Component {
     const mvpToCast = {
       ...this.state.mvpOfMap,
       tombRatioX: tombRatioX,
-      tombRatioY: tombRatioY
+      tombRatioY: tombRatioY,
     };
     this.props.saveSingleMvpToDb(
       null,
@@ -258,12 +258,12 @@ class Tracker extends Component {
       this.state.mvpKeyOfMap && this.props.mvps && tombRatioX && tombRatioY
         ? {
             tombX: this.state.mapX + 250 * tombRatioX,
-            tombY: this.state.mapY + 250 * tombRatioY
+            tombY: this.state.mapY + 250 * tombRatioY,
           }
         : null;
     this.setState({
       ...this.state,
-      tombPositioningState: tombPositioning
+      tombPositioningState: tombPositioning,
     });
   };
 
@@ -273,7 +273,7 @@ class Tracker extends Component {
       date: new Date(),
       payload: payload,
       nickname: localStorage.getItem("nickname").substring(0, 36),
-      type: type
+      type: type,
     };
     this.props.saveLogs(
       this.props.userKey,
@@ -291,24 +291,30 @@ class Tracker extends Component {
         this.props.mvps[mvpKey],
         this.props.mvps[mvpKey].minTillSpawn,
         mvpKey,
-        this.props.mvps[mvpKey].maxTillSpawn
+        this.props.mvps[mvpKey].maxTillSpawn,
       ]);
     }
 
-    sortableMvpArr.sort(function(a, b) {
+    sortableMvpArr.sort(function (a, b) {
       const hoursSinceMaxTimeA = a[3] / 60;
       const hoursSinceMaxTimeB = b[3] / 60;
-      const compare1 = isNaN(a[1]) || isNaN(hoursSinceMaxTimeA) || hoursSinceMaxTimeA <= -2 ? 99999999 : a[1];
-      const compare2 = isNaN(b[1]) || isNaN(hoursSinceMaxTimeB) || hoursSinceMaxTimeB <= -2 ? 99999999 : b[1];
+      const compare1 =
+        isNaN(a[1]) || isNaN(hoursSinceMaxTimeA) || hoursSinceMaxTimeA <= -2
+          ? 99999999
+          : a[1];
+      const compare2 =
+        isNaN(b[1]) || isNaN(hoursSinceMaxTimeB) || hoursSinceMaxTimeB <= -2
+          ? 99999999
+          : b[1];
       return compare1 - compare2;
     });
 
     let mvpsArrToRender = [];
-    sortableMvpArr.forEach(orderedMvpPair => {
+    sortableMvpArr.forEach((orderedMvpPair) => {
       mvpsArrToRender.push(
         <MvpEntry
           mvpViewMode={this.state.mvpViewMode}
-          onNotificate={noti => this.notificationHandler(noti)}
+          onNotificate={(noti) => this.notificationHandler(noti)}
           key={orderedMvpPair[2]}
           id={orderedMvpPair[2]}
           mvp={orderedMvpPair[0]}
@@ -347,7 +353,7 @@ class Tracker extends Component {
           path={this.props.match.path + "/default"}
           render={() => (
             <AsyncDefaultMvps
-              createNewTracker={mvps =>
+              createNewTracker={(mvps) =>
                 this.props.createNewTracker(
                   this.props.userId,
                   this.props.token,
@@ -384,10 +390,10 @@ class Tracker extends Component {
           <div className={classes.LegendTillSpawn}>Till Spawn</div>
           <div className={classes.LegendActions}>Actions</div>
         </div>
-        <LastUpdated
+        {/* <LastUpdated
           lastTime={this.props.lastUpdated}
           trackerName={this.props.trackerName}
-        />
+        /> */}
         {mvpsArrToRender}
       </React.Fragment>
     ) : null;
@@ -420,7 +426,7 @@ class Tracker extends Component {
         show={this.state.notiArr ? this.state.notiArr.length : null}
       >
         {this.state.notiArr
-          ? this.state.notiArr.map(notiContent => {
+          ? this.state.notiArr.map((notiContent) => {
               return (
                 <p key={notiContent.mvpKey}>
                   {notiContent.type !== "onMin"
@@ -461,7 +467,7 @@ class Tracker extends Component {
                 marginBottom: 10,
                 marginTop: 0,
                 textAlign: "center",
-                color: "#2980b9"
+                color: "#2980b9",
               }}
             >
               Click map to add tomb
@@ -521,7 +527,7 @@ class Tracker extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     mvps: state.mvp.mvps,
     isAuthenticated: state.auth.token !== null,
@@ -535,11 +541,11 @@ const mapStateToProps = state => {
     notiSettings: state.mvp.notificationSettings,
     mvpError: state.mvp.error,
     logs: state.mvp.logs,
-    logsLoading: state.mvp.logsLoading
+    logsLoading: state.mvp.logsLoading,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchMvpsFromDb: (
       token,
@@ -634,13 +640,10 @@ const mapDispatchToProps = dispatch => {
         )
       ),
     saveLogs: (userKey, token, trackerKey, logs, newLog) =>
-      dispatch(actions.saveLogs(userKey, token, trackerKey, logs, newLog))
+      dispatch(actions.saveLogs(userKey, token, trackerKey, logs, newLog)),
   };
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Tracker)
+  connect(mapStateToProps, mapDispatchToProps)(Tracker)
 );

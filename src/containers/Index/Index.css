@@ -91,6 +91,12 @@
   bottom: 1px;
 }
 
+.Announcement {
+  font-weight: 600;
+  color: #dc3545;
+  font-size: 1.2em;
+}
+
 @media (max-width: 1000px) {
   .Index {
     width: 100%;
